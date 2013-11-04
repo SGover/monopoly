@@ -14,7 +14,8 @@ class deck():
         card=deck.pop
         discard.append(card)
         return card
-    
+    def addCard(card):
+        cards.append(card)
 #represents a block on the board that containing an asset
 #this block can belong to a player    
 class assetBlock():
