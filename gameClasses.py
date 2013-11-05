@@ -17,20 +17,33 @@ class deck():
     def addCard(card):
         cards.append(card)
 #represents a block on the board that containing an asset
-#this block can belong to a player    
-class assetBlock():
-    def __init__(self,asset):
+#this block can belong to a player
+class block():
+    def __init__(self,name,location):
+        self.name=name
+        self.location=location
+    def getActions():
+        pass
+        
+class assetBlock(block):
+    def __init__(self,asset,location):
+        block.__init__(self,asset.name,location)
         self.asset=asset
         self.owner=None
     def purchase(self,name):
         self.owner=name
+    def getActions():
+        return {"Buy":self.purchase(asset)}
         
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
-    def __init__(self,deck):
+    def __init__(self,deck,location):
+        block.__init__(self,deck.name,location)
         self.deck=deck
     def getCard():
         self.deck.getCard()
+    def getActions():
+        return {"Get Card":self.getCard()}
         
 #represents an asset
 #asset have a name a group name and a value       
