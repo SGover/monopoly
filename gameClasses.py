@@ -1,4 +1,3 @@
-
 #this class represents a deck of cards like surprize cards or punishment cards
 class deck():
     def __init__(self,cards):
@@ -20,21 +19,28 @@ class card():
     def __init__(self,title,text):
         self.title=title
         self.text=text
+        
     def applyToPlayer(self,player):
         pass
 class changeMoneyCard(card):
     def __init__(self,title,text,amount):
         card.__init__(self,title,text)
-        self.amount=amount
+        self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
     def applyToPlayer(self,player):
+<<<<<<< HEAD
         player.money+=self.amount
+        
+class advanceToCard(card):
+    def __init__(self,title,text,target):
+=======
+        player.money+=self.amount #negetive and positive values will automatically take care of addition and deductions
 class moveToNearestCard(card):
     def __init__(self,title,text,groupName,blocks):
+>>>>>>> b41546790960b8f31322614f41007a9cb6a49c46
         card.__init__(self,title,text)
-        self.groupName=groupName
-        self.blocks=blocks
+        self.target=target     
     def applyToPlayer(self,player):
-        pass
+        player.location=target
     
 #represents a block on the board that containing an asset
 #this block can belong to a player
@@ -93,5 +99,4 @@ class player():
             assets[fatherName].append(asset)
         else:
             assets[fatherName]=[asset]
-
     
