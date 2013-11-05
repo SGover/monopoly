@@ -17,9 +17,24 @@ class deck():
     def addCard(card):
         cards.append(card)
 class card():
-    def applyToPlayer(self,Player):
-
-
+    def __init__(self,title,text):
+        self.title=title
+        self.text=text
+    def applyToPlayer(self,player):
+        pass
+class changeMoneyCard(card):
+    def __init__(self,title,text,amount):
+        card.__init__(self,title,text)
+        self.amount=amount
+    def applyToPlayer(self,player):
+        player.money+=self.amount
+class moveToNearestCard(card):
+    def __init__(self,title,text,groupName,blocks):
+        card.__init__(self,title,text)
+        self.groupName=groupName
+        self.blocks=blocks
+    def applyToPlayer(self,player):
+        pass
     
 #represents a block on the board that containing an asset
 #this block can belong to a player
