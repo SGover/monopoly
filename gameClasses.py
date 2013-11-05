@@ -1,4 +1,3 @@
-
 #this class represents a deck of cards like surprize cards or punishment cards
 class deck():
     def __init__(self,cards):
@@ -20,6 +19,7 @@ class card():
     def __init__(self,title,text):
         self.title=title
         self.text=text
+        self.amount = amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
     def applyToPlayer(self,player):
         pass
 class changeMoneyCard(card):
