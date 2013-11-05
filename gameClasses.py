@@ -21,7 +21,7 @@ class card():
         self.text=text
         self.amount = amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
     def applyToPlayer(self,player):
-        pass
+        player.money += self.amount #negetive and positive values will automatically take care of addition and deductions
 class changeMoneyCard(card):
     def __init__(self,title,text,amount):
         card.__init__(self,title,text)
