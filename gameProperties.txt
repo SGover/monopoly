@@ -1,0 +1,14 @@
+assets
+{
+arlozorov,tel-aviv,1200
+eben-gvirol,tel-aviv,1400
+alenby,tel-aviv,1500
+}
+cards
+{
+1
+2
+3
+4
+5
+}
