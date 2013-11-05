@@ -19,15 +19,15 @@ class card():
     def __init__(self,title,text):
         self.title=title
         self.text=text
-        self.amount = amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
+        
     def applyToPlayer(self,player):
-        player.money += self.amount #negetive and positive values will automatically take care of addition and deductions
+        pass
 class changeMoneyCard(card):
     def __init__(self,title,text,amount):
         card.__init__(self,title,text)
-        self.amount=amount
+        self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
     def applyToPlayer(self,player):
-        player.money+=self.amount
+        player.money+=self.amount #negetive and positive values will automatically take care of addition and deductions
 class moveToNearestCard(card):
     def __init__(self,title,text,groupName,blocks):
         card.__init__(self,title,text)
