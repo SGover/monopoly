@@ -16,24 +16,34 @@ class deck():
         return card
     def addCard(card):
         cards.append(card)
+class card():
+    def applyToPlayer(self,Player):
+
+
+    
 #represents a block on the board that containing an asset
 #this block can belong to a player
 class block():
     def __init__(self,name,location):
         self.name=name
         self.location=location
+    def landOn(self,player):
+        player.location=self.location
+        self.player=player        
     def getActions():
         pass
         
 class assetBlock(block):
     def __init__(self,asset,location):
         block.__init__(self,asset.name,location)
-        self.asset=asset
-        self.owner=None
-    def purchase(self,name):
-        self.owner=name
+        self.asset=asset        
+    def purchase(self):
+        self.player.buy(self.asset)
     def getActions(self):
-        return {"Buy":self.purchase}
+        if asset.owner==None or asset.owner==self.player.playerName:
+            return {}
+        else:            
+            return {"Buy":self.purchase}
         
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
@@ -41,7 +51,7 @@ class cardBlock():
         block.__init__(self,deck.name,location)
         self.deck=deck
     def getCard(self):
-        return self.deck.getCard()
+        deck.getCard().applyToPlayer(self.player)
     def getActions(self):
         return {"Get Card":self.getCard}
         
@@ -52,6 +62,7 @@ class asset():
         self.name=name
         self.groupName=groupName
         self.value=value
+        self.owner=None
 #represent a player
 #player attributes : name,money,location,assets        
 class player():
@@ -62,6 +73,7 @@ class player():
         self.location=0
     def buy(self,asset):
         self.money-=asset.value
+        asset.owner=self.name
         if(assets.has_key(asset.fatherName)):
             assets[fatherName].append(asset)
         else:
