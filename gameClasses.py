@@ -5,7 +5,8 @@ class deck():
         self.discard=[]
     def shuffle(self):
         pass
-    def getCard(self):
+    #getting a card from the deck
+    def getCard(self):        
         if len(deck)==0:            
             deck=discard
             self.shuffle()
@@ -26,6 +27,7 @@ class changeMoneyCard(card):
     def __init__(self,title,text,amount):
         card.__init__(self,title,text)
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
+		#change from another fork
     def applyToPlayer(self,player):
         player.money+=self.amount
         
