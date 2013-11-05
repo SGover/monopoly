@@ -28,11 +28,14 @@ class changeMoneyCard(card):
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
     def applyToPlayer(self,player):
 <<<<<<< HEAD
+<<<<<<< HEAD
         player.money+=self.amount
         
 class advanceToCard(card):
     def __init__(self,title,text,target):
 =======
+=======
+>>>>>>> b41546790960b8f31322614f41007a9cb6a49c46
         player.money+=self.amount #negetive and positive values will automatically take care of addition and deductions
 class moveToNearestCard(card):
     def __init__(self,title,text,groupName,blocks):
