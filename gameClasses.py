@@ -26,6 +26,7 @@ class changeMoneyCard(card):
     def __init__(self,title,text,amount):
         card.__init__(self,title,text)
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
+		#change by adeel
     def applyToPlayer(self,player):
         player.money+=self.amount #negetive and positive values will automatically take care of addition and deductions
 class moveToNearestCard(card):
