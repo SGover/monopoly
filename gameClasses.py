@@ -5,7 +5,8 @@ class deck():
         self.discard=[]
     def shuffle(self):
         pass
-    def getCard(self):
+    #getting a card from the deck
+    def getCard(self):        
         if len(deck)==0:            
             deck=discard
             self.shuffle()
