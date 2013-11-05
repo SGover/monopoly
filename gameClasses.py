@@ -5,7 +5,8 @@ class deck():
         self.discard=[]
     def shuffle(self):
         pass
-    def getCard(self):
+    #getting a card from the deck
+    def getCard(self):        
         if len(deck)==0:            
             deck=discard
             self.shuffle()
@@ -28,14 +29,17 @@ class changeMoneyCard(card):
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
 		#change by adeel
     def applyToPlayer(self,player):
+        player.money+=self.amount
+        
+class advanceToCard(card):
+    def __init__(self,title,text,target):
         player.money+=self.amount #negetive and positive values will automatically take care of addition and deductions
 class moveToNearestCard(card):
     def __init__(self,title,text,groupName,blocks):
         card.__init__(self,title,text)
-        self.groupName=groupName
-        self.blocks=blocks
+        self.target=target     
     def applyToPlayer(self,player):
-        pass
+        player.location=target
     
 #represents a block on the board that containing an asset
 #this block can belong to a player
@@ -94,5 +98,4 @@ class player():
             assets[fatherName].append(asset)
         else:
             assets[fatherName]=[asset]
-
     
