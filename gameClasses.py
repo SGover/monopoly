@@ -32,18 +32,18 @@ class assetBlock(block):
         self.owner=None
     def purchase(self,name):
         self.owner=name
-    def getActions():
-        return {"Buy":self.purchase(asset)}
+    def getActions(self):
+        return {"Buy":self.purchase}
         
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
     def __init__(self,deck,location):
         block.__init__(self,deck.name,location)
         self.deck=deck
-    def getCard():
-        self.deck.getCard()
-    def getActions():
-        return {"Get Card":self.getCard()}
+    def getCard(self):
+        return self.deck.getCard()
+    def getActions(self):
+        return {"Get Card":self.getCard}
         
 #represents an asset
 #asset have a name a group name and a value       
