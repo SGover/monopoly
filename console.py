@@ -15,3 +15,6 @@ class console():
     def show_winner(self, winner):
         print(winner,"is the winner!")
         
+    def prompt_commands(self, list_cmds):
+        print("Select a command:")
+        return input(" {} : ".format(list_cmds))

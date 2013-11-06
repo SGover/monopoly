@@ -1,4 +1,4 @@
-from gameClasses import *
+from gameClasses import player
 import console as _console
 from statusWindow import *
 from random import *
@@ -6,6 +6,7 @@ from random import *
 START='start'
 INGAME='ingame'
 FINISH='finish'
+generel_commands = ["roll","build","mortage","unmortage","trade","end"]
 
 class monoGame():
     gameState=START
@@ -52,8 +53,36 @@ class monoGame():
     
     def next_turn(self):
         # main game logic
+        rolled_already = False
+        end_turn = False
         name = self.players[self.current_player].name
         self.console.display(name)
+        while not end_turn:
+            cmd = self.console.prompt_commands(generel_commands)
+            if cmd == "roll":
+                if not rolled_already:
+                    dice = self.board.roll_dice()
+                    self.console.display("Dice rolled {}".format(dice))
+                    rolled_already = True
+                    # movement around the board and actions on landing
+                else:
+                    self.console.display("You have already rolled the dice")
+            elif cmd == "end":
+                if not rolled_already:
+                    self.console.display("You first have to roll the dice")
+                else:
+                    end_turn = True
+                    self.console.display("{} ends his turn".format(name))
+            elif cmd == "build":    
+                pass
+            elif cmd == "mortage":    
+                pass
+            elif cmd == "unmortage":    
+                pass
+            elif cmd == "trade":    
+                pass
+            else:
+                self.console.display("Invalid command input!")     
         #complete the turn than change to next player
         self.current_player = self.next_player(self.current_player)
         pass
