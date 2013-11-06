@@ -87,12 +87,8 @@ class monoGame():
         self.current_player = self.next_player(self.current_player)
         pass
     
-    def next_player(self, index):
-        if index < len(self.players)-1:
-            index += 1
-        elif index ==  len(self.players)-1:
-            index = 0
-        return index
+    def next_player(self, index):        
+        return (index+1)%len(self.players)
     
     def is_complete(self):  # check if anyone wins, 
         c = 0
