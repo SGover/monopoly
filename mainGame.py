@@ -1,8 +1,7 @@
 from gameClasses import *
-from console import *
+import console as _console
 from statusWindow import *
 from random import *
-
 
 START='start'
 INGAME='ingame'
@@ -14,7 +13,7 @@ class monoGame():
     def __init__(self,board,players=[]):
         self.players=players
         self.board=board
-        self.console=console()
+        self.console=_console.console()
         self.statusWindow=statusWindow()
         self.default_money = 1500
         self.current_player = 0 # index of the current player
@@ -33,6 +32,7 @@ class monoGame():
         
     def start(self):
         self.console.start()
+        
         name_player = self.console.get_player_name()
         new_player1 = player(name_player,self.default_money)
         self.players.append(new_player1)
@@ -40,18 +40,20 @@ class monoGame():
         name_player = self.console.get_player_name()
         new_player2 = player(name_player,self.default_money)
         self.players.append(new_player2)
+        
         self.current_player = randrange(len(self.players))
+        self.console.display("{} takes the first turn".format(self.players[self.current_player].name))
         
         while not self.is_complete():
             self.next_turn()
             
         if not winner == -1:
-            console.show_winner(winner)
+            self.console.show_winner(winner)
     
     def next_turn(self):
         # main game logic
         name = self.players[self.current_player].name
-        console.display(name)
+        self.console.display(name)
         #complete the turn than change to next player
         self.current_player = self.next_player(self.current_player)
         pass
