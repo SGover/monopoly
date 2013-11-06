@@ -1,6 +1,7 @@
 #this class represents a deck of cards like surprize cards or punishment cards
 class deck():
-    def __init__(self,cards):
+    def __init__(self,cards,name):
+        self.name=name
         self.cards=cards
         self.discard=[]
     def shuffle(self):
@@ -64,7 +65,7 @@ class assetBlock(block):
             return {}
         else:            
             return {"Buy":self.purchase}
-        
+      
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
     def __init__(self,deck,location):

@@ -1,3 +1,4 @@
+import gameClasses
 class console():
     
     def __init__(self):
@@ -18,3 +19,11 @@ class console():
     def prompt_commands(self, list_cmds):
         print("Select a command:")
         return input(" {} : ".format(list_cmds))
+    def printBoard(self,board):
+        for block in board:
+            bType=type(block)
+            if bType=type(gameClasses.block):
+                if bType=type(gameClasses.assetBlock):
+                    print (block.asset.name+" in : "+block.asset.groupName)
+                elif bType=type(gameClasses.cardBlock):
+                    print ("Deck : "+block.deck.name
