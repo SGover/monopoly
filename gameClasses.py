@@ -99,3 +99,5 @@ class player():
         else:
             assets[fatherName]=[asset]
     
+    def is_bankrupt(self):
+        pass
