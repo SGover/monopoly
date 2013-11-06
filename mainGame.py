@@ -6,9 +6,10 @@ from random import *
 START='start'
 INGAME='ingame'
 FINISH='finish'
-generel_commands = ["roll","build","mortage","unmortage","trade","end"]
-
+ROLL,BUY,BUILD,MORTAGE,UNMORTAGE,TRADE,END = "roll","buy","build","mortage","unmortage","trade","end"
+allComands=[ROLL,BUY,BUILD,MORTAGE,UNMORTAGE,TRADE,END]
 class monoGame():
+    commands=allComands
     gameState=START
     curr_turn=0
     def __init__(self,board,players=[]):
@@ -30,7 +31,15 @@ class monoGame():
 #         else:
 #             self.chooseFromOptions(actions)
 #         self.curr_turn=(self.curr_turn+1)%(len(players)-1)
-        
+    def do_roll(self):
+        if not self.rolled_already:
+                    self.commands.remove(ROLL)
+                    dice = self.board.roll_dice()
+                    self.console.display("Dice rolled {}".format(dice))
+                    self.rolled_already = True
+                    # movement around the board and actions on landing
+        else:
+                    self.console.display("You have already rolled the dice")
     def start(self):
         self.console.start()
         
@@ -46,33 +55,29 @@ class monoGame():
         self.console.display("{} takes the first turn".format(self.players[self.current_player].name))
         
         while not self.is_complete():
+            self.commands=allComands
             self.next_turn()
             
         if not winner == -1:
             self.console.show_winner(winner)
-    
+    def do_end_turn(self):
+        if not self.rolled_already:
+                    self.console.display("You first have to roll the dice")
+        else:
+                    self.end_turn = True
+                    self.console.display("{} ends his turn".format(self.curr_player_name))
     def next_turn(self):
         # main game logic
-        rolled_already = False
-        end_turn = False
-        name = self.players[self.current_player].name
-        self.console.display(name)
-        while not end_turn:
-            cmd = self.console.prompt_commands(generel_commands)
+        self.rolled_already = False
+        self.end_turn = False
+        self.curr_player_name = self.players[self.current_player].name
+        self.console.display(self.curr_player_name)
+        while not self.end_turn:
+            cmd = self.console.prompt_commands(self.commands)
             if cmd == "roll":
-                if not rolled_already:
-                    dice = self.board.roll_dice()
-                    self.console.display("Dice rolled {}".format(dice))
-                    rolled_already = True
-                    # movement around the board and actions on landing
-                else:
-                    self.console.display("You have already rolled the dice")
+                self.do_roll()
             elif cmd == "end":
-                if not rolled_already:
-                    self.console.display("You first have to roll the dice")
-                else:
-                    end_turn = True
-                    self.console.display("{} ends his turn".format(name))
+                self.do_end_turn()                
             elif cmd == "build":    
                 pass
             elif cmd == "mortage":    
