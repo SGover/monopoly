@@ -8,8 +8,8 @@ block_arr = []
 class board():
                
     def __init__(self):
-        self.chance_deck = deck(chance_cards)
-        self.chest_deck = deck(chest_cards)
+        self.chance_deck = deck(chance_cards,"chance")
+        self.chest_deck = deck(chest_cards,"chest")
         self.blocks = block_arr
           
         pass

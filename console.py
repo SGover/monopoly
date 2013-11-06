@@ -22,8 +22,8 @@ class console():
     def printBoard(self,board):
         for block in board:
             bType=type(block)
-            if bType=type(gameClasses.block):
-                if bType=type(gameClasses.assetBlock):
+            if bType==type(gameClasses.block):
+                if bType==type(gameClasses.assetBlock):
                     print (block.asset.name+" in : "+block.asset.groupName)
-                elif bType=type(gameClasses.cardBlock):
-                    print ("Deck : "+block.deck.name
+                elif bType==type(gameClasses.cardBlock):
+                    print ("Deck : "+block.deck.name)
