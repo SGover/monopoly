@@ -45,18 +45,15 @@ class moveToNearestCard(card):
 #represents a block on the board that containing an asset
 #this block can belong to a player
 class block():
-    def __init__(self,name,location):
-        self.name=name
-        self.location=location
-    def landOn(self,player):
-        player.location=self.location
-        self.player=player        
+    def __init__(self):
+        self.player=None
+    
     def getActions():
         pass
         
 class assetBlock(block):
-    def __init__(self,asset,location):
-        block.__init__(self,asset.name,location)
+    def __init__(self,asset):
+        block.__init__(self)
         self.asset=asset        
     def purchase(self):
         self.player.buy(self.asset)
@@ -68,8 +65,8 @@ class assetBlock(block):
       
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
-    def __init__(self,deck,location):
-        block.__init__(self,deck.name,location)
+    def __init__(self,deck):
+        block.__init__(self)
         self.deck=deck
     def getCard(self):
         deck.getCard().applyToPlayer(self.player)
@@ -99,6 +96,9 @@ class player():
             assets[fatherName].append(asset)
         else:
             assets[fatherName]=[asset]
-    
+    def landOn(self,block,location):        
+        self.location=location
+        block.player=player
+        block.
     def is_bankrupt(self):
         pass
