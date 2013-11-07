@@ -128,7 +128,6 @@ class utilBlock(block):         #utilities and railway stations
         
 
 class assetBlock(block):
-<<<<<<< HEAD
     def __init__(self,asset):
         block.__init__(self)
         self.asset=asset
@@ -146,7 +145,6 @@ class assetBlock(block):
             return {"pass",self.pass_}
         else:
             return {"Pay Rent",self.pay_rent()}
-=======
     def __init__(self, name, color, price):     #merging asset class into asset block class
         block.__init__(self, name)
         self.color=color
@@ -177,7 +175,7 @@ class assetBlock(block):
             return True
         return False
       
->>>>>>> 67d6fc26da2572bae43e99cb100b6c52c2a58594
+
 
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
@@ -297,7 +295,7 @@ class player():
     def landOn(self,block,location):        
         self.location=location
         block.player=player
-<<<<<<< HEAD
+
     def getHousesAndHotels(self):
         houses=0
         hotels=0
@@ -307,8 +305,6 @@ class player():
                 if asset.hotel=True:
                     hotels+=1
         return (houses,hotels)
-=======
         #block.
->>>>>>> 67d6fc26da2572bae43e99cb100b6c52c2a58594
     def is_bankrupt(self):
         pass
