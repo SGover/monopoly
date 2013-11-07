@@ -23,6 +23,9 @@ class deck():
         return card
     def addCard(card):
         cards.append(card)
+        
+        
+        
 class card():
     def __init__(self,title,text):
         self.title=title
@@ -30,6 +33,7 @@ class card():
         
     def applyToPlayer(self,player):
         pass
+
 class changeMoneyCard(card):
     def __init__(self,title,text,amount,commune=False):
         card.__init__(self,title,text)
@@ -48,6 +52,7 @@ class changeMoneyCard(card):
 class advanceToCard(card):
     def __init__(self,title,text,target):
         player.money+=self.amount #negetive and positive values will automatically take care of addition and deductions
+
 class moveToNearestCard(card):
     def __init__(self,title,text,groupName,blocks):
         card.__init__(self,title,text)
@@ -55,6 +60,10 @@ class moveToNearestCard(card):
     def applyToPlayer(self,player):
         player.location=target
     
+
+
+
+
 #represents a block on the board that containing an asset
 #this block can belong to a player
 class block():
@@ -64,6 +73,7 @@ class block():
     def getActions():
         pass
         
+
 class assetBlock(block):
     def __init__(self,asset):
         block.__init__(self)
@@ -76,6 +86,7 @@ class assetBlock(block):
         else:            
             return {"Buy":self.purchase}
       
+
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
     def __init__(self,deck):
@@ -86,6 +97,10 @@ class cardBlock():
     def getActions(self):
         return {"Get Card":self.getCard}
         
+
+
+
+
 #represents an asset
 #asset have a name a group name and a value       
 class asset():
@@ -94,6 +109,10 @@ class asset():
         self.groupName=groupName
         self.value=value
         self.owner=None
+
+
+
+
 #represent a player
 #player attributes : name,money,location,assets        
 class player():
