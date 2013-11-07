@@ -128,53 +128,39 @@ class utilBlock(block):         #utilities and railway stations
         
 
 class assetBlock(block):
-    def __init__(self,asset):
-        block.__init__(self)
-        self.asset=asset
-        self.houses=0
-        self.hotel=False
-    def purchase(self):
-        self.player.buy(self.asset)
-    def payRent(self):
-        rent=self.asset.value//30
-        self.player.pay(rent)
-    def getActions(self):
-        if asset.owner==None :
-            return {"Buy":self.purchase,"pass",self.pass_}            
-        elif asset.owner==self.player.playerName:                        
-            return {"pass",self.pass_}
-        else:
-            return {"Pay Rent",self.pay_rent()}
-    def __init__(self, name, color, price):     #merging asset class into asset block class
-        block.__init__(self, name)
+    def __init__(self,name,color,price):
+        block.__init__(self,name)        
         self.color=color
         self.price=price
-                
+        self.houses=0
+        self.hotel=False
+        self.owner=None
+    def purchase(self):
+        self.player.buy(self)
+    def payRent(self):
+        rent=self.price//30
+        self.player.pay(rent)
+    def getActions(self):
+        if self.owner==None :
+            return {"Buy":self.purchase,"pass",self.pass_}            
+        elif self.owner==self.player.playerName or self.owner=='bank':                        
+            return {"pass",self.pass_}
+        else:
+            return {"Pay Rent",self.pay_rent()}                        
     def purchase(self):
         self.player.buy(self.asset)
-    def get_actions(self):
-        if asset.owner==None or asset.owner==self.player.playerName:
-            return {}
-        else:            
-            return {"Buy":self.purchase}
-        
-    def can_be_owned(self):
-        return True
-    
-    def can_be_traded(self):
-        return self.can_be_owned()
-    
-    def can_be_sold(self):
-        return self.can_be_owned()
-    
-    def can_be_mortaged(self):
-        return self.can_be_owned()
-    
-    def can_be_build(self):
-        if self.can_be_owned():
-            return True
-        return False
-      
+    def mortage(self):
+        if(owner!='bank' and owner!=None):
+            player=getPlayerFromName(self.owner)
+            player.money+=self.price/2
+            self.owner='bank'
+    def reMortage(self,player):
+        if owner=='bank':
+            player.buy(self)
+    def buildHouse():
+        pass
+    def buildHotel():
+        pass
 
 
 #represent a block on the board that landing on means u need to pull a card from some deck        
@@ -187,23 +173,6 @@ class cardBlock():
     def get_actions(self):
         return {"Get Card":self.getCard}
     
-    def can_be_owned(self):
-        return False
-    
-    def can_be_traded(self):
-        return self.can_be_owned()
-    
-    def can_be_sold(self):
-        return self.can_be_owned()
-    
-    def can_be_mortaged(self):
-        return self.can_be_owned()
-    
-    def can_be_build(self):
-        if self.can_be_owned():
-            return False
-        return False 
-
 
 class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLand
     def __init__(self, name, money):      # action is just adding or subtracting money
@@ -214,60 +183,15 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
     def get_actions(self):
         pass
     
-    def can_be_owned(self):
-        return False
     
-    def can_be_traded(self):
-        return self.can_be_owned()
-    
-    def can_be_sold(self):
-        return self.can_be_owned()
-    
-    def can_be_mortaged(self):
-        return self.can_be_owned()
-    
-    def can_be_build(self):
-        if self.can_be_owned():
-            return False
-        return False 
-        
-
 class goToJailBlock(block):
     def __init__(self, name="'Go TO Jail'"):
         block.__init__(self, name)
 
     def get_actions(self):
         pass
-    def can_be_owned(self):
-        return False
     
-    def can_be_traded(self):
-        return self.can_be_owned()
-    
-    def can_be_sold(self):
-        return self.can_be_owned()
-    
-    def can_be_mortaged(self):
-        return self.can_be_owned()
-    
-    def can_be_build(self):
-        if self.can_be_owned():
-            return False
-        return False
 
-
-
-
-#represents an asset
-#asset have a name a group name and a value       
-class asset():
-    def __init__(self,name,groupName,value,utilty=False,railRoad=False):
-        self.name=name
-        self.groupName=groupName
-        self.value=value
-        self.owner=None
-        self.utility=utility
-        self.railRoad=railRoad
 
 
 ##################
@@ -283,15 +207,16 @@ class player():
         self.money=money
         self.assets={}
         self.location=0
+        self.getOutOfJailCard=False
     def pay(self,ammount):
         self.money-=ammount
-    def buy(self,asset):
-        self.money-=asset.value
-        asset.owner=self.name
-        if(assets.has_key(asset.fatherName)):
-            assets[fatherName].append(asset)
+    def buy(self,assetBlock):
+        self.money-=assetBlock.price
+        assetBlock.owner=self.name
+        if(assets.has_key(assetBlock.color)):
+            assets[assetBlock.color].append(assetBlock)
         else:
-            assets[fatherName]=[asset]
+            assets[assetBlock.color]=[assetBlock]
     def landOn(self,block,location):        
         self.location=location
         block.player=player
