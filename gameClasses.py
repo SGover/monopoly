@@ -145,7 +145,6 @@ class assetBlock(block):
             return {"pass",self.pass_}
         else:
             return {"Pay Rent",self.pay_rent()}
-=======
     def __init__(self, name, color, price):     #merging asset class into asset block class
         block.__init__(self, name)
         self.color=color
