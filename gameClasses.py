@@ -5,6 +5,12 @@ players=[]
 def setPlayers(newPlayers):
     global players
     players=newPlayers
+
+
+###################
+# Cards Section
+###################
+
 class deck():
     def __init__(self,cards,name):
         self.name=name
@@ -61,7 +67,9 @@ class moveToNearestCard(card):
         player.location=target
     
 
-
+###################
+# Blocks Section
+###################
 
 
 #represents a block on the board that containing an asset
@@ -72,20 +80,28 @@ class block():
     
     def getActions():
         pass
+    def pass_():
+        pass    
         
 
 class assetBlock(block):
     def __init__(self,asset):
         block.__init__(self)
-        self.asset=asset        
+        self.asset=asset
+        self.houses=0
+        self.hotel=False
     def purchase(self):
         self.player.buy(self.asset)
+    def payRent(self):
+        rent=self.asset.value//30
+        self.player.pay(rent)
     def getActions(self):
-        if asset.owner==None or asset.owner==self.player.playerName:
-            return {}
-        else:            
-            return {"Buy":self.purchase}
-      
+        if asset.owner==None :
+            return {"Buy":self.purchase,"pass",self.pass_}            
+        elif asset.owner==self.player.playerName:                        
+            return {"pass",self.pass_}
+        else:
+            return {"Pay Rent",self.pay_rent()}
 
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
@@ -104,13 +120,18 @@ class cardBlock():
 #represents an asset
 #asset have a name a group name and a value       
 class asset():
-    def __init__(self,name,groupName,value):
+    def __init__(self,name,groupName,value,utilty=False,railRoad=False):
         self.name=name
         self.groupName=groupName
         self.value=value
         self.owner=None
+        self.utility=utility
+        self.railRoad=railRoad
 
 
+##################
+# Player Section
+##################
 
 
 #represent a player
@@ -121,6 +142,8 @@ class player():
         self.money=money
         self.assets={}
         self.location=0
+    def pay(self,ammount):
+        self.money-=ammount
     def buy(self,asset):
         self.money-=asset.value
         asset.owner=self.name
@@ -131,6 +154,14 @@ class player():
     def landOn(self,block,location):        
         self.location=location
         block.player=player
-        block.
+    def getHousesAndHotels(self):
+        houses=0
+        hotels=0
+        for group in assets.values():
+            for asset in group:
+                houses+=asset.houses
+                if asset.hotel=True:
+                    hotels+=1
+        return (houses,hotels)
     def is_bankrupt(self):
         pass
