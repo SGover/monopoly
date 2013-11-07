@@ -31,27 +31,27 @@ ChestGetOutOfJail
 {
 Get out of jail,u can save it
 }
-chestRepairCard
+ChestRepairCard
 {
 You are assessed for street repairs,$40 per house $115 per hotel,40,115
 }
-chanceAdvanceCardSpecific
+ChanceAdvanceCardSpecific
 {
 Advance to Go ,Collect $200,Go
 Advance to Illinois Ave,,Illinois Ave
 }
-chanceAdvanceCardNearest
+ChanceAdvanceCardNearest
 {
 Advance token to nearest Utility, If unowned you may buy it from the Bank. If owned, throw dice and pay owner a total ten times the amount thrown.
 }
-ChanceCommunityMoneyCards
+ChanceMoneyCards
 {
 Bank pays you dividend of $50,get 50$,50
 Pay poor tax of $15, ,-15
 Your building loan matures ,collect $150,150
 You have won a crossword competition,collect $100,100
 }
-ChestCommunityMoneyCards
+ChanceCommunityMoneyCards
 {
 You have been elected chairman of the board ,pay each player $50,-50
 }

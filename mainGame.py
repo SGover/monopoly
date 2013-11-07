@@ -29,14 +29,14 @@ class monoGame():
         
 #     def do_move(diceSum):
 #         player=self.players[curr_turn]        
-#         currBlock=self.board[(player.location+diceSum)%(len(board)-1)]
+#         currBlock=self.board[(player.location+diceSum)%(len(board))]
 #         currBlock.landOn(player)
 #         actions=currBlock.getActions()
 #         if(len(actions)==1):
 #             actions[0]()
 #         else:
 #             self.chooseFromOptions(actions)
-#         self.curr_turn=(self.curr_turn+1)%(len(players)-1)
+#         self.curr_turn=(self.curr_turn+1)%(len(players))
     
     def start(self):
         self.console.start()
