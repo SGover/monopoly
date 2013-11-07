@@ -28,3 +28,14 @@ class console():
                     print (block.asset.name+" in : "+block.asset.groupName)
                 elif bType==type(gameClasses.cardBlock):
                     print ("Deck : "+block.deck.name)
+    def chooseFromOptions(self,actions):
+        print("Select a command :")
+        i=0
+        for key in actions.keys():
+            i+=1
+            print (str(i)+". "+key)
+        cmd=input(" select :")
+        while not (cmd in actions):
+            print ("wrong command try again")
+            cmd=input(" select :")
+        actions[cmd]()
