@@ -7,7 +7,7 @@ START='start'
 INGAME='ingame'
 FINISH='finish'
 
-ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END = "roll","buy","build","mortage","unmortage","trade","end"
+ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END = "roll","sell","build","mortage","unmortage","trade","end"
 allComands=[ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END] # player can sell its properties back to bank..
 
 BUY,AUCTION = "buy","auction"
