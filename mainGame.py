@@ -6,8 +6,13 @@ from random import *
 START='start'
 INGAME='ingame'
 FINISH='finish'
-ROLL,BUY,BUILD,MORTAGE,UNMORTAGE,TRADE,END = "roll","buy","build","mortage","unmortage","trade","end"
-allComands=[ROLL,BUY,BUILD,MORTAGE,UNMORTAGE,TRADE,END]
+
+ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END = "roll","buy","build","mortage","unmortage","trade","end"
+allComands=[ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END] # player can sell its properties back to bank..
+
+BUY,AUCTION = "buy","auction"
+purchaseCmds = [BUY,AUCTION]
+
 class monoGame():
     commands=allComands
     gameState=START
@@ -35,15 +40,13 @@ class monoGame():
     
     def start(self):
         self.console.start()
-        
-        name_player = self.console.get_player_name()
-        new_player1 = player(name_player,self.default_money)
-        self.players.append(new_player1)
-        
-        name_player = self.console.get_player_name()
-        new_player2 = player(name_player,self.default_money)
-        self.players.append(new_player2)
-        
+        i = 0
+        while i < self.num_players:
+            name_player = self.console.get_player_name()
+            new_player1 = player(name_player,self.default_money)
+            self.players.append(new_player1)
+            i += 1
+                
         self.current_player = randrange(len(self.players))
         self.console.display("{} takes the first turn".format(self.players[self.current_player].name))
         
@@ -61,7 +64,7 @@ class monoGame():
         self.rolled_already = False
         self.end_turn = False
         self.curr_player_name = self.players[self.current_player].name
-        self.console.display(self.curr_player_name)
+        self.console.display("{} takes the turn!".format(self.curr_player_name))
         while not self.end_turn:
             cmd = self.console.prompt_commands(self.commands)
             if cmd == "roll":
