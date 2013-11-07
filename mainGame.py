@@ -27,16 +27,15 @@ class monoGame():
         self.winner = -1;
         self.num_players = num_players
         
-#     def do_move(diceSum):
-#         player=self.players[curr_turn]        
-#         currBlock=self.board[(player.location+diceSum)%(len(board))]
-#         currBlock.landOn(player)
-#         actions=currBlock.getActions()
-#         if(len(actions)==1):
-#             actions[0]()
-#         else:
-#             self.chooseFromOptions(actions)
-#         self.curr_turn=(self.curr_turn+1)%(len(players))
+     def do_move(diceSum):
+         player=self.players[curr_turn]        
+         currBlock=self.board[(player.location+diceSum)%(len(board))]
+         player.landOn(currBlock)
+         actions=currBlock.getActions()
+         if(len(actions)==1):
+             actions[0]()
+         else:
+             self.console.chooseFromOptions(actions)
     
     def start(self):
         self.console.start()
@@ -93,6 +92,8 @@ class monoGame():
                     self.console.display("Dice rolled {}".format(dice))
                     self.rolled_already = True
                     # movement around the board and actions on landing
+                    self.do_move(dice_sum)
+                    
         else:
                     self.console.display("You have already rolled the dice")
                     
