@@ -1,9 +1,14 @@
 from gameClasses import *
 #this class initate some values from a file
+ASSETS,CHESTMONEY,CHESTCOMMONEY='assets','ChestMoneyCards','ChestCommunityMoneyCards'
+CHESTADV,CHESTGOOJ,CHESTRC='ChestAdvanceCards','ChestGetOutOfJail','chestRepairCard'
+CHANCEADVS,CHANCEADVN='ChanceAdvanceCardSpecific','ChanceAdvanceCardNearest'
+CHANCEM,CHANCECM='ChanceMoneyCards','ChanceCommunityMoneyCards'
 class initFromFile():
     inObject=False
     currObject=''
-    cards=[]
+    chestCards=[]
+    chanceCards=[]
     def __init__(self,fileName):
         self.assets=[]
         file=open(fileName,'r')
@@ -21,12 +26,17 @@ class initFromFile():
                     self.currObject=line            
         file.close()
     def updateObject(self,line):
-        if self.currObject=='assets':
+        if self.currObject==ASSETS:
             split=line.split(",")
             self.assets.append(asset(split[0],split[1],int(split[2])))
-        elif self.currObject=='cards':
+        elif self.currObject==CHESTMONEY or self.currObject==CHANCEM:
             split=line.split(",")
-            self.cards.append(split[0])
+            card=changeMoneyCard(split[0],split[1],split[2])
+            if self.currObject==CHESTMONEY:
+                chestCards.append(card)
+            else:
+                chanceCards.append(card)
+        elif self.currObject==CHESTCOMMONEY or 
 def test():
     iff=initFromFile('gameProperties.txt')
     print ('prining assets: ')
@@ -34,7 +44,8 @@ def test():
         print ('name : '+asset.name+', group : '+asset.groupName+', value : '+str(asset.value))
     print ('printing cards: ')
     for card in iff.cards:
-        print ('card : '+card)
+        print ('card : '+card.title)
+        print (card.text)
         
 test()
             
