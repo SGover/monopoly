@@ -39,7 +39,7 @@ class deck():
         card=deck.pop
         discard.append(card)
         return card
-    def addCard(card):
+    def addCard(self, card):
         cards.append(card)
         
         
@@ -127,7 +127,7 @@ class assetBlock(block):
         self.player.pay(rent)
     def getActions(self):
         if self.owner==None :
-            return {"Buy":self.purchase,"pass",self.pass_}            
+            return {"Buy",self.purchase,"pass",self.pass_}            
         elif self.owner==self.player.playerName or self.owner=='bank':                        
             return {"pass",self.pass_}
         else:
