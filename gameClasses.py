@@ -91,10 +91,8 @@ class block():
     def __init__(self, name):
         self.name = name
     
-    def get_actions():
+    def getActions():
         pass
-
-
 class utilBlock(block):         #utilities and railway stations
     def __init__(self, name, type, price):
         block.__init__(self, name)
@@ -102,29 +100,16 @@ class utilBlock(block):         #utilities and railway stations
         self.price = price        
 
     def purchase(self):
-        self.player.buy(self.asset)
-        
-    def get_actions(self):
-        pass
-    def pass_():
-        pass    
-        
-    def can_be_owned(self):
-        return True
-    
-    def can_be_traded(self):
-        return self.can_be_owned()
-    
-    def can_be_sold(self):
-        return self.can_be_owned()
-    
-    def can_be_mortaged(self):
-        return self.can_be_owned()
-    
-    def can_be_build(self):
-        if self.can_be_owned():
-            return False
-        return False
+        self.player.buy(self)        
+  
+    def mortage(self):
+        if(owner!='bank' and owner!=None):
+            player=getPlayerFromName(self.owner)
+            player.money+=self.price/2
+            self.owner='bank'
+    def reMortage(self,player):
+        if owner=='bank':
+            player.buy(self)
         
 
 class assetBlock(block):
@@ -178,9 +163,8 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
     def __init__(self, name, money):      # action is just adding or subtracting money
         block.__init__(self, name)
         self.deck=deck
-        self.money = money
-    
-    def get_actions(self):
+        self.money = money    
+    def getActions(self):
         pass
     
     
@@ -188,7 +172,7 @@ class goToJailBlock(block):
     def __init__(self, name="'Go TO Jail'"):
         block.__init__(self, name)
 
-    def get_actions(self):
+    def getActions(self):
         pass
     
 
@@ -202,14 +186,17 @@ class goToJailBlock(block):
 #represent a player
 #player attributes : name,money,location,assets        
 class player():
+    
     def __init__(self,name,money):
         self.name=name
         self.money=money
         self.assets={}
         self.location=0
         self.getOutOfJailCard=False
+        
     def pay(self,ammount):
         self.money-=ammount
+        
     def buy(self,assetBlock):
         self.money-=assetBlock.price
         assetBlock.owner=self.name
@@ -217,6 +204,7 @@ class player():
             assets[assetBlock.color].append(assetBlock)
         else:
             assets[assetBlock.color]=[assetBlock]
+            
     def landOn(self,block,location):        
         self.location=location
         block.player=player
@@ -230,6 +218,8 @@ class player():
                 if asset.hotel=True:
                     hotels+=1
         return (houses,hotels)
-        #block.
+        
     def is_bankrupt(self):
-        pass
+        if self.money<=0:
+            return True
+        return False
