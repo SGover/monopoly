@@ -1,4 +1,10 @@
 #this class represents a deck of cards like surprize cards or punishment cards
+
+players=[]
+#dont forget to set this before each game
+def setPlayers(newPlayers):
+    global players
+    players=newPlayers
 class deck():
     def __init__(self,cards,name):
         self.name=name
@@ -25,11 +31,18 @@ class card():
     def applyToPlayer(self,player):
         pass
 class changeMoneyCard(card):
-    def __init__(self,title,text,amount):
+    def __init__(self,title,text,amount,commune=False):
         card.__init__(self,title,text)
+        self.commune=commune
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
 		#change from fork
     def applyToPlayer(self,player):
+        if self.commune:
+            for p in players:
+                if p.name!=player.name:
+                    player.money+=self.ammount
+                    p.money-=self.ammount
+        else:            
         player.money+=self.amount
         
 class advanceToCard(card):

@@ -4,11 +4,59 @@ arlozorov,tel-aviv,1200
 eben-gvirol,tel-aviv,1400
 alenby,tel-aviv,1500
 }
-cards
+ChestMoneyCards
 {
-1
-2
-3
-4
-5
+Bank error in your favor,pay 50$,50
+Income Tax Refund,collect 20$,20
+Life Insurance Matures,collect $100,199
+Pay Hospital Fees ,pay $100,-100
+Pay School Fees,pay $50,-50
+Receive $25 Consultancy Fee,get $25,25
+You have won second prize in a beauty contest,collect $10,10
+You inherit $100, ,100
+From sale of stock,you get $50,50
+Holiday Fund matures,Receive $100,100
 }
+ChestCommunityMoneyCards
+{
+It is your birthday,Collect $10 from each player,10
+Grand Opera Night,Collect $50 from every player for opening night seats,50
+}
+ChestAdvanceCards
+{
+Advance to Go,Collect 200$,Go
+Go to jail – go directly to jail , Do not pass Go and do not collect $200,Jail
+}
+ChestGetOutOfJail
+{
+Get out of jail,u can save it
+}
+chestRepairCard
+{
+You are assessed for street repairs,$40 per house $115 per hotel,40,115
+}
+chanceAdvanceCardSpecific
+{
+Advance to Go ,Collect $200,Go
+Advance to Illinois Ave,,Illinois Ave
+}
+chanceAdvanceCardNearest
+{
+Advance token to nearest Utility, If unowned you may buy it from the Bank. If owned, throw dice and pay owner a total ten times the amount thrown.
+}
+ChanceCommunityMoneyCards
+{
+Bank pays you dividend of $50,get 50$,50
+Pay poor tax of $15, ,-15
+Your building loan matures ,collect $150,150
+You have won a crossword competition,collect $100,100
+}
+ChestCommunityMoneyCards
+{
+You have been elected chairman of the board ,pay each player $50,-50
+}
+
+
+
+
+
