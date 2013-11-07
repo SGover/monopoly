@@ -125,9 +125,11 @@ class assetBlock(block):
     def payRent(self):
         rent=self.price//30
         self.player.pay(rent)
+    def pass_(self):
+        pass
     def getActions(self):
         if self.owner==None :
-            return {"Buy":self.purchase,"pass",self.pass_}            
+            return {"Buy":self.purchase,"pass":self.pass_}            
         elif self.owner==self.player.playerName or self.owner=='bank':                        
             return {"pass",self.pass_}
         else:
@@ -215,7 +217,7 @@ class player():
         for group in assets.values():
             for asset in group:
                 houses+=asset.houses
-                if asset.hotel=True:
+                if asset.hotel==True:
                     hotels+=1
         return (houses,hotels)
         
