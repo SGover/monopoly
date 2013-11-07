@@ -5,6 +5,9 @@ chance_cards = []
 chest_cards = []
 block_arr = []
 
+
+
+
 class board():
                
     def __init__(self):

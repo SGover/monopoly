@@ -3,5 +3,5 @@ from gameClasses import *
 from board import *
 
 board =  board() # just testing
-game = monoGame(board)
+game = monoGame(board,3)
 game.start()

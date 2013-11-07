@@ -19,8 +19,9 @@ class console():
     def prompt_commands(self, list_cmds):
         print("Select a command:")
         return input(" {} : ".format(list_cmds))
+    
     def printBoard(self,board):
-        for block in board:
+        for block in board.blocks:
             bType=type(block)
             if bType==type(gameClasses.block):
                 if bType==type(gameClasses.assetBlock):
