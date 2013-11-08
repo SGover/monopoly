@@ -50,12 +50,12 @@ block_arr = [moneyBlock("GO!", 200),
              ]
 
 class board():
+
                
     def __init__(self):
         self.chance_deck = chance_deck
         self.chest_deck = chest_deck
         self.blocks = block_arr
-          
         pass
     
     def roll_dice(self):
