@@ -6,7 +6,7 @@ from random import *
 START='start'
 INGAME='ingame'
 FINISH='finish'
-val = 0
+val = 1
 
 ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END = "roll","sell","build","mortage","unmortage","trade","end"
 allComands=[ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END] # player can sell its properties back to bank..
@@ -27,6 +27,7 @@ class monoGame():
         self.current_player = 0 # index of the current player
         self.winner = -1
         self.num_players = num_players
+        
     def do_move(self,diceSum):
         player=self.players[self.current_player]        
         prevBlock=self.board.blocks[player.location]
@@ -37,7 +38,7 @@ class monoGame():
         actions=currBlock.getActions()
         if(len(actions)==1):
             for key in actions.keys():
-                actions[key]()
+                actions[key](console)
         else:
             self.console.chooseFromOptions(actions)
     
@@ -103,8 +104,6 @@ class monoGame():
                     # movement around the board and actions on landing
                     dice_sum=dice[0]+dice[1]
                     #self.do_move(dice_sum)    #commenting for testing!
-                    global val              #testing
-                    val += 1                #testing
                     self.do_move(val)      #testing
                     self.rolled_already = False  #testing
                     

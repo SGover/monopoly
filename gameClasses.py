@@ -41,7 +41,7 @@ class deck():
         pass
     #getting a card from the deck
     def getCard(self):        
-        if len(deck)==0:            
+        if len(self.cards)==0:            
             deck=self.discard
             self.shuffle()
             discard=[]            
@@ -143,9 +143,9 @@ class utilBlock(block):         #utilities and railway stations
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            
         elif self.owner==self.player.playerName or self.owner=='bank':                        
-            return {"pass",self.pass_}
+            return {"pass":self.pass_}
         else:
-            return {"Pay Rent",self.pay_rent()}                            
+            return {"payrent":self.pay_rent()}                            
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
             #player=getPlayerFromName(self.owner)
@@ -168,7 +168,7 @@ class assetBlock(block):
         self.player.buy(self)
         
     def __str__(self):
-        return self.name
+        return block.name
     
     def payRent(self):
         rent=self.price//30
@@ -178,11 +178,11 @@ class assetBlock(block):
         pass
     def getActions(self):
         if self.owner==None :
-            return {"Buy":self.purchase,"pass":self.pass_}            #auction???
+            return {"buy":self.purchase,"pass":self.pass_}            #auction???
         elif self.owner==self.player.playerName or self.owner=='bank':                        
-            return {"pass",self.pass_}
+            return {"pass":self.pass_}
         else:
-            return {"Pay Rent",self.pay_rent()}                        
+            return {"payrent":self.pay_rent()}                        
     
     def purchase(self, console):            #buy function should not exist, whole process should be in purchase
         if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
@@ -212,7 +212,7 @@ class cardBlock():
         card=self.deck.getCard()
         card.applyToPlayer(self.player)
     def getActions(self):
-        return {"Get Card":self.getCard}
+        return {"getcard":self.getCard}
     
 
 class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLand
@@ -224,7 +224,7 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
         if not self.player==NOPLAYER:
             self.player.money+=self.money
     def getActions(self):
-        return {"Change money : "+str(self.money):self.use}
+        return {"changemoney : "+str(self.money):self.use}
     
     
 class goToJailBlock(block):
@@ -263,7 +263,7 @@ class player():
         self.money-=ammount
         
     def buy(self,assetBlock):
-        self.money-=assetBlock.price
+        self.money+=assetBlock.price
         assetBlock.owner=self.name
         if(assetBlock.color in self.assets):
             self.assets[assetBlock.color].append(assetBlock)
