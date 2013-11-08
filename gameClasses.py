@@ -284,7 +284,7 @@ class goToJailBlock(block):
         return self.name
 
     def goToJail(self,console):
-        console.display(self.player+ "go to jail")
+        console.display(self.player.name+ "go to jail")
         if not self.player==NOPLAYER:
             self.player.goToJail()
     def getActions(self):
