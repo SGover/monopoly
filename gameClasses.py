@@ -1,15 +1,15 @@
 #typer and colors
-UTILITY = 0
-RW_STATION = 1
-INDIGO = 2 # or whatever this color is #171363
-WHITE = 3
-PURPLE = 4
-ORANGE = 5
-RED = 6
-YELLOW = 7
-GREEN = 8
-BLUE = 9
-NOPLAYER = 10
+UTILITY = "UTILTIES"
+RW_STATION = "RAILWAY STATIONS"
+INDIGO = "INDIGO COLOR" # or whatever this color is #171363
+WHITE = "WHITE COLOR"
+PURPLE = "PURPLE COLOR"
+ORANGE = "ORANGE COLOR"
+RED = "RED COLOR"
+YELLOW = "YELLOW COLOR"
+GREEN = "GREEN COLOR"
+BLUE = "BLUE COLOR"
+NOPLAYER = "I'm no body"
 
 #this class represents a deck of cards like surprize cards or punishment cards
 board=None
@@ -128,10 +128,10 @@ class utilBlock(block):         #utilities and railway stations
         self.price = price
         self.owner=None
     def __str__(self):
-        return self.name
+        return self.name + " of " + self.color
     
     def __repr__(self):
-        return self.name
+        return self.name + " of " + self.color
      
     def pass_(self):
         pass
@@ -143,8 +143,11 @@ class utilBlock(block):         #utilities and railway stations
             self.player.pay(50)
     def purchase(self, console):
         if not self.player==NOPLAYER:
-            self.player.buy(self)
-            console.display(("{} bought the {} for {}$".format(self.player.name,self.name,self.price*-1)))        
+            if self.player.money >= self.price*-1:
+                self.player.buy(self)
+                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price*-1))
+            else:    
+                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price*-1,str(self)))        
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            
@@ -172,10 +175,10 @@ class assetBlock(block):
         self.owner=None
         
     def __str__(self):
-        return block.name
+        return self.name + " of " + self.color
     
     def __repr__(self):
-        return self.name
+        return self.name + " of " + self.color
     
     def payRent(self):
         rent=self.price//30
@@ -193,9 +196,12 @@ class assetBlock(block):
     
     def purchase(self, console):            #buy function should not exist, whole process should be in purchase
         if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
-            self.player.buy(self)           #only one class should be calling other class!
-            console.display("{} bought the {} for {}$".format(self.player.name,self.name,self.price*-1))
-        
+            if self.player.money >= self.price*-1:     
+                self.player.buy(self)           #only one class should be calling other class!
+                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price*-1))
+            else:    
+                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price*-1,str(self)))
+                
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
             #player = getPlayerFromName(self.owner)
@@ -248,9 +254,6 @@ class goToJailBlock(block):
     def getActions(self):
         return {'Go To jail':self.goToJail}
                
-            
-    
-
 
 
 ##################
@@ -281,11 +284,11 @@ class player():
         else:
             self.assets[assetBlock.color]=[assetBlock]
     def printPlayer(self):
-        console.display(self.name+" money: "+str(self.money)+" assets : "+str(self.assets))
+        console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
     def landOn(self,block,location):        
         self.location=location
         block.player=self
-        console.display(self.name+" lands on "+block.name)
+        console.display(self.name+" lands on "+ str(block))
     def getHousesAndHotels(self):
         houses=0
         hotels=0
