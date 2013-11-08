@@ -162,7 +162,8 @@ class utilBlock(block):         #utilities and railway stations
         else:
             rent=50
         console.display(self.player.name+" pay rent of "+str(rent)+" to "+self.owner)
-        self.player.pay(rent)    
+        self.player.pay(rent)
+        getPlayerFromName(self.owner).money+=rent
     def purchase(self, console):
         if not self.player==NOPLAYER:
             if self.player.money >= self.price:
@@ -205,6 +206,7 @@ class assetBlock(block):
     def pay_rent(self,console):
         rent=self.price//30
         self.player.pay(rent)
+        getPlayerFromName(self.owner).money+=rent
         console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
     
     def getActions(self):
