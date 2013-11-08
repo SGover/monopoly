@@ -11,14 +11,22 @@ GREEN = 8
 BLUE = 9
 
 #this class represents a deck of cards like surprize cards or punishment cards
-
+board=None
 players=[]
+console=None
+###########################################################################
 #dont forget to set this before each game
-def setPlayers(newPlayers):
-    global players
-    players=newPlayers
+def init_state(newPlayers,newBoard,newConsole):
+    global players,board,console
+    players,board,console=newPlayers,newBoard,newConsole
+########################################################################
 
-
+    
+def getPlayerFromName(name):
+    for player in players:
+        if player.name==name:
+            return player
+    return None    
 ###################
 # Cards Section
 ###################
@@ -68,16 +76,33 @@ class changeMoneyCard(card):
             player.money+=self.amount
         
 class advanceToCard(card):
-    def __init__(self,title,text,target):
+    def __init__(self,title,text,target,applyGo=True):
         card.__init__(self,title,text)
+        self.targetName=target
+        self.applyGo=applyGo
+    def applyToPlayer(self,player):
+        loc=player.location
+        while board.blocks[loc].name!=self.targetName:            
+            loc=(loc+1)%len(board.blocks)
+            if applyGo:
+                if loc==0:
+                    player.money+=200
+        player.landOn(board.blocks[loc])
+                
 
 
 class moveToNearestCard(card):
-    def __init__(self,title,text,groupName,blocks):
+    def __init__(self,title,text,targetColor,applyGo=True):
         card.__init__(self,title,text)
-        self.target = target     
+        self.color=targetColor 
     def applyToPlayer(self,player):
-        player.location=target
+        loc=player.location
+        while board.blocks[loc].color!=self.color:            
+            loc=(loc+1)%len(board.blocks)
+            if applyGo:
+                if loc==0:
+                    player.money+=200
+        player.landOn(board.blocks[loc])
     
 
 ###################
@@ -95,14 +120,29 @@ class block():
         pass
     
 class utilBlock(block):         #utilities and railway stations
-    def __init__(self, name, type, price):
+    def __init__(self, name, uType, price):
         block.__init__(self, name)
-        self.type = type    #utiltiy or railway station !see top at the file
-        self.price = price        
-
+        self.color = uType    #utiltiy or railway station !see top at the file
+        self.price = price
+        self.owner=None
+    def __str__(self):
+        return self.name 
+    def pass_(self):
+        pass
+    def payRent(self):
+        if self.color==0:
+            self.player.pay(20)
+        else:
+            self.player.pay(50)
     def purchase(self):
         self.player.buy(self)        
-  
+    def getActions(self):
+        if self.owner==None :
+            return {"Buy":self.purchase,"pass":self.pass_}            
+        elif self.owner==self.player.playerName or self.owner=='bank':                        
+            return {"pass",self.pass_}
+        else:
+            return {"Pay Rent",self.pay_rent()}                            
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
             #player=getPlayerFromName(self.owner)
@@ -137,7 +177,7 @@ class assetBlock(block):
             return {"Pay Rent",self.pay_rent()}                        
     
     def purchase(self):
-        self.player.buy(self.asset)
+        self.player.buy(self)
         
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
@@ -159,8 +199,9 @@ class cardBlock():
         block.__init__(self, name)
         self.deck=deck
     def getCard(self):
-        deck.getCard().applyToPlayer(self.player)
-    def get_actions(self):
+        card=self.deck.getCard()
+        card.applyToPlayer(self.player)
+    def getActions(self):
         return {"Get Card":self.getCard}
     
 
@@ -168,17 +209,23 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
     def __init__(self, name, money):      # action is just adding or subtracting money
         block.__init__(self, name)
         self.deck=deck
-        self.money = money    
+        self.money = money
+    def use(self):
+        self.player.money+=self.money
     def getActions(self):
-        pass
+        return {"Change money : "+str(self.money):self.use}
     
     
 class goToJailBlock(block):
     def __init__(self, name="'Go TO Jail'"):
         block.__init__(self, name)
 
+    def goToJail(self):
+        self.player.goToJail()
     def getActions(self):
-        pass
+        return {'Go To jail':self.goToJail}
+               
+            
     
 
 
@@ -198,6 +245,7 @@ class player():
         self.assets={}
         self.location=0
         self.getOutOfJailCard=False
+        self.inJail=False
         
     def pay(self,ammount):
         self.money-=ammount
@@ -205,15 +253,16 @@ class player():
     def buy(self,assetBlock):
         self.money-=assetBlock.price
         assetBlock.owner=self.name
-        if(self.assets.has_key(assetBlock.color)):
+        if(assetBlock.color in self.assets):
             self.assets[assetBlock.color].append(assetBlock)
         else:
             self.assets[assetBlock.color]=[assetBlock]
-            
+    def printPlayer(self):
+        console.display(self.name+" money: "+str(self.money)+" assets : "+str(self.assets))
     def landOn(self,block,location):        
         self.location=location
-        block.player=player
-
+        block.player=self
+        console.display(self.name+" lands on "+block.name)
     def getHousesAndHotels(self):
         houses=0
         hotels=0
@@ -223,7 +272,10 @@ class player():
                 if asset.hotel==True:
                     hotels+=1
         return (houses,hotels)
-        
+    def goToJail(self):
+        self.inJail=True
+        while board.blocks[self.location].name!='jail':            
+            self.location=(self.location+1)%len(board.blocks)
     def is_bankrupt(self):
         if self.money<=0:
             return True

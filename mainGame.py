@@ -1,4 +1,5 @@
 from gameClasses import player
+import gameClasses
 import console as _console
 from statusWindow import *
 from random import *
@@ -24,18 +25,19 @@ class monoGame():
         self.statusWindow=statusWindow()
         self.default_money = 1500
         self.current_player = 0 # index of the current player
-        self.winner = -1;
+        self.winner = -1
         self.num_players = num_players
-        
-    def do_move(diceSum):
-         player=self.players[curr_turn]        
-         currBlock=self.board[(player.location+diceSum)%(len(board))]
-         player.landOn(currBlock)
-         actions=currBlock.getActions()
-         if(len(actions)==1):
-             actions[0]()
-         else:
-             self.console.chooseFromOptions(actions)
+    def do_move(self,diceSum):
+          player=self.players[self.curr_turn]        
+          currBlock=self.board.blocks[(player.location+diceSum)%(len(self.board.blocks))]
+          player.landOn(currBlock,(player.location+diceSum)%len(self.board.blocks))
+          actions=currBlock.getActions()
+          if(len(actions)==1):
+              for key in actions.keys():
+                  actions[key]()
+          else:
+              self.console.chooseFromOptions(actions)
+    
     
     def start(self):
         self.console.start()
@@ -45,12 +47,14 @@ class monoGame():
             new_player1 = player(name_player,self.default_money)
             self.players.append(new_player1)
             i += 1
-                
+            
+        gameClasses.init_state(self.players,self.board,self.console)
+                              
         self.current_player = randrange(len(self.players))
         self.console.display("{} takes the first turn".format(self.players[self.current_player].name))
         
         while not self.is_complete():
-            self.commands=allComands
+            
             self.next_turn()
             
         if not winner == -1:
@@ -60,12 +64,14 @@ class monoGame():
 
     def next_turn(self):
         # main game logic
+        self.commands=allComands
         self.rolled_already = False
         self.end_turn = False
         self.curr_player_name = self.players[self.current_player].name
         self.console.display("{} takes the turn!".format(self.curr_player_name))
         while not self.end_turn:
             cmd = self.console.prompt_commands(self.commands)
+            self.players[self.current_player].printPlayer()
             if cmd == "roll":
                 self.do_roll()
             elif cmd == "end":
@@ -87,11 +93,12 @@ class monoGame():
 
     def do_roll(self):
         if not self.rolled_already:
-                    self.commands.remove(ROLL)
+                    
                     dice = self.board.roll_dice()
                     self.console.display("Dice rolled {}".format(dice))
                     self.rolled_already = True
                     # movement around the board and actions on landing
+                    dice_sum=dice[0]+dice[1]
                     self.do_move(dice_sum)
                     
         else:
