@@ -1,8 +1,11 @@
 from gameClasses import *
 from random import *
 
-chance_cards = []
-chest_cards = []
+chance_cards = [card("test","text? For what? Isnt the title good enough for u?"),
+                ]
+
+chest_cards = [card("test","text? For what? Isnt the title good enough for u?"),
+               ]
 
 chance_deck = deck(chance_cards,"chance")
 chest_deck = deck(chest_cards,"chest")
