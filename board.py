@@ -1,17 +1,12 @@
 from gameClasses import *
 from random import *
 from gameFactory import initFromFile
-chance_cards = [card("test","text? For what? Isnt the title good enough for u?"),
-                ]
 
-chest_cards = [card("test","text? For what? Isnt the title good enough for u?"),
-               ]
+
 
 
 iff=initFromFile("gameProperties.txt")
-chance_cards,chest_cards=iff.chanceCards,iff.chestCards
-chance_deck = deck(chance_cards,"chance")
-chest_deck = deck(chest_cards,"chest")
+chance_deck,chest_deck=deck(iff.chanceCards,"chance"),deck(iff.chestCards,"chest")
 
 
 block_arr = [moneyBlock("GO!", 200),
