@@ -31,14 +31,14 @@ class initFromFile():
             self.assets.append(asset(split[0],split[1],int(split[2])))
         elif self.currObject==CHESTMONEY or self.currObject==CHANCEM:
             split=line.split(",")
-            card=changeMoneyCard(split[0],split[1],split[2])
+            card=changeMoneyCard(split[0],split[1],int(split[2]))
             if self.currObject==CHESTMONEY:
                 self.chestCards.append(card)
             else:
                 self.chanceCards.append(card)
         elif self.currObject==CHESTCOMMONEY or self.currObject==CHANCECM:
             split=line.split(",")
-            card=changeMoneyCard(split[0],split[1],split[2],True)
+            card=changeMoneyCard(split[0],split[1],int(split[2]),True)
             if self.currObject==CHESTCOMMONEY:
                 self.chestCards.append(card)
             else:
