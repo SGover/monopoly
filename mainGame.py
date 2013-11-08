@@ -15,6 +15,7 @@ BUY,AUCTION = "buy","auction"
 purchaseCmds = [BUY,AUCTION]
 
 class monoGame():
+    
     commands=allComands
     gameState=START
     
@@ -24,12 +25,12 @@ class monoGame():
         self.console=_console.console()
         self.statusWindow=statusWindow()
         self.default_money = 1500
-        self.current_player = 0 # index of the current player
+        self.current_player_index = 0 # index of the current player
         self.winner = -1
         self.num_players = num_players
         
     def do_move(self,diceSum):
-        player=self.players[self.current_player]        
+        player=self.players[self.current_player_index]        
         prevBlock=self.board.blocks[player.location]
         prevBlock.player = NOPLAYER
         targetMove=(player.location+diceSum)%len(self.board.blocks)
@@ -54,8 +55,9 @@ class monoGame():
             
         init_state(self.players,self.board,self.console)
                               
-        self.current_player = randrange(len(self.players))
-        self.console.display("{} takes the first turn".format(self.players[self.current_player].name))
+        self.current_player_index = randrange(len(self.players))
+        self.curr_player=self.players[self.current_player_index]
+        self.console.display("{} takes the first turn".format(self.curr_player.name))
         
         while not self.is_complete():
             
@@ -66,57 +68,76 @@ class monoGame():
             
             
     def try_jail_break(self):
-        dice = self.board.roll_dice()
-        self.console.display("Dice rolled {}".format(dice))
-        self.jail_try=True        
-        dice_sum=dice[0]+dice[1]
-        self.rolled_allready=True
-        if dice[0]==dice[1]:
-            self.console.display("Double! you are out of jail")
-            self.do_move(dice_sum)            
+        if not self.jail_try:
+            dice = self.board.roll_dice()
+            self.console.display("Dice rolled {}".format(dice))
+            self.jail_try=True        
+            dice_sum=dice[0]+dice[1]
+            self.rolled_allready=True
+            if dice[0]==dice[1]:
+                self.console.display("Double! you are out of jail")
+                self.do_move(dice_sum)            
+            else:
+                self.console.display("no Double. try again next time")
         else:
-            self.console.display("no Double. try again next time")
+            self.console.display("Already tried to break out of jail")
+    
     def pay_jail_fine(self):
-    def next_turn(self):
-        # main game logic
+        player=self.curr_player
+        player.inJail=False
+        player.money-=100
+        self.console.display(player.name+" paid a 100$ fine for getting out of jail")
+        self.do_all_commands()
+
+
+    def init_turn(self):
         self.commands=allComands
         self.rolled_already = False
         self.end_turn = False
         self.jail_try=False
-        self.curr_player_name = self.players[self.current_player].name
-        self.console.display("{} takes the turn!".format(self.curr_player_name))
-        while not self.end_turn:            
-            curr_player=self.players[self.current_player]
-            curr_player.printPlayer()            
-            if player.inJail and not self.jail_try:                
-                cmd=self.console.propmpt_commands(["break","pay","end"])
-                player.inc_jail_count()
-                if cmd == "break":
-                    self.try_break()
-                elif cmd=="pay":
-                    self.pay_jail_fine()
-                elif cmd == "end":
-                    self.do_end_turn()                
-                else:
-                    self.console.display("Invalid command input!")     
-            else            
-                cmd = self.console.prompt_commands(self.commands)            
-                if cmd == "roll":
-                    self.do_roll()
-                elif cmd == "end":
-                    self.do_end_turn()                
-                elif cmd == "build":    
+        self.curr_player_name = self.players[self.current_player_index].name
+        self.console.display("{} takes the turn!".format(self.curr_player_name))        
+    def do_in_jail_commands(self):
+        cmd=self.console.propmpt_commands(["break","pay","end"])
+        self.curr_player.inc_jail_count()
+        if cmd == "break":
+            self.try_break()
+        elif cmd=="pay":
+            self.pay_jail_fine()
+        elif cmd == "end":
+            self.do_end_turn()                
+        else:
+            self.console.display("Invalid command input!")     
+    def do_all_commands(self):
+        cmd = self.console.prompt_commands(self.commands)            
+        if cmd == "roll":
+            self.do_roll()
+        elif cmd == "end":
+            self.do_end_turn()                
+        elif cmd == "build":    
                     pass
-                elif cmd == "mortage":    
+        elif cmd == "mortage":    
                     pass
-                elif cmd == "unmortage":    
+        elif cmd == "unmortage":    
                     pass
-                elif cmd == "trade":    
+        elif cmd == "trade":    
                     pass
-                else:
-                    self.console.display("Invalid command input!")     
+        else:
+            self.console.display("Invalid command input!")     
+    
+    def next_turn(self):
+        # main game logic
+        self.init_turn()#intiate the turn varibals
+    
+        while not self.end_turn:                        
+            self.curr_player.printPlayer()            
+            if self.curr_player.inJail and not self.jail_try and not self.rolled_already:
+                self.console.display(self.curr_player+" is in Jail")
+                self.do_in_jail_commands()                
+            else:
+                self.do_all_commands()
         #complete the turn than change to next player
-        self.current_player = self.next_player(self.current_player)
+        self.change_next_player()
         pass
     
 
@@ -145,8 +166,9 @@ class monoGame():
     
     
     
-    def next_player(self, index):        
-        return (index+1)%len(self.players)
+    def change_next_player(self):
+        self.current_player_index = (self.current_player_index+1)%len(self.players)
+        self.curr_player=self.players[self.current_player_index]
     
     
     def is_complete(self):  # check if anyone wins, 
