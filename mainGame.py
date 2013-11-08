@@ -70,7 +70,7 @@ class monoGame():
         self.console.display("Dice rolled {}".format(dice))
         self.jail_try=True        
         dice_sum=dice[0]+dice[1]
-        self.rolled_allready=False
+        self.rolled_allready=True
         if dice[0]==dice[1]:
             self.console.display("Double! you are out of jail")
             self.do_move(dice_sum)            
