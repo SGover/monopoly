@@ -72,11 +72,11 @@ class changeMoneyCard(card):
             for p in players:
                 if p.name!=player.name:
                     player.money+=self.amount
-                    p.money-=self.ammount
-                    console.display(player.name+" got "+self.amount+"$ from"+p.name)
+                    p.money-=self.amount
+                    console.display(player.name+" got "+str(self.amount)+"$ from"+p.name)
         else:            
             player.money+=self.amount
-            console.display(player.name+" got "+self.amount+"$ from bank")
+            console.display(player.name+" got "+str(self.amount)+"$ from bank")
         
 class advanceToCard(card):
     def __init__(self,title,text,target,applyGo=True):
@@ -95,7 +95,7 @@ class advanceToCard(card):
                     player.money+=200
                     console.display("player went through start got 200")        
         player.landOn(board.blocks[loc],loc)
-        if self.target==JAIL:
+        if self.targetName==JAIL:
             player.inJail=True
         actions=board.blocks[loc].getActions()
         if(len(actions)==1):
@@ -154,11 +154,14 @@ class utilBlock(block):         #utilities and railway stations
         return self.name + " of " + self.color
      
     
-    def payRent(self):
+    def pay_rent(self,console):
+        
         if self.color==0:
-            self.player.pay(20)
+            rent=20
         else:
-            self.player.pay(50)
+            rent=50
+        console.display(self.player.name+" pay rent of "+str(rent)+"to "+self.owner)
+        self.player.pay(rent)    
     def purchase(self, console):
         if not self.player==NOPLAYER:
             if self.player.money >= self.price*-1:
@@ -198,15 +201,15 @@ class assetBlock(block):
     def __repr__(self):
         return self.name + " of " + self.color
     
-    def payRent(self,console):
+    def pay_rent(self,console):
         rent=self.price//30
         self.player.pay(rent)
-        console.display(player.name+" paid rent : "+str(rent))
+        console.display(self.player.name+" pay rent of "+str(rent)+"to "+self.owner)
     
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            #auction???
-        elif self.owner==self.player.playerName or self.owner=='bank':                        
+        elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
             return {"payrent":self.pay_rent}                        
@@ -283,7 +286,8 @@ class goToJailBlock(block):
     def __repr__(self):
         return self.name
 
-    def goToJail(self):
+    def goToJail(self,console):
+        console.display(self.player.name+ "go to jail")
         if not self.player==NOPLAYER:
             self.player.goToJail()
     def getActions(self):
