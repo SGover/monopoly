@@ -20,8 +20,33 @@ block_arr = [moneyBlock("GO!", 200),
              moneyBlock("JAIL, JUST VISITING", 0),      #if money is zero, its land action will be ignored
              assetBlock("ST. CHARLES PLACE", PURPLE,-140),
              utilBlock("ELECTERIC COMPANY", UTILITY, -150),
-             #work undergoing ....!!
-             
+             assetBlock("STATES AVENUE", PURPLE,-140),
+             assetBlock("VIRGINIA AVENUE", PURPLE,-160),
+             utilBlock("PENNSYLVANIA RAILROAD", RW_STATION, -200),
+             assetBlock("ST. JAMES PLACE", ORANGE,-180),
+             cardBlock("COMMUNITY CHEST", chest_deck),
+             assetBlock("TENNESSEE AVENUE", ORANGE,-180),
+             assetBlock("NEW YORK AVENUE", ORANGE,-200),
+             moneyBlock("FREE PARKING", 0),        #if money is zero, its land action will be ignored
+             assetBlock("KENTUCKY AVENUE", RED,-220),
+             cardBlock("CHANCE?", chance_deck),
+             assetBlock("INDIANA AVENUE", RED,-220),
+             assetBlock("ILLINOIS AVENUE", RED,-240),
+             utilBlock("B. & O. RAILROAD", RW_STATION, -200),
+             assetBlock("ATLANTIC AVENUE", YELLOW,-260),
+             assetBlock("VENTNOR AVENUE", YELLOW,-260),
+             utilBlock("WATER WORKS", UTILITY, -150),
+             assetBlock("MARVIN GARDENS", YELLOW,-280),
+             goToJailBlock(),
+             assetBlock("PACIFIC AVENUE", GREEN,-300),
+             assetBlock("NORTH CAROLINA AVENUE", GREEN,-300),
+             cardBlock("COMMUNITY CHEST", chest_deck),
+             assetBlock("PENNSYLVANIA AVENUE", GREEN,-320),
+             utilBlock("SHORT LINE", RW_STATION, -200),
+             cardBlock("CHANCE?", chance_deck),
+             assetBlock("PARK PLACE", BLUE,-350),
+             moneyBlock("LUXURY TAX", -75),
+             assetBlock("BROAD WALK", BLUE,-400),
              ]
 
 class board():

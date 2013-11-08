@@ -33,14 +33,14 @@ class deck():
     #getting a card from the deck
     def getCard(self):        
         if len(deck)==0:            
-            deck=discard
+            deck=self.discard
             self.shuffle()
             discard=[]            
         card=deck.pop
         discard.append(card)
         return card
     def addCard(self, card):
-        cards.append(card)
+        self.cards.append(card)
         
         
         
@@ -75,7 +75,7 @@ class advanceToCard(card):
 class moveToNearestCard(card):
     def __init__(self,title,text,groupName,blocks):
         card.__init__(self,title,text)
-        self.target=target     
+        self.target = target     
     def applyToPlayer(self,player):
         player.location=target
     
@@ -93,6 +93,7 @@ class block():
     
     def getActions():
         pass
+    
 class utilBlock(block):         #utilities and railway stations
     def __init__(self, name, type, price):
         block.__init__(self, name)
@@ -103,12 +104,12 @@ class utilBlock(block):         #utilities and railway stations
         self.player.buy(self)        
   
     def mortage(self):
-        if(owner!='bank' and owner!=None):
-            player=getPlayerFromName(self.owner)
+        if(self.owner!='bank' and self.owner!=None):
+            #player=getPlayerFromName(self.owner)
             player.money+=self.price/2
             self.owner='bank'
     def reMortage(self,player):
-        if owner=='bank':
+        if self.owner=='bank':
             player.buy(self)
         
 
@@ -125,6 +126,8 @@ class assetBlock(block):
     def payRent(self):
         rent=self.price//30
         self.player.pay(rent)
+    def pass_(self):
+        pass
     def getActions(self):
         if self.owner==None :
             return {"Buy",self.purchase,"pass",self.pass_}            
@@ -132,19 +135,21 @@ class assetBlock(block):
             return {"pass",self.pass_}
         else:
             return {"Pay Rent",self.pay_rent()}                        
+    
     def purchase(self):
         self.player.buy(self.asset)
+        
     def mortage(self):
-        if(owner!='bank' and owner!=None):
-            player=getPlayerFromName(self.owner)
+        if(self.owner!='bank' and self.owner!=None):
+            #player = getPlayerFromName(self.owner)
             player.money+=self.price/2
             self.owner='bank'
     def reMortage(self,player):
-        if owner=='bank':
+        if self.owner=='bank':
             player.buy(self)
-    def buildHouse():
+    def buildHouse(self):
         pass
-    def buildHotel():
+    def buildHotel(self):
         pass
 
 
@@ -200,10 +205,10 @@ class player():
     def buy(self,assetBlock):
         self.money-=assetBlock.price
         assetBlock.owner=self.name
-        if(assets.has_key(assetBlock.color)):
-            assets[assetBlock.color].append(assetBlock)
+        if(self.assets.has_key(assetBlock.color)):
+            self.assets[assetBlock.color].append(assetBlock)
         else:
-            assets[assetBlock.color]=[assetBlock]
+            self.assets[assetBlock.color]=[assetBlock]
             
     def landOn(self,block,location):        
         self.location=location
@@ -212,10 +217,10 @@ class player():
     def getHousesAndHotels(self):
         houses=0
         hotels=0
-        for group in assets.values():
+        for group in self.assets.values():
             for asset in group:
                 houses+=asset.houses
-                if asset.hotel=True:
+                if asset.hotel==True:
                     hotels+=1
         return (houses,hotels)
         
