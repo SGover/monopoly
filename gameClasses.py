@@ -81,7 +81,7 @@ class changeMoneyCard(card):
 class advanceToCard(card):
     def __init__(self,title,text,target,applyGo=True):
         card.__init__(self,title,text)
-        self.targetName=target
+        self.target=target
         self.applyGo=applyGo
         if target==JAIL:
             self.applyGo=False
