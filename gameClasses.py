@@ -10,7 +10,7 @@ YELLOW = "YELLOW COLOR"
 GREEN = "GREEN COLOR"
 BLUE = "BLUE COLOR"
 NOPLAYER = "I'm no body"
-
+JAIL="JAIL"
 #this class represents a deck of cards like surprize cards or punishment cards
 board=None
 players=[]
@@ -83,6 +83,8 @@ class advanceToCard(card):
         card.__init__(self,title,text)
         self.targetName=target
         self.applyGo=applyGo
+        if target==JAIL:
+            self.applyGo=False
     
     def applyToPlayer(self,player,console):
         loc=player.location        
@@ -93,6 +95,8 @@ class advanceToCard(card):
                     player.money+=200
                     console.display("player went through start got 200")        
         player.landOn(board.blocks[loc],loc)
+        if self.target==JAIL:
+            player.inJail=True
         actions=board.blocks[loc].getActions()
         if(len(actions)==1):
             for key in actions.keys():
@@ -333,7 +337,7 @@ class player():
         return (houses,hotels)
     def goToJail(self):
         self.inJail=True
-        while board.blocks[self.location].name!='jail':            
+        while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
     def is_bankrupt(self):
         if self.money<=0:
