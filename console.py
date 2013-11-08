@@ -39,4 +39,4 @@ class console():
         while not (cmd in actions):
             print ("wrong command try again")
             cmd=input(" select :")
-        actions[cmd]()
+        actions[cmd](self)

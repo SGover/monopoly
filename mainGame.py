@@ -17,7 +17,7 @@ purchaseCmds = [BUY,AUCTION]
 class monoGame():
     commands=allComands
     gameState=START
-    curr_turn=0
+    
     def __init__(self,board,num_players=2,players=[]):
         self.players=players
         self.board=board
@@ -28,7 +28,7 @@ class monoGame():
         self.winner = -1
         self.num_players = num_players
     def do_move(self,diceSum):
-        player=self.players[self.curr_turn]        
+        player=self.players[self.current_player]        
         prevBlock=self.board.blocks[player.location]
         prevBlock.player = NOPLAYER
         targetMove=(player.location+diceSum)%len(self.board.blocks)
@@ -103,6 +103,7 @@ class monoGame():
                     # movement around the board and actions on landing
                     dice_sum=dice[0]+dice[1]
                     #self.do_move(dice_sum)    #commenting for testing!
+                    global val              #testing
                     val += 1                #testing
                     self.do_move(val)      #testing
                     self.rolled_already = False  #testing
