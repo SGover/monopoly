@@ -42,15 +42,14 @@ class deck():
     #getting a card from the deck
     def getCard(self):        
         if len(self.cards)==0:            
-            deck=self.discard
+            self.cards=self.discard
             self.shuffle()
             discard=[]            
-        card=deck.pop
+        card=self.cards.pop
         discard.append(card)
         return card
     def addCard(self, card):
         self.cards.append(card)
-        
         
         
 class card():
@@ -58,7 +57,7 @@ class card():
         self.title=title
         self.text=text
         
-    def applyToPlayer(self,player):
+    def applyToPlayer(self,player,console):
         pass
 
 class changeMoneyCard(card):
@@ -81,11 +80,12 @@ class advanceToCard(card):
         card.__init__(self,title,text)
         self.targetName=target
         self.applyGo=applyGo
+    
     def applyToPlayer(self,player):
         loc=player.location
         while board.blocks[loc].name!=self.targetName:            
             loc=(loc+1)%len(board.blocks)
-            if applyGo:
+            if self.applyGo:
                 if loc==0:
                     player.money+=200
         player.landOn(board.blocks[loc])
@@ -100,7 +100,7 @@ class moveToNearestCard(card):
         loc=player.location
         while board.blocks[loc].color!=self.color:            
             loc=(loc+1)%len(board.blocks)
-            if applyGo:
+            if self.applyGo:
                 if loc==0:
                     player.money+=200
         player.landOn(board.blocks[loc])
@@ -208,9 +208,9 @@ class cardBlock():
     def __init__(self, name,deck):
         block.__init__(self, name)
         self.deck=deck
-    def getCard(self):
+    def getCard(self, console):
         card=self.deck.getCard()
-        card.applyToPlayer(self.player)
+        card.applyToPlayer(self.player, console)
     def getActions(self):
         return {"getcard":self.getCard}
     
