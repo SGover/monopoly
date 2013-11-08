@@ -65,31 +65,56 @@ class monoGame():
             self.console.show_winner(self.winner)
             
             
-
+    def try_jail_break(self):
+        dice = self.board.roll_dice()
+        self.console.display("Dice rolled {}".format(dice))
+        self.jail_try=True        
+        dice_sum=dice[0]+dice[1]
+        self.rolled_allready=False
+        if dice[0]==dice[1]:
+            self.console.display("Double! you are out of jail")
+            self.do_move(dice_sum)            
+        else:
+            self.console.display("no Double. try again next time")
+    def pay_jail_fine(self):
     def next_turn(self):
         # main game logic
         self.commands=allComands
         self.rolled_already = False
         self.end_turn = False
+        self.jail_try=False
         self.curr_player_name = self.players[self.current_player].name
         self.console.display("{} takes the turn!".format(self.curr_player_name))
-        while not self.end_turn:
-            cmd = self.console.prompt_commands(self.commands)
-            self.players[self.current_player].printPlayer()
-            if cmd == "roll":
-                self.do_roll()
-            elif cmd == "end":
-                self.do_end_turn()                
-            elif cmd == "build":    
-                pass
-            elif cmd == "mortage":    
-                pass
-            elif cmd == "unmortage":    
-                pass
-            elif cmd == "trade":    
-                pass
-            else:
-                self.console.display("Invalid command input!")     
+        while not self.end_turn:            
+            curr_player=self.players[self.current_player]
+            curr_player.printPlayer()            
+            if player.inJail and not self.jail_try:                
+                cmd=self.console.propmpt_commands(["break","pay","end"])
+                player.inc_jail_count()
+                if cmd == "break":
+                    self.try_break()
+                elif cmd=="pay":
+                    self.pay_jail_fine()
+                elif cmd == "end":
+                    self.do_end_turn()                
+                else:
+                    self.console.display("Invalid command input!")     
+            else            
+                cmd = self.console.prompt_commands(self.commands)            
+                if cmd == "roll":
+                    self.do_roll()
+                elif cmd == "end":
+                    self.do_end_turn()                
+                elif cmd == "build":    
+                    pass
+                elif cmd == "mortage":    
+                    pass
+                elif cmd == "unmortage":    
+                    pass
+                elif cmd == "trade":    
+                    pass
+                else:
+                    self.console.display("Invalid command input!")     
         #complete the turn than change to next player
         self.current_player = self.next_player(self.current_player)
         pass
