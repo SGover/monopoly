@@ -243,13 +243,24 @@ class cardBlock():
         card.applyToPlayer(self.player, console)
     def getActions(self):
         return {"getcard":self.getCard}
+    def __str__(self):
+        return self.name
     
+    def __repr__(self):
+        return self.name
 
 class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLand
     def __init__(self, name, money):      # action is just adding or subtracting money
         block.__init__(self, name)
         self.deck=deck
         self.money = money
+    
+    def __str__(self):
+        return self.name
+    
+    def __repr__(self):
+        return self.name
+    
     def use(self, console):
         if not self.player==NOPLAYER:
             self.player.money+=self.money
@@ -264,6 +275,12 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
 class goToJailBlock(block):
     def __init__(self, name="'Go TO Jail'"):
         block.__init__(self, name)
+
+    def __str__(self):
+        return self.name
+    
+    def __repr__(self):
+        return self.name
 
     def goToJail(self):
         if not self.player==NOPLAYER:
