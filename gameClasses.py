@@ -198,7 +198,7 @@ class assetBlock(block):
     def __repr__(self):
         return self.name + " of " + self.color
     
-    def payRent(self,console):
+    def pay_rent(self,console):
         rent=self.price//30
         self.player.pay(rent)
         console.display(player.name+" paid rent : "+str(rent))
@@ -206,7 +206,7 @@ class assetBlock(block):
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            #auction???
-        elif self.owner==self.player.playerName or self.owner=='bank':                        
+        elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
             return {"payrent":self.pay_rent}                        
