@@ -72,11 +72,11 @@ class changeMoneyCard(card):
             for p in players:
                 if p.name!=player.name:
                     player.money+=self.amount
-                    p.money-=self.ammount
-                    console.display(player.name+" got "+self.amount+"$ from"+p.name)
+                    p.money-=self.amount
+                    console.display(player.name+" got "+str(self.amount)+"$ from"+p.name)
         else:            
             player.money+=self.amount
-            console.display(player.name+" got "+self.amount+"$ from bank")
+            console.display(player.name+" got "+str(self.amount)+"$ from bank")
         
 class advanceToCard(card):
     def __init__(self,title,text,target,applyGo=True):
@@ -95,7 +95,7 @@ class advanceToCard(card):
                     player.money+=200
                     console.display("player went through start got 200")        
         player.landOn(board.blocks[loc],loc)
-        if self.target==JAIL:
+        if self.targetName==JAIL:
             player.inJail=True
         actions=board.blocks[loc].getActions()
         if(len(actions)==1):
@@ -283,7 +283,8 @@ class goToJailBlock(block):
     def __repr__(self):
         return self.name
 
-    def goToJail(self):
+    def goToJail(self,console):
+        console.display(self.player+ "go to jail")
         if not self.player==NOPLAYER:
             self.player.goToJail()
     def getActions(self):
