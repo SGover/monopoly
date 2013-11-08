@@ -66,14 +66,17 @@ class changeMoneyCard(card):
         self.commune=commune
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
 		#change from fork
-    def applyToPlayer(self,player):
-        if self.commune:
+    def applyToPlayer(self,player,console):
+        console.display("player :"+player.name+" got Card:"+self.title+","+self.text)
+        if self.commune:        
             for p in players:
                 if p.name!=player.name:
                     player.money+=self.ammount
                     p.money-=self.ammount
+                    console.display(player.name+" got "+self.amount+"$ from"+p.name)
         else:            
             player.money+=self.amount
+            console.display(player.name+" got "+self.amount+"$ from bank")
         
 class advanceToCard(card):
     def __init__(self,title,text,target,applyGo=True):
@@ -81,30 +84,44 @@ class advanceToCard(card):
         self.targetName=target
         self.applyGo=applyGo
     
-    def applyToPlayer(self,player):
+    def applyToPlayer(self,player,console):
         loc=player.location
+        console.display("player :"+player.name+" got Card :"+self.title+","+self.text)
         while board.blocks[loc].name!=self.targetName:            
             loc=(loc+1)%len(board.blocks)
             if self.applyGo:
                 if loc==0:
                     player.money+=200
-        player.landOn(board.blocks[loc])
-                
+                    console.display("player went through start got 200")        
+        player.landOn(board.blocks[loc],loc)
+        actions=board.blocks[loc].getActions()
+        if(len(actions)==1):
+            for key in actions.keys():
+                actions[key](console)
+        else:
+            self.console.chooseFromOptions(actions)                
 
 
 class moveToNearestCard(card):
     def __init__(self,title,text,targetColor,applyGo=True):
         card.__init__(self,title,text)
         self.color=targetColor 
-    def applyToPlayer(self,player):
+    def applyToPlayer(self,player,console):
         loc=player.location
+        console.display("player :"+player.name+" got Card :"+self.title+","+self.text)
         while board.blocks[loc].color!=self.color:            
             loc=(loc+1)%len(board.blocks)
             if self.applyGo:
                 if loc==0:
                     player.money+=200
-        player.landOn(board.blocks[loc])
-    
+                    console.display("player went through start got 200")        
+        player.landOn(board.blocks[loc],loc)
+        actions=board.blocks[loc].getActions()
+        if(len(actions)==1):
+            for key in actions.keys():
+                actions[key](console)
+        else:
+            self.console.chooseFromOptions(actions)
 
 ###################
 # Blocks Section
