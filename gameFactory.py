@@ -31,22 +31,40 @@ class initFromFile():
             self.assets.append(asset(split[0],split[1],int(split[2])))
         elif self.currObject==CHESTMONEY or self.currObject==CHANCEM:
             split=line.split(",")
-            card=changeMoneyCard(split[0],split[1],split[2])
+            card=changeMoneyCard(split[0],split[1],int(split[2]))
             if self.currObject==CHESTMONEY:
-                chestCards.append(card)
+                self.chestCards.append(card)
             else:
-                chanceCards.append(card)
-        elif self.currObject==CHESTCOMMONEY or 
+                self.chanceCards.append(card)
+        elif self.currObject==CHESTCOMMONEY or self.currObject==CHANCECM:
+            split=line.split(",")
+            card=changeMoneyCard(split[0],split[1],int(split[2]),True)
+            if self.currObject==CHESTCOMMONEY:
+                self.chestCards.append(card)
+            else:
+                self.chanceCards.append(card)
+        elif self.currObject==CHESTADV or self.currObject==CHANCEADVS:
+            split=line.split(",")
+            card=advanceToCard(split[0],split[1],split[2])
+            if self.currObject==CHESTADV:
+                self.chestCards.append(card)
+            else:
+                self.chanceCards.append(card)
+
 def test():
     iff=initFromFile('gameProperties.txt')
     print ('prining assets: ')
     for asset in iff.assets:    
         print ('name : '+asset.name+', group : '+asset.groupName+', value : '+str(asset.value))
-    print ('printing cards: ')
-    for card in iff.cards:
+    print ('printing Chest: ')
+    for card in iff.chestCards:
+        print ('card : '+card.title)
+        print (card.text)
+    print ('printing Chance: ')
+    for card in iff.chanceCards:
         print ('card : '+card.title)
         print (card.text)
         
-test()
+
             
    

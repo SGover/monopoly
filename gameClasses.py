@@ -1,15 +1,16 @@
 #typer and colors
-UTILITY = 0
-RW_STATION = 1
-INDIGO = 2 # or whatever this color is #171363
-WHITE = 3
-PURPLE = 4
-ORANGE = 5
-RED = 6
-YELLOW = 7
-GREEN = 8
-BLUE = 9
-
+UTILITY = "UTILTIES"
+RW_STATION = "RAILWAY STATIONS"
+INDIGO = "INDIGO COLOR" # or whatever this color is #171363
+WHITE = "WHITE COLOR"
+PURPLE = "PURPLE COLOR"
+ORANGE = "ORANGE COLOR"
+RED = "RED COLOR"
+YELLOW = "YELLOW COLOR"
+GREEN = "GREEN COLOR"
+BLUE = "BLUE COLOR"
+NOPLAYER = "I'm no body"
+JAIL="JAIL"
 #this class represents a deck of cards like surprize cards or punishment cards
 board=None
 players=[]
@@ -40,16 +41,16 @@ class deck():
         pass
     #getting a card from the deck
     def getCard(self):        
-        if len(deck)==0:            
-            deck=discard
+        if len(self.cards)==0:            
+            self.cards=self.discard
             self.shuffle()
             discard=[]            
-        card=deck.pop
-        discard.append(card)
+        card = self.cards.pop()
+        self.discard.append(card)
         return card
-    def addCard(card):
-        cards.append(card)
-        
+    
+    def addCard(self, card):
+        self.cards.append(card)
         
         
 class card():
@@ -57,7 +58,7 @@ class card():
         self.title=title
         self.text=text
         
-    def applyToPlayer(self,player):
+    def applyToPlayer(self,player,console):
         pass
 
 class changeMoneyCard(card):
@@ -66,44 +67,64 @@ class changeMoneyCard(card):
         self.commune=commune
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
 		#change from fork
-    def applyToPlayer(self,player):
-        if self.commune:
+    def applyToPlayer(self,player,console):
+        if self.commune:        
             for p in players:
                 if p.name!=player.name:
-                    player.money+=self.ammount
-                    p.money-=self.ammount
+                    player.money+=self.amount
+                    p.money-=self.amount
+                    console.display(player.name+" got "+str(self.amount)+"$ from"+p.name)
         else:            
             player.money+=self.amount
+            console.display(player.name+" got "+str(self.amount)+"$ from bank")
         
 class advanceToCard(card):
     def __init__(self,title,text,target,applyGo=True):
         card.__init__(self,title,text)
         self.targetName=target
         self.applyGo=applyGo
-    def applyToPlayer(self,player):
-        loc=player.location
+        if target==JAIL:
+            self.applyGo=False
+    
+    def applyToPlayer(self,player,console):
+        loc=player.location        
         while board.blocks[loc].name!=self.targetName:            
             loc=(loc+1)%len(board.blocks)
-            if applyGo:
+            if self.applyGo:
                 if loc==0:
                     player.money+=200
-        player.landOn(board.blocks[loc])
-                
+                    console.display("player went through start got 200")        
+        player.landOn(board.blocks[loc],loc)
+        if self.targetName==JAIL:
+            player.inJail=True
+        actions=board.blocks[loc].getActions()
+        if(len(actions)==1):
+            for key in actions.keys():
+                actions[key](console)
+        else:
+            self.console.chooseFromOptions(actions)                
 
 
 class moveToNearestCard(card):
     def __init__(self,title,text,targetColor,applyGo=True):
         card.__init__(self,title,text)
         self.color=targetColor 
-    def applyToPlayer(self,player):
+    def applyToPlayer(self,player,console):
         loc=player.location
+        
         while board.blocks[loc].color!=self.color:            
             loc=(loc+1)%len(board.blocks)
-            if applyGo:
+            if self.applyGo:
                 if loc==0:
                     player.money+=200
-        player.landOn(board.blocks[loc])
-    
+                    console.display("player went through start got 200")        
+        player.landOn(board.blocks[loc],loc)
+        actions=board.blocks[loc].getActions()
+        if(len(actions)==1):
+            for key in actions.keys():
+                actions[key](console)
+        else:
+            self.console.chooseFromOptions(actions)
 
 ###################
 # Blocks Section
@@ -115,9 +136,11 @@ class moveToNearestCard(card):
 class block():
     def __init__(self, name):
         self.name = name
-    
+    def pass_(self,console):
+        pass
     def getActions():
         pass
+    
 class utilBlock(block):         #utilities and railway stations
     def __init__(self, name, uType, price):
         block.__init__(self, name)
@@ -125,30 +148,41 @@ class utilBlock(block):         #utilities and railway stations
         self.price = price
         self.owner=None
     def __str__(self):
-        return self.name 
-    def pass_(self):
-        pass
-    def payRent(self):
+        return self.name + " of " + self.color
+    
+    def __repr__(self):
+        return self.name + " of " + self.color
+     
+    
+    def pay_rent(self,console):
+        
         if self.color==0:
-            self.player.pay(20)
+            rent=20
         else:
-            self.player.pay(50)
-    def purchase(self):
-        self.player.buy(self)        
+            rent=50
+        console.display(self.player.name+" pay rent of "+str(rent)+" to "+self.owner)
+        self.player.pay(rent)    
+    def purchase(self, console):
+        if not self.player==NOPLAYER:
+            if self.player.money >= self.price:
+                self.player.buy(self)
+                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price))
+            else:    
+                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price,str(self)))        
     def getActions(self):
         if self.owner==None :
-            return {"Buy":self.purchase,"pass":self.pass_}            
-        elif self.owner==self.player.playerName or self.owner=='bank':                        
-            return {"pass",self.pass_}
+            return {"buy":self.purchase,"pass":self.pass_}            
+        elif self.owner==self.player.name or self.owner=='bank':                        
+            return {"pass":self.pass_}
         else:
-            return {"Pay Rent",self.pay_rent()}                            
+            return {"payrent":self.pay_rent()}                            
     def mortage(self):
-        if(owner!='bank' and owner!=None):
-            player=getPlayerFromName(self.owner)
+        if(self.owner!='bank' and self.owner!=None):
+            #player=getPlayerFromName(self.owner)
             player.money+=self.price/2
             self.owner='bank'
     def reMortage(self,player):
-        if owner=='bank':
+        if self.owner=='bank':
             player.buy(self)
         
 
@@ -160,33 +194,45 @@ class assetBlock(block):
         self.houses=0
         self.hotel=False
         self.owner=None
-    def purchase(self):
-        self.player.buy(self)
-    def payRent(self):
-        rent=self.price//30
+        
+    def __str__(self):
+        return self.name + " of " + self.color
+    
+    def __repr__(self):
+        return self.name + " of " + self.color
+    
+    def pay_rent(self,console):
+        rent=-1*self.price//30
         self.player.pay(rent)
-    def pass_(self):
-        pass
+        console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
+    
     def getActions(self):
         if self.owner==None :
-            return {"Buy":self.purchase,"pass":self.pass_}            
-        elif self.owner==self.player.playerName or self.owner=='bank':                        
-            return {"pass",self.pass_}
+            return {"buy":self.purchase,"pass":self.pass_}            #auction???
+        elif self.owner==self.player.name or self.owner=='bank':                        
+            return {"pass":self.pass_}
         else:
-            return {"Pay Rent",self.pay_rent()}                        
-    def purchase(self):
-        self.player.buy(self)
+            return {"payrent":self.pay_rent}                        
+    
+    def purchase(self, console):            #buy function should not exist, whole process should be in purchase
+        if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
+            if self.player.money >= self.price:     
+                self.player.buy(self)           #only one class should be calling other class!
+                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price))
+            else:    
+                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price,str(self)))
+                
     def mortage(self):
-        if(owner!='bank' and owner!=None):
-            player=getPlayerFromName(self.owner)
+        if(self.owner!='bank' and self.owner!=None):
+            #player = getPlayerFromName(self.owner)
             player.money+=self.price/2
             self.owner='bank'
     def reMortage(self,player):
-        if owner=='bank':
+        if self.owner=='bank':
             player.buy(self)
-    def buildHouse():
+    def buildHouse(self):
         pass
-    def buildHotel():
+    def buildHotel(self):
         pass
 
 
@@ -195,36 +241,58 @@ class cardBlock():
     def __init__(self, name,deck):
         block.__init__(self, name)
         self.deck=deck
-    def getCard(self):
+    def getCard(self, console):
         card=self.deck.getCard()
-        card.applyToPlayer(self.player)
+        console.display("player :"+self.player.name+" got Card:"+card.title+","+card.text)
+        card.applyToPlayer(self.player, console)
     def getActions(self):
-        return {"Get Card":self.getCard}
+        return {"getcard":self.getCard}
+    def __str__(self):
+        return self.name
     
+    def __repr__(self):
+        return self.name
 
 class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLand
     def __init__(self, name, money):      # action is just adding or subtracting money
         block.__init__(self, name)
         self.deck=deck
         self.money = money
-    def use(self):
-        self.player.money+=self.money
+    
+    def __str__(self):
+        return self.name
+    
+    def __repr__(self):
+        return self.name
+    
+    def use(self, console):
+        if not self.player==NOPLAYER:
+            self.player.money+=self.money
+            if self.money > 0:
+                console.display("{} got {}$ salary from {}".format(self.player.name,self.money,self.name))
+            elif self.money < 0:
+                console.display("{} paid {}$ {}".format(self.player.name,self.money*-1,self.name))
     def getActions(self):
-        return {"Change money : "+str(self.money):self.use}
+        return {"changemoney : "+str(self.money):self.use}
     
     
 class goToJailBlock(block):
     def __init__(self, name="'Go TO Jail'"):
         block.__init__(self, name)
 
-    def goToJail(self):
-        self.player.goToJail()
+    def __str__(self):
+        return self.name
+    
+    def __repr__(self):
+        return self.name
+
+    def goToJail(self,console):
+        console.display(self.player.name+ "go to jail")
+        if not self.player==NOPLAYER:
+            self.player.goToJail()
     def getActions(self):
         return {'Go To jail':self.goToJail}
                
-            
-    
-
 
 
 ##################
@@ -255,15 +323,15 @@ class player():
         else:
             self.assets[assetBlock.color]=[assetBlock]
     def printPlayer(self):
-        console.display(self.name+" money: "+str(self.money)+" assets : "+str(self.assets))
+        console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
     def landOn(self,block,location):        
         self.location=location
         block.player=self
-        console.display(self.name+" lands on "+block.name)
+        console.display(self.name+" lands on "+ str(block))
     def getHousesAndHotels(self):
         houses=0
         hotels=0
-        for group in assets.values():
+        for group in self.assets.values():
             for asset in group:
                 houses+=asset.houses
                 if asset.hotel==True:
@@ -271,7 +339,7 @@ class player():
         return (houses,hotels)
     def goToJail(self):
         self.inJail=True
-        while board.blocks[self.location].name!='jail':            
+        while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
     def is_bankrupt(self):
         if self.money<=0:

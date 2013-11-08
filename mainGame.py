@@ -1,5 +1,4 @@
-from gameClasses import player
-import gameClasses
+from gameClasses import *
 import console as _console
 from statusWindow import *
 from random import *
@@ -7,6 +6,7 @@ from random import *
 START='start'
 INGAME='ingame'
 FINISH='finish'
+val = 1
 
 ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END = "roll","sell","build","mortage","unmortage","trade","end"
 allComands=[ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END] # player can sell its properties back to bank..
@@ -17,7 +17,7 @@ purchaseCmds = [BUY,AUCTION]
 class monoGame():
     commands=allComands
     gameState=START
-    curr_turn=0
+    
     def __init__(self,board,num_players=2,players=[]):
         self.players=players
         self.board=board
@@ -27,16 +27,20 @@ class monoGame():
         self.current_player = 0 # index of the current player
         self.winner = -1
         self.num_players = num_players
+        
     def do_move(self,diceSum):
-          player=self.players[self.curr_turn]        
-          currBlock=self.board.blocks[(player.location+diceSum)%(len(self.board.blocks))]
-          player.landOn(currBlock,(player.location+diceSum)%len(self.board.blocks))
-          actions=currBlock.getActions()
-          if(len(actions)==1):
-              for key in actions.keys():
-                  actions[key]()
-          else:
-              self.console.chooseFromOptions(actions)
+        player=self.players[self.current_player]        
+        prevBlock=self.board.blocks[player.location]
+        prevBlock.player = NOPLAYER
+        targetMove=(player.location+diceSum)%len(self.board.blocks)
+        currBlock=self.board.blocks[targetMove]
+        player.landOn(currBlock,targetMove)
+        actions=currBlock.getActions()
+        if(len(actions)==1):
+            for key in actions.keys():
+                actions[key](self.console)
+        else:
+            self.console.chooseFromOptions(actions)
     
     
     def start(self):
@@ -48,7 +52,7 @@ class monoGame():
             self.players.append(new_player1)
             i += 1
             
-        gameClasses.init_state(self.players,self.board,self.console)
+        init_state(self.players,self.board,self.console)
                               
         self.current_player = randrange(len(self.players))
         self.console.display("{} takes the first turn".format(self.players[self.current_player].name))
@@ -57,8 +61,8 @@ class monoGame():
             
             self.next_turn()
             
-        if not winner == -1:
-            self.console.show_winner(winner)
+        if not self.winner == -1:
+            self.console.show_winner(self.winner)
             
             
 
@@ -99,7 +103,9 @@ class monoGame():
                     self.rolled_already = True
                     # movement around the board and actions on landing
                     dice_sum=dice[0]+dice[1]
-                    self.do_move(dice_sum)
+                    self.do_move(dice_sum)    
+                    
+                    
                     
         else:
                     self.console.display("You have already rolled the dice")
@@ -126,11 +132,11 @@ class monoGame():
                 c+=1
                 w = p
         if c == 1:
-            winner = w
-            gameState=FINISH
+            self.winner = w
+            self.gameState=FINISH
             return True
         elif c == 0:
-            gameState=FINISH
+            self.gameState=FINISH
             return True
-        gameState=INGAME
+        self.gameState=INGAME
         return False    
