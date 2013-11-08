@@ -20,7 +20,7 @@ Grand Opera Night,Collect $50 from every player for opening night seats,50
 ChestAdvanceCards
 {
 Advance to Go,Collect 200$,GO!
-Go to jail – go directly to jail , Do not pass Go and do not collect $200,JAIL
+Go to jail - go directly to jail , Do not pass Go and do not collect $200,JAIL
 }
 ChestGetOutOfJail
 {
