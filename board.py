@@ -24,7 +24,7 @@ block_arr = [moneyBlock("GO!", 200),
              cardBlock("CHANCE?", chance_deck),
              assetBlock("VERMONT AVENUE", WHITE,-100),
              assetBlock("CONNECTICUT AVENUE", WHITE,-120),
-             moneyBlock("JAIL, JUST VISITING", 0),      #if money is zero, its land action will be ignored
+             moneyBlock("JAIL", 0),      #if money is zero, its land action will be ignored
              assetBlock("ST. CHARLES PLACE", PURPLE,-140),
              utilBlock("ELECTERIC COMPANY", UTILITY, -150),
              assetBlock("STATES AVENUE", PURPLE,-140),

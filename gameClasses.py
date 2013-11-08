@@ -85,8 +85,7 @@ class advanceToCard(card):
         self.applyGo=applyGo
     
     def applyToPlayer(self,player,console):
-        loc=player.location
-        console.display("player :"+player.name+" got Card :"+self.title+","+self.text)
+        loc=player.location        
         while board.blocks[loc].name!=self.targetName:            
             loc=(loc+1)%len(board.blocks)
             if self.applyGo:
@@ -108,7 +107,7 @@ class moveToNearestCard(card):
         self.color=targetColor 
     def applyToPlayer(self,player,console):
         loc=player.location
-        console.display("player :"+player.name+" got Card :"+self.title+","+self.text)
+        
         while board.blocks[loc].color!=self.color:            
             loc=(loc+1)%len(board.blocks)
             if self.applyGo:

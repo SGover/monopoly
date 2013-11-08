@@ -19,8 +19,8 @@ Grand Opera Night,Collect $50 from every player for opening night seats,50
 }
 ChestAdvanceCards
 {
-Advance to Go,Collect 200$,Go
-Go to jail – go directly to jail , Do not pass Go and do not collect $200,Jail
+Advance to Go,Collect 200$,GO!
+Go to jail – go directly to jail , Do not pass Go and do not collect $200,JAIL
 }
 ChestGetOutOfJail
 {
@@ -32,8 +32,8 @@ You are assessed for street repairs,$40 per house $115 per hotel,40,115
 }
 ChanceAdvanceCardSpecific
 {
-Advance to Go ,Collect $200,Go
-Advance to Illinois Ave,,Illinois Ave
+Advance to Go ,Collect $200,GO!
+Advance to Illinois Ave,,ILLINOIS AVENUE
 }
 ChanceAdvanceCardNearest
 {
