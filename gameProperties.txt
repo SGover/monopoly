@@ -1,12 +1,7 @@
-assets
-{
-arlozorov,tel-aviv,1200
-eben-gvirol,tel-aviv,1400
-alenby,tel-aviv,1500
-}
+
 ChestMoneyCards
 {
-Bank error in your favor,pay 50$,50
+Bank error in your favor,collect 50$,50
 Income Tax Refund,collect 20$,20
 Life Insurance Matures,collect $100,199
 Pay Hospital Fees ,pay $100,-100
