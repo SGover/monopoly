@@ -103,9 +103,9 @@ class monoGame():
                     self.rolled_already = True
                     # movement around the board and actions on landing
                     dice_sum=dice[0]+dice[1]
-                    #self.do_move(dice_sum)    #commenting for testing!
-                    self.do_move(val)      #testing
-                    self.rolled_already = False  #testing
+                    self.do_move(dice_sum)    
+                    
+                    
                     
         else:
                     self.console.display("You have already rolled the dice")

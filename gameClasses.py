@@ -136,7 +136,8 @@ class moveToNearestCard(card):
 class block():
     def __init__(self, name):
         self.name = name
-    
+    def pass_(self,console):
+        pass
     def getActions():
         pass
     
@@ -152,8 +153,6 @@ class utilBlock(block):         #utilities and railway stations
     def __repr__(self):
         return self.name + " of " + self.color
      
-    def pass_(self):
-        pass
     
     def payRent(self):
         if self.color==0:
@@ -170,7 +169,7 @@ class utilBlock(block):         #utilities and railway stations
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            
-        elif self.owner==self.player.playerName or self.owner=='bank':                        
+        elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
             return {"payrent":self.pay_rent()}                            
@@ -199,19 +198,18 @@ class assetBlock(block):
     def __repr__(self):
         return self.name + " of " + self.color
     
-    def payRent(self):
+    def payRent(self,console):
         rent=self.price//30
         self.player.pay(rent)
-        
-    def pass_(self):
-        pass
+        console.display(player.name+" paid rent : "+str(rent))
+    
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            #auction???
         elif self.owner==self.player.playerName or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
-            return {"payrent":self.pay_rent()}                        
+            return {"payrent":self.pay_rent}                        
     
     def purchase(self, console):            #buy function should not exist, whole process should be in purchase
         if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
