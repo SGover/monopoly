@@ -160,15 +160,15 @@ class utilBlock(block):         #utilities and railway stations
             rent=20
         else:
             rent=50
-        console.display(self.player.name+" pay rent of "+str(rent)+"to "+self.owner)
+        console.display(self.player.name+" pay rent of "+str(rent)+" to "+self.owner)
         self.player.pay(rent)    
     def purchase(self, console):
         if not self.player==NOPLAYER:
-            if self.player.money >= self.price*-1:
+            if self.player.money >= self.price:
                 self.player.buy(self)
-                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price*-1))
+                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price))
             else:    
-                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price*-1,str(self)))        
+                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price,str(self)))        
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            
@@ -202,9 +202,9 @@ class assetBlock(block):
         return self.name + " of " + self.color
     
     def pay_rent(self,console):
-        rent=self.price//30
+        rent=-1*self.price//30
         self.player.pay(rent)
-        console.display(self.player.name+" pay rent of "+str(rent)+"to "+self.owner)
+        console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
     
     def getActions(self):
         if self.owner==None :
@@ -216,11 +216,11 @@ class assetBlock(block):
     
     def purchase(self, console):            #buy function should not exist, whole process should be in purchase
         if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
-            if self.player.money >= self.price*-1:     
+            if self.player.money >= self.price:     
                 self.player.buy(self)           #only one class should be calling other class!
-                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price*-1))
+                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price))
             else:    
-                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price*-1,str(self)))
+                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price,str(self)))
                 
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
@@ -316,7 +316,7 @@ class player():
         self.money-=ammount
         
     def buy(self,assetBlock):
-        self.money+=assetBlock.price
+        self.money-=assetBlock.price
         assetBlock.owner=self.name
         if(assetBlock.color in self.assets):
             self.assets[assetBlock.color].append(assetBlock)
