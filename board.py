@@ -6,10 +6,13 @@ chance_cards = [card("test","text? For what? Isnt the title good enough for u?")
 
 chest_cards = [card("test","text? For what? Isnt the title good enough for u?"),
                ]
+
+
 iff=initFromFile("gameProperties.txt")
-chance_deck,chest_deck=iff.chanceCards,iff.chestCards
+chance_cards,chest_cards=iff.chanceCards,iff.chestCards
 chance_deck = deck(chance_cards,"chance")
 chest_deck = deck(chest_cards,"chest")
+
 
 block_arr = [moneyBlock("GO!", 200),
              assetBlock("MEDITER. RANEAN AVENUE", INDIGO,-60),      #price should be always a negetive value to decrease confusion

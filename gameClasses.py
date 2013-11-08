@@ -68,7 +68,6 @@ class changeMoneyCard(card):
         self.amount=amount # amount of money to add or subtract from player(positive value will add and negetive will subtract)
 		#change from fork
     def applyToPlayer(self,player,console):
-        console.display("player :"+player.name+" got Card:"+self.title+","+self.text)
         if self.commune:        
             for p in players:
                 if p.name!=player.name:
@@ -240,6 +239,7 @@ class cardBlock():
         self.deck=deck
     def getCard(self, console):
         card=self.deck.getCard()
+        console.display("player :"+self.player.name+" got Card:"+card.title+","+card.text)
         card.applyToPlayer(self.player, console)
     def getActions(self):
         return {"getcard":self.getCard}
