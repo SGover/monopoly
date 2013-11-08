@@ -45,9 +45,10 @@ class deck():
             self.cards=self.discard
             self.shuffle()
             discard=[]            
-        card=self.cards.pop
+        card = self.cards.pop()
         self.discard.append(card)
         return card
+    
     def addCard(self, card):
         self.cards.append(card)
         
@@ -134,14 +135,16 @@ class utilBlock(block):         #utilities and railway stations
      
     def pass_(self):
         pass
+    
     def payRent(self):
         if self.color==0:
             self.player.pay(20)
         else:
             self.player.pay(50)
-    def purchase(self):
+    def purchase(self, console):
         if not self.player==NOPLAYER:
-            self.player.buy(self)        
+            self.player.buy(self)
+            console.display(("{} bought the {} for {}$".format(self.player.name,self.name,self.price*-1)))        
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            
@@ -167,8 +170,6 @@ class assetBlock(block):
         self.houses=0
         self.hotel=False
         self.owner=None
-    def purchase(self):
-        self.player.buy(self)
         
     def __str__(self):
         return block.name
@@ -226,9 +227,13 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
         block.__init__(self, name)
         self.deck=deck
         self.money = money
-    def use(self):
+    def use(self, console):
         if not self.player==NOPLAYER:
             self.player.money+=self.money
+            if self.money > 0:
+                console.display("{} got {}$ salary from {}".format(self.player.name,self.money,self.name))
+            elif self.money < 0:
+                console.display("{} paid {}$ {}".format(self.player.name,self.money*-1,self.name))
     def getActions(self):
         return {"changemoney : "+str(self.money):self.use}
     

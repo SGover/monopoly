@@ -38,7 +38,7 @@ class monoGame():
         actions=currBlock.getActions()
         if(len(actions)==1):
             for key in actions.keys():
-                actions[key](console)
+                actions[key](self.console)
         else:
             self.console.chooseFromOptions(actions)
     
