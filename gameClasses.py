@@ -9,6 +9,7 @@ RED = 6
 YELLOW = 7
 GREEN = 8
 BLUE = 9
+NOPLAYER = 10
 
 #this class represents a deck of cards like surprize cards or punishment cards
 board=None
@@ -135,7 +136,8 @@ class utilBlock(block):         #utilities and railway stations
         else:
             self.player.pay(50)
     def purchase(self):
-        self.player.buy(self)        
+        if not self.player==NOPLAYER:
+            self.player.buy(self)        
     def getActions(self):
         if self.owner==None :
             return {"Buy":self.purchase,"pass":self.pass_}            
@@ -177,7 +179,8 @@ class assetBlock(block):
             return {"Pay Rent",self.pay_rent()}                        
     
     def purchase(self):
-        self.player.buy(self)
+        if not self.player==NOPLAYER:
+            self.player.buy(self)
         
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
@@ -211,7 +214,8 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
         self.deck=deck
         self.money = money
     def use(self):
-        self.player.money+=self.money
+        if not self.player==NOPLAYER:
+            self.player.money+=self.money
     def getActions(self):
         return {"Change money : "+str(self.money):self.use}
     
@@ -221,7 +225,8 @@ class goToJailBlock(block):
         block.__init__(self, name)
 
     def goToJail(self):
-        self.player.goToJail()
+        if not self.player==NOPLAYER:
+            self.player.goToJail()
     def getActions(self):
         return {'Go To jail':self.goToJail}
                

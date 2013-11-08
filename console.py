@@ -28,7 +28,8 @@ class console():
                     print (block.asset.name+" in : "+block.asset.groupName)
                 elif bType==type(gameClasses.cardBlock):
                     print ("Deck : "+block.deck.name)
-    def chooseFromOptions(self,actions):
+    def chooseFromOptions(self,actions):    
+        """take a name:value pair as actions"""
         print("Select a command :")
         i=0
         for key in actions.keys():
