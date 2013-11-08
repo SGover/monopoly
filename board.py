@@ -3,7 +3,7 @@ from random import *
 from gameFactory import initFromFile
 
 iff=initFromFile("gameProperties.txt")
-chance_deck,chest_deck=iff.chanceCards,iff.chestCards
+chance_deck,chest_deck=deck(iff.chanceCards,"chance"),deck(iff.chestCards,"chest")
 
 block_arr = [moneyBlock("GO!", 200),
              assetBlock("MEDITER. RANEAN AVENUE", INDIGO,-60),      #price should be always a negetive value to decrease confusion
