@@ -41,7 +41,7 @@ class monoGame():
             i += 1
             
         init_state(self.players,self.board,self.console)
-        self.statusWin.start(self.players);                      
+        self.statusWin.start(self.players,self.board);                      
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
@@ -75,7 +75,7 @@ class monoGame():
         self.console.display("{} takes the turn!".format(self.curr_player_name))    
 
     def do_in_jail_commands(self):
-        cmd=self.console.propmpt_commands(["break","pay","end"])
+        cmd=self.console.prompt_commands(["break","pay","end"])
         self.curr_player.inc_jail_count()
         if cmd == "break":
             self.try_jail_break()
@@ -111,6 +111,7 @@ class monoGame():
             self.jail_try=True        
             dice_sum=dice[0]+dice[1]
             self.rolled_allready=True
+            self.curr_player.updateRoll(dice_sum)
             if dice[0]==dice[1]:
                 self.console.display("Double! you are out of jail")
                 self.do_move(dice_sum)            
@@ -134,9 +135,10 @@ class monoGame():
                     self.rolled_already = True
                     # movement around the board and actions on landing
                     dice_sum=dice[0]+dice[1]
-                    #self.do_move(dice_sum)    
-                    self.do_move(val)
-                    self.rolled_already = False
+                    self.curr_player.updateRoll(dice_sum)
+                    
+                    self.do_move(dice_sum)
+                    
         else:
                     self.console.display("You have already rolled the dice")
     
