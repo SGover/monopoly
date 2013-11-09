@@ -23,7 +23,7 @@ class monoGame():
         self.players=players
         self.board=board
         self.console=_console.console()
-        self.statusWindow=statusWindow()
+        self.statusWin=statusWindow()
         self.default_money = 1500
         self.current_player_index = 0 # index of the current player
         self.winner = -1
@@ -41,7 +41,7 @@ class monoGame():
             i += 1
             
         init_state(self.players,self.board,self.console)
-                              
+        self.statusWin.start(self.players);                      
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
@@ -57,7 +57,7 @@ class monoGame():
         # main game logic
         self.init_turn()#intiate the turn varibals
         while not self.end_turn:                        
-            self.curr_player.printPlayer(self.console)            
+            self.curr_player.printPlayer()            
             if self.curr_player.inJail and not self.jail_try and not self.rolled_already:
                 self.console.display(self.curr_player+" is in Jail")
                 self.do_in_jail_commands()                
@@ -156,7 +156,7 @@ class monoGame():
         actions=currBlock.getActions()
         if(len(actions)==1):
             for key in actions.keys():
-                actions[key](self.console)
+                actions[key]()
         else:
             self.console.chooseFromOptions(actions)
                                         
