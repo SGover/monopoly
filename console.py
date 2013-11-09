@@ -17,7 +17,7 @@ class console():
         print(winner,"is the winner!")
         
     def prompt_commands(self, list_cmds):
-        print("Select a command:")
+        print("\nSelect a command:")
         return input(" {} : ".format(list_cmds))
     
     def printBoard(self,board):
@@ -28,9 +28,10 @@ class console():
                     print (block.asset.name+" in : "+block.asset.groupName)
                 elif bType==type(gameClasses.cardBlock):
                     print ("Deck : "+block.deck.name)
+    
     def chooseFromOptions(self,actions):    
         """take a name:value pair as actions"""
-        print("Select a command :")
+        print("\nSelect a command :")
         i=0
         for key in actions.keys():
             i+=1
@@ -39,4 +40,6 @@ class console():
         while not (cmd in actions):
             print ("wrong command try again")
             cmd=input(" select :")
+        print(" ")
         actions[cmd]()
+        

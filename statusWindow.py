@@ -5,7 +5,7 @@ import threading
 colors = {"UTILTIES": (150,150,150),
           "RAILWAY STATIONS":(50,50,50),
           "INDIGO COLOR":(75,60,130),
-          "WHITE COLOR":(225,225,225),
+          "WHITE COLOR":(128,225,255),
           "PURPLE COLOR":(170,40,150),
           "ORANGE COLOR":(250,140,10),
           "RED COLOR":(250,10,10),
@@ -27,7 +27,7 @@ class statusWindow():
     def run(self):
         # Initialise screen
         pygame.init()
-        screen = pygame.display.set_mode((500, 650))
+        screen = pygame.display.set_mode((500, len(self.players)*220))
         pygame.display.set_caption('Status Window')
         # Fill background
         background = pygame.Surface(screen.get_size())
@@ -43,7 +43,7 @@ class statusWindow():
             for event in pygame.event.get():
                 if event.type == QUIT or self.quit:
                     return
-            background.fill((250, 250, 250))
+            background.fill((180, 190, 180))
             #text values
             l = 0
             for p in self.players:
@@ -63,7 +63,7 @@ class statusWindow():
                     for asset in p.assets[c]:
                         text = text + asset.name + "    " 
                     txt_money = fnt_asset.render(text, 3, color)    
-                    textpos = txt_money.get_rect().move(10+(i*250),50+height)
+                    textpos = txt_money.get_rect().move(10,50+height+(i*20))
                     background.blit(txt_money, textpos)
                     i += 1
                 l += 1    

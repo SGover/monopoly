@@ -47,7 +47,7 @@ class monoGame():
         self.console.display("{} takes the first turn".format(self.curr_player.name))
         
         while not self.is_complete():
-            
+            self.console.display(" ")
             self.next_turn()
             
         if not self.winner == -1:
@@ -59,7 +59,7 @@ class monoGame():
         while not self.end_turn:                        
             self.curr_player.printPlayer()
             if self.curr_player.inJail and not self.jail_try and not self.rolled_already:
-                self.console.display(self.curr_player+" is in Jail")
+                self.console.display(self.curr_player.name + " is in Jail")
                 self.do_in_jail_commands()                
             else:
                 self.do_all_commands()
@@ -87,7 +87,8 @@ class monoGame():
             self.console.display("Invalid command input!")     
             
     def do_all_commands(self):
-        cmd = self.console.prompt_commands(self.commands)            
+        cmd = self.console.prompt_commands(self.commands)
+        self.console.display(" ")            
         if cmd == "roll":
             self.do_roll()
         elif cmd == "end":

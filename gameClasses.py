@@ -78,11 +78,16 @@ class changeMoneyCard(card):
                 if p.name!=player.name:
                     player.money+=self.amount
                     p.money-=self.amount
-                    console.display(player.name+" got "+str(self.amount)+"$ from "+p.name)
+                    if self.amount>0:
+                        console.display(player.name+" got "+str(self.amount)+" from "+p.name)
+                    else:
+                        console.display(player.name+" paid $"+str(-1*self.amount)+" to "+p.name)
         else:            
             player.money+=self.amount
-            console.display(player.name+" got "+str(self.amount)+"$ from bank")
-        
+            if self.amount>0:
+                console.display(player.name+" got $"+str(self.amount)+" from bank")
+            else:
+                console.display(player.name+" paid $"+str(-1*self.amount)+" to bank")
 class advanceToCard(card):
     def __init__(self,title,text,target,applyGo=True):
         card.__init__(self,title,text)
@@ -123,7 +128,7 @@ class moveToNearestCard(card):
             if self.applyGo:
                 if loc==0:
                     player.money+=200
-                    console.display("player went through start got 200")        
+                    console.display("player went through start got $200")        
         player.landOn(board.blocks[loc],loc)
         actions=board.blocks[loc].getActions()
         if(len(actions)==1):
@@ -173,9 +178,9 @@ class utilBlock(block):         #utilities and railway stations
         if not self.player==NOPLAYER:
             if self.player.money >= self.price:
                 self.player.buy(self)
-                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price))
+                console.display("{} bought the {} for ${}".format(self.player.name,str(self),self.price))
             else:    
-                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price,str(self)))        
+                console.display("{} don't have ${} to buy {}".format(self.player.name,self.price,str(self)))        
     def getActions(self):
         if self.owner==None :
             return {"buy":self.purchase,"pass":self.pass_}            
@@ -226,9 +231,9 @@ class assetBlock(block):
         if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
             if self.player.money >= self.price:     
                 self.player.buy(self)           #only one class should be calling other class!
-                console.display("{} bought the {} for {}$".format(self.player.name,str(self),self.price))
+                console.display("{} bought the {} for ${}".format(self.player.name,str(self),self.price))
             else:    
-                console.display("{} don't have {}$ to buy {}".format(self.player.name,self.price,str(self)))
+                console.display("{} don't have ${} to buy {}".format(self.player.name,self.price,str(self)))
                 
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
@@ -277,9 +282,9 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
         if not self.player==NOPLAYER:
             self.player.money+=self.money
             if self.money > 0:
-                console.display("{} got {}$ salary from {}".format(self.player.name,self.money,self.name))
+                console.display("{} got ${} salary from {}".format(self.player.name,self.money,self.name))
             elif self.money < 0:
-                console.display("{} paid {}$ {}".format(self.player.name,self.money*-1,self.name))
+                console.display("{} paid ${} {}".format(self.player.name,self.money*-1,self.name))
     def getActions(self):
         return {"changemoney : "+str(self.money):self.use}
     
@@ -295,7 +300,7 @@ class goToJailBlock(block):
         return self.name
 
     def goToJail(self):
-        console.display(self.player.name+ "go to jail")
+        console.display(self.player.name+ ", go to jail!")
         if not self.player==NOPLAYER:
             self.player.goToJail()
     def getActions(self):
