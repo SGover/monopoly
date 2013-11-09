@@ -41,7 +41,7 @@ class monoGame():
             i += 1
             
         init_state(self.players,self.board,self.console)
-        self.statusWin.start(self.players);                      
+        self.statusWin.start(self.players,self.board);                      
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))

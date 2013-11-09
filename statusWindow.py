@@ -19,15 +19,15 @@ class statusWindow():
     def __init__(self):
         pass
 
-    def start(self, players):
+    def start(self, players,board):
         self.players = players
         thread = threading.Thread(target=self.run)
         thread.start()
-    
+            
     def run(self):
         # Initialise screen
         pygame.init()
-        screen = pygame.display.set_mode((500, len(self.players)*220))
+        screen = pygame.display.set_mode((1000, len(self.players)*220))
         pygame.display.set_caption('Status Window')
         # Fill background
         background = pygame.Surface(screen.get_size())
@@ -43,7 +43,7 @@ class statusWindow():
             for event in pygame.event.get():
                 if event.type == QUIT or self.quit:
                     return
-            background.fill((180, 190, 180))
+            background.fill((180, 190, 180))            
             #text values
             l = 0
             for p in self.players:
@@ -69,7 +69,7 @@ class statusWindow():
                 l += 1    
             screen.blit(background, (0, 0))
             pygame.display.flip()
-                
+            
                 
     
     
