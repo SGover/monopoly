@@ -2,6 +2,17 @@ import pygame
 from pygame.locals import *
 import threading
 
+colors = {"UTILTIES": (150,150,150),
+          "RAILWAY STATIONS":(50,50,50),
+          "INDIGO COLOR":(75,60,130),
+          "WHITE COLOR":(225,225,225),
+          "PURPLE COLOR":(170,40,150),
+          "ORANGE COLOR":(250,140,10),
+          "RED COLOR":(250,10,10),
+          "YELLOW COLOR":(240,240,0),
+          "GREEN COLOR":(10,250,10),
+          "BLUE COLOR":(10,10,250),}
+
 class statusWindow():
     quit = False
     players = []
@@ -41,6 +52,12 @@ class statusWindow():
             txt_money = fnt_money.render("$"+str(p.money), 3, (10, 10, 10))
             textpos = txt_money.get_rect().move(400,20)
             background.blit(txt_money, textpos)
+            
+#             for asset in p.assets:
+#                 color = colors[asset.color]
+#             txt_money = fnt_money.render("$"+str(p.money), 3, color)
+#             textpos = txt_money.get_rect().move(400,20)
+#             background.blit(txt_money, textpos)
         
             screen.blit(background, (0, 0))
             pygame.display.flip()

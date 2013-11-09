@@ -330,6 +330,7 @@ class player():
         else:
             self.assets[assetBlock.color]=[assetBlock]
     def printPlayer(self):
+        self.assets = sorted(self.assets, key=block.color)
         console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
         
     def landOn(self,block,location):        
