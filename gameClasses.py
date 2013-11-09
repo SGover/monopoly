@@ -1,3 +1,6 @@
+from random import shuffle as reorder
+
+
 #typer and colors
 UTILITY = "UTILTIES"
 RW_STATION = "RAILWAY STATIONS"
@@ -14,12 +17,12 @@ JAIL="JAIL"
 #this class represents a deck of cards like surprize cards or punishment cards
 board=None
 players=[]
-console=None
+
 ###########################################################################
 #dont forget to set this before each game
-def init_state(newPlayers,newBoard,newConsole):
-    global players,board,console
-    players,board,console=newPlayers,newBoard,newConsole
+def init_state(newPlayers,newBoard):
+    global players,board
+    players,board=newPlayers,newBoard
 ########################################################################
 
     
@@ -38,9 +41,10 @@ class deck():
         self.cards=cards
         self.discard=[]
     def shuffle(self):
-        pass
-    #getting a card from the deck
-    def getCard(self):        
+        """Rearranging cards and shuffling"""
+        reorder(self.cards)     #importing shuffle as reorder
+        
+    def getCard(self):      #getting a card from the deck        
         if len(self.cards)==0:            
             self.cards=self.discard
             self.shuffle()
@@ -139,7 +143,7 @@ class block():
         self.name = name
     def pass_(self,console):
         pass
-    def getActions():
+    def getActions(self):
         pass
     
 class utilBlock(block):         #utilities and railway stations
@@ -325,12 +329,14 @@ class player():
             self.assets[assetBlock.color].append(assetBlock)
         else:
             self.assets[assetBlock.color]=[assetBlock]
-    def printPlayer(self):
+    def printPlayer(self, console):
         console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
-    def landOn(self,block,location):        
+        
+    def landOn(self,block,location, console):        
         self.location=location
         block.player=self
         console.display(self.name+" lands on "+ str(block))
+        
     def getHousesAndHotels(self):
         houses=0
         hotels=0
