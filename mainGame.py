@@ -56,7 +56,6 @@ class monoGame():
     def next_turn(self):
         # main game logic
         self.init_turn()#intiate the turn varibals
-    
         while not self.end_turn:                        
             self.curr_player.printPlayer(self.console)            
             if self.curr_player.inJail and not self.jail_try and not self.rolled_already:
