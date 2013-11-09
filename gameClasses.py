@@ -73,7 +73,7 @@ class changeMoneyCard(card):
                 if p.name!=player.name:
                     player.money+=self.amount
                     p.money-=self.amount
-                    console.display(player.name+" got "+str(self.amount)+"$ from"+p.name)
+                    console.display(player.name+" got "+str(self.amount)+"$ from "+p.name)
         else:            
             player.money+=self.amount
             console.display(player.name+" got "+str(self.amount)+"$ from bank")
@@ -83,7 +83,7 @@ class advanceToCard(card):
         card.__init__(self,title,text)
         self.targetName=target
         self.applyGo=applyGo
-        if target==JAIL:
+        if target==JAIL or target=='GO!':
             self.applyGo=False
     
     def applyToPlayer(self,player,console):
@@ -97,6 +97,7 @@ class advanceToCard(card):
         player.landOn(board.blocks[loc],loc)
         if self.targetName==JAIL:
             player.inJail=True
+            player.jailCounter=0
         actions=board.blocks[loc].getActions()
         if(len(actions)==1):
             for key in actions.keys():
@@ -161,7 +162,8 @@ class utilBlock(block):         #utilities and railway stations
         else:
             rent=50
         console.display(self.player.name+" pay rent of "+str(rent)+" to "+self.owner)
-        self.player.pay(rent)    
+        self.player.pay(rent)
+        getPlayerFromName(self.owner).money+=rent
     def purchase(self, console):
         if not self.player==NOPLAYER:
             if self.player.money >= self.price:
@@ -202,8 +204,9 @@ class assetBlock(block):
         return self.name + " of " + self.color
     
     def pay_rent(self,console):
-        rent=-1*self.price//30
+        rent=self.price//30
         self.player.pay(rent)
+        getPlayerFromName(self.owner).money+=rent
         console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
     
     def getActions(self):
@@ -243,7 +246,7 @@ class cardBlock():
         self.deck=deck
     def getCard(self, console):
         card=self.deck.getCard()
-        console.display("player :"+self.player.name+" got Card:"+card.title+","+card.text)
+        console.display(self.player.name+" got Card : "+card.title+" , "+card.text)
         card.applyToPlayer(self.player, console)
     def getActions(self):
         return {"getcard":self.getCard}
@@ -336,9 +339,14 @@ class player():
                 houses+=asset.houses
                 if asset.hotel==True:
                     hotels+=1
-        return (houses,hotels)
+        return (houses,hotels)    
+    def inc_jail_count(self):
+        self.jailCounter+=1
+        if self.jailCounter>=3:
+            self.inJail=False
     def goToJail(self):
         self.inJail=True
+        self.jailCounter=0
         while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
     def is_bankrupt(self):
