@@ -25,7 +25,12 @@ def init_state(newPlayers,newBoard,newConsole):
     global players,board,console
     players,board,console=newPlayers,newBoard,newConsole
 ########################################################################
-
+def getAmount(aType):
+    counter=0
+    for block in board.blocks:
+        if block.color==aType:
+            counter+=1
+    return counter            
     
 def getPlayerFromName(name):
     for player in players:
@@ -59,6 +64,9 @@ class deck():
         
         
 class card():
+    '''this class represent a card
+       a card have a titile,text variables and applyToPlayer function
+    '''
     def __init__(self,title,text):
         self.title=title
         self.text=text
@@ -67,6 +75,9 @@ class card():
         pass
 
 class changeMoneyCard(card):
+    '''this card can incrase or decrease the player money
+       also it could depened on all the players(commune)
+    '''
     def __init__(self,title,text,amount,commune=False):
         card.__init__(self,title,text)
         self.commune=commune
@@ -165,12 +176,19 @@ class utilBlock(block):         #utilities and railway stations
         return self.name + " of " + self.color
      
     
-    def pay_rent(self):
-        
-        if self.color==0:
-            rent=20
-        else:
-            rent=50
+    def pay_rent(self):        
+        if self.color==RW_STATION:
+            player=getPlayerFromName(self.owner)
+            num=player.howMany(RW_STATION)
+            rent=25*(2**(num-1))
+        else:            
+            player=getPlayerFromName(self.owner)
+            diceRoll=self.player.getLatestRoll()
+            num=player.howMany(RW_STATION)
+            if num==1:
+                rent=4*diceRoll
+            elif num==2:
+                rent=10*diceRoll
         console.display(self.player.name+" pay rent of "+str(rent)+" to "+self.owner)
         self.player.pay(rent)
         getPlayerFromName(self.owner).money+=rent
@@ -361,7 +379,24 @@ class player():
         self.jailCounter=0
         while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
+    def howMany(aType):
+        if aType in assets:
+            return len(assets[aType])
+        else:
+            return 0
+    def buyHouse(self,block):
+        if block.owner==self.name:
+            if block.color!=UTILITY and block.color!=RW_STATION:
+                if self.howMany(block.color)==getAmount(block.color):
+                    if block.houses<4:
+                        block.houses+=1
+                        self.pay(150)
+    
     def is_bankrupt(self):
         if self.money<=0:
             return True
         return False
+    def updateRoll(self,roll):
+        self.latestRoll=roll
+    def getLatestRoll(self):
+        return self.latestRoll
