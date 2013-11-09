@@ -36,6 +36,7 @@ class statusWindow():
         # setting fonts
         fnt_name = pygame.font.Font(None, 28)
         fnt_money = pygame.font.Font(None, 24)
+        fnt_asset = pygame.font.Font(None, 16)
         
         # Event loop
         while 1:
@@ -44,23 +45,32 @@ class statusWindow():
                     return
             background.fill((250, 250, 250))
             #text values
-            p = self.players[0]
-            txt_name = fnt_name.render(p.name, 3, (10, 10, 10))
-            textpos = txt_name.get_rect().move(15,10)
-            background.blit(txt_name, textpos)
-            
-            txt_money = fnt_money.render("$"+str(p.money), 3, (10, 10, 10))
-            textpos = txt_money.get_rect().move(400,20)
-            background.blit(txt_money, textpos)
-            
-#             for asset in p.assets:
-#                 color = colors[asset.color]
-#             txt_money = fnt_money.render("$"+str(p.money), 3, color)
-#             textpos = txt_money.get_rect().move(400,20)
-#             background.blit(txt_money, textpos)
-        
+            l = 0
+            for p in self.players:
+                height = l * 200
+                txt_name = fnt_name.render(p.name, 3, (10, 10, 10))
+                textpos = txt_name.get_rect().move(15,10+height)
+                background.blit(txt_name, textpos)
+                
+                txt_money = fnt_money.render("$"+str(p.money), 3, (10, 10, 10))
+                textpos = txt_money.get_rect().move(400,20+height)
+                background.blit(txt_money, textpos)
+                
+                i = 0
+                for c in p.assets:
+                    color = colors[c]
+                    text = ""
+                    for asset in p.assets[c]:
+                        text = text + asset.name + "    " 
+                    txt_money = fnt_asset.render(text, 3, color)    
+                    textpos = txt_money.get_rect().move(10+(i*250),50+height)
+                    background.blit(txt_money, textpos)
+                    i += 1
+                l += 1    
             screen.blit(background, (0, 0))
             pygame.display.flip()
+                
+                
     
     
     def stop(self):

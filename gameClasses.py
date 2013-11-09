@@ -1,4 +1,5 @@
 from random import shuffle as reorder
+from operator import attrgetter
 
 
 #typer and colors
@@ -328,9 +329,8 @@ class player():
         if(assetBlock.color in self.assets):
             self.assets[assetBlock.color].append(assetBlock)
         else:
-            self.assets[assetBlock.color]=[assetBlock]
+            self.assets[assetBlock.color]=[assetBlock,]
     def printPlayer(self):
-        self.assets = sorted(self.assets, key=block.color)
         console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
         
     def landOn(self,block,location):        
