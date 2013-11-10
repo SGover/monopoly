@@ -137,7 +137,7 @@ class monoGame():
                     self.curr_player.updateRoll(dice_sum)
                     
                     self.do_move(dice_sum)
-                    #self.do_move(1)
+                    #self.do_move(2)
                     
         else:
                     self.console.display("You have already rolled the dice")
