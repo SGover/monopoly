@@ -1,9 +1,8 @@
 import pygame
-from pygame.locals import *
-import threading
-import os
+from board import P_COLORS
 
-colors = {"UTILTIES": (150,150,150),
+X = 545
+COLORS = {"UTILTIES": (150,150,150),
           "RAILWAY STATIONS":(50,50,50),
           "INDIGO COLOR":(75,60,130),
           "LIGHTBLUE COLOR":(128,225,255),
@@ -12,7 +11,8 @@ colors = {"UTILTIES": (150,150,150),
           "RED COLOR":(250,10,10),
           "YELLOW COLOR":(240,240,0),
           "GREEN COLOR":(10,250,10),
-          "BLUE COLOR":(10,10,250),}
+          "BLUE COLOR":(10,10,250),
+          }
 
 class statusWindow():
     players = []
@@ -28,11 +28,10 @@ class statusWindow():
         self.fnt_asset = pygame.font.Font(None, 16)
             
     def draw(self, background):
-        X = 545
         l = 0
         for p in self.players:
             height = l * 200
-            txt_name = self.fnt_name.render(p.name, 3, (10, 10, 10))
+            txt_name = self.fnt_name.render(p.name, 3, P_COLORS[l])
             textpos = txt_name.get_rect().move(X+15,10+height)
             background.blit(txt_name, textpos)
             
@@ -42,7 +41,7 @@ class statusWindow():
             
             i = 0
             for c in p.assets:
-                color = colors[c]
+                color = COLORS[c]
                 text = ""
                 for asset in p.assets[c]:
                     text = text + asset.name + " | " 

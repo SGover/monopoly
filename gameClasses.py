@@ -1,5 +1,4 @@
 from random import shuffle as reorder
-from operator import attrgetter
 
 
 #typer and colors

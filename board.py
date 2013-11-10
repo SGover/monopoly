@@ -1,27 +1,27 @@
 from gameClasses import *
-from random import *
+from random import randrange
 from gameFactory import initFromFile
 import pygame
-from pygame.locals import *
+from pygame.locals import QUIT
 import threading
 import os
 
+P_COLORS = [(255,255,25),(255,25,255),
+            (25,255,255),(255,25,25),
+            (25,25,255),(25,255,25)]
+IFF=initFromFile("gameProperties.txt")
+CHANCE_DECK,CHEST_DECK=deck(IFF.chanceCards,"chance"),deck(IFF.chestCards,"chest")
+CHANCE_DECK.shuffle()
+CHEST_DECK.shuffle()
 
-#comment from Boaz branch
-
-iff=initFromFile("gameProperties.txt")
-chance_deck,chest_deck=deck(iff.chanceCards,"chance"),deck(iff.chestCards,"chest")
-chance_deck.shuffle()
-chest_deck.shuffle()
-
-block_arr = [moneyBlock("GO!", 200,(480,480)),
+BLOCK_ARR = [moneyBlock("GO!", 200,(480,480)),
              assetBlock("MEDITER. RANEAN AVENUE", INDIGO,60,(430,480)),      #price should be always a negetive value to decrease confusion
-             cardBlock("COMMUNITY CHEST", chest_deck,(390,480)),
+             cardBlock("COMMUNITY CHEST", CHEST_DECK,(390,480)),
              assetBlock("BALTIC AVENUE", INDIGO,60,(345,480)),
              moneyBlock("INCOME TAX", -200,(305,480)),
              utilBlock("READING RAILROAD", RW_STATION, 200,(260,480)),
              assetBlock("ORIENTAL AVENUE", WHITE,100,(215,480)),
-             cardBlock("CHANCE?", chance_deck,(170,480)),
+             cardBlock("CHANCE?", CHANCE_DECK,(170,480)),
              assetBlock("VERMONT AVENUE", WHITE,100,(130,480)),
              assetBlock("CONNECTICUT AVENUE", WHITE,120,(90,480)),
              moneyBlock("JAIL", 0,(25,480)),      #if money is zero, its land action will be ignored
@@ -31,12 +31,12 @@ block_arr = [moneyBlock("GO!", 200,(480,480)),
              assetBlock("VIRGINIA AVENUE", PURPLE,160,(26,295)),
              utilBlock("PENNSYLVANIA RAILROAD", RW_STATION, 200,(25,255)),
              assetBlock("ST. JAMES PLACE", ORANGE,180,(25,210)),
-             cardBlock("COMMUNITY CHEST", chest_deck,(25,165)),
+             cardBlock("COMMUNITY CHEST", CHEST_DECK,(25,165)),
              assetBlock("TENNESSEE AVENUE", ORANGE,180,(25,125)),
              assetBlock("NEW YORK AVENUE", ORANGE,200,(25,80)),
              moneyBlock("FREE PARKING", 0,(25,25)),        #if money is zero, its land action will be ignored
              assetBlock("KENTUCKY AVENUE", RED,220,(90,25)),
-             cardBlock("CHANCE?", chance_deck,(130,25)),
+             cardBlock("CHANCE?", CHANCE_DECK,(130,25)),
              assetBlock("INDIANA AVENUE", RED,220,(170,25)),
              assetBlock("ILLINOIS AVENUE", RED,240,(215,25)),
              utilBlock("B. & O. RAILROAD", RW_STATION, 200,(260,25)),
@@ -45,12 +45,12 @@ block_arr = [moneyBlock("GO!", 200,(480,480)),
              utilBlock("WATER WORKS", UTILITY, 150,(390,25)),
              assetBlock("MARVIN GARDENS", YELLOW,280,(430,25)),
              goToJailBlock((480,25)),
-             assetBlock("PACIFIC AVENUE", GREEN,300, (480,80)),
-             assetBlock("NORTH CAROLINA AVENUE", GREEN,300, (480,125)),
-             cardBlock("COMMUNITY CHEST", chest_deck, (480,165)),
-             assetBlock("PENNSYLVANIA AVENUE", GREEN,320, (480,210)),
-             utilBlock("SHORT LINE", RW_STATION, 200, (480,255)),
-             cardBlock("CHANCE?", chance_deck, (480,295)),
+             assetBlock("KARACHI AVENUE", GREEN,300, (480,80)),
+             assetBlock("MULTAN AVENUE", GREEN,300, (480,125)),
+             cardBlock("COMMUNITY CHEST", CHEST_DECK, (480,165)),
+             assetBlock("FAISALABAD AVENUE", GREEN,320, (480,210)),
+             utilBlock("LAHORE JUNCTION", RW_STATION, 200, (480,255)),
+             cardBlock("CHANCE?", CHEST_DECK, (480,295)),
              assetBlock("PARK PLACE", BLUE,350, (480,340)),
              moneyBlock("LUXURY TAX", -75, (480,380)),
              assetBlock("BROAD WALK", BLUE,400, (480,425)),
@@ -60,9 +60,7 @@ class board():
 
                
     def __init__(self, statusW):
-        self.chance_deck = chance_deck
-        self.chest_deck = chest_deck
-        self.blocks = block_arr
+        self.blocks = BLOCK_ARR
         self.statusWin = statusW
         self.quit = False
     
@@ -97,14 +95,16 @@ class board():
             background = self.statusWin.draw(background)
             brd_img = pygame.image.load("monopoly.png")
             brd_img = brd_img.convert()
-            
-            player1_pos = self.blocks[self.players[0].location].position
-            player2_pos = self.blocks[self.players[1].location].position
-            if player2_pos==player1_pos:
-                player2_pos = (player2_pos[0]+20,player2_pos[1]+20) 
-            
-            pygame.draw.rect(brd_img, (255,0,255), [player1_pos[0],player1_pos[1],20,20])
-            pygame.draw.rect(brd_img, (255,255,25), [player2_pos[0],player2_pos[1],20,20])
+            player_pos = []
+            for p in self.players:
+                player_pos.append(self.blocks[p.location].position)
+            i = 0
+            for pos in player_pos:
+                if not i == 0:
+                    if pos==player_pos[i-1]:
+                        pos = (pos[0]+20,pos[1]+20) 
+                pygame.draw.rect(brd_img, P_COLORS[i], [pos[0],pos[1],20,20])
+                i += 1
             
             background.blit(brd_img, (5,5))            
             
