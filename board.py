@@ -1,6 +1,10 @@
 from gameClasses import *
 from random import *
 from gameFactory import initFromFile
+import pygame
+from pygame.locals import *
+import threading
+import os
 
 
 #comment from Boaz branch
@@ -55,13 +59,50 @@ block_arr = [moneyBlock("GO!", 200),
 class board():
 
                
-    def __init__(self):
+    def __init__(self, statusW):
         self.chance_deck = chance_deck
         self.chest_deck = chest_deck
         self.blocks = block_arr
-        pass
+        self.statusWin = statusW
+        self.quit = False
     
     def roll_dice(self):
         dice1 = randrange(6) + 1
         dice2 = randrange(6) + 1
         return (dice1, dice2)
+    
+    def show(self, players):
+        self.players = players
+        self.statusWin.start(self.players)
+        thread = threading.Thread(target=self.draw)
+        thread.start()
+    
+    def draw(self):
+        # Initialise screen
+        pygame.init()
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,50)  # x,y position of the screen
+        screen = pygame.display.set_mode((1000, 550))       #witdth and height
+        pygame.display.set_caption('Monopoly')
+        # Fill background
+        background = pygame.Surface(screen.get_size())
+        background = background.convert()
+        point = (400,400)
+        clock = pygame.time.Clock()
+        # Event loop
+        while 1:
+            clock.tick(60)
+            for event in pygame.event.get():
+                if event.type == QUIT or self.quit:
+                    return
+            background.fill((180, 190, 180))
+            background = self.statusWin.draw(background)
+            brd_img = pygame.image.load("monopoly.png")
+            brd_img = brd_img.convert()
+            pygame.draw.rect(brd_img, (255,0,255), [point[0],point[1],20,20],0)
+            background.blit(brd_img, (5,5))            
+            
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+            
+    def stop(self):
+        self.quit = True

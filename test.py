@@ -1,6 +1,7 @@
 from mainGame import *
 from gameClasses import *
 from board import *
-board =  board()
+statusW = statusWindow()
+board =  board(statusW)
 game = monoGame(board,2)
 game.start()
