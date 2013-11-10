@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
-import threading
-import os
+from board import p_colors
 
 colors = {"UTILTIES": (150,150,150),
           "RAILWAY STATIONS":(50,50,50),
@@ -12,7 +11,8 @@ colors = {"UTILTIES": (150,150,150),
           "RED COLOR":(250,10,10),
           "YELLOW COLOR":(240,240,0),
           "GREEN COLOR":(10,250,10),
-          "BLUE COLOR":(10,10,250),}
+          "BLUE COLOR":(10,10,250),
+          }
 
 class statusWindow():
     players = []
@@ -32,7 +32,7 @@ class statusWindow():
         l = 0
         for p in self.players:
             height = l * 200
-            txt_name = self.fnt_name.render(p.name, 3, (10, 10, 10))
+            txt_name = self.fnt_name.render(p.name, 3, p_colors[l])
             textpos = txt_name.get_rect().move(X+15,10+height)
             background.blit(txt_name, textpos)
             

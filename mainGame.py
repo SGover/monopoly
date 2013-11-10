@@ -19,7 +19,7 @@ class monoGame():
     commands=allComands
     gameState=START
     
-    def __init__(self,board,num_players=2,players=[]):
+    def __init__(self,board,num_players=2,players=[]):      #changing num of players will surely result in crash!:D
         self.players=players
         self.board=board
         self.console=_console.console()

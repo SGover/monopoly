@@ -6,9 +6,9 @@ from pygame.locals import *
 import threading
 import os
 
-
-#comment from Boaz branch
-
+p_colors = [(255,255,25),(255,25,255),
+            (25,255,255),(255,25,25),
+            (25,25,255),(25,255,25)]
 iff=initFromFile("gameProperties.txt")
 chance_deck,chest_deck=deck(iff.chanceCards,"chance"),deck(iff.chestCards,"chest")
 chance_deck.shuffle()
@@ -97,14 +97,16 @@ class board():
             background = self.statusWin.draw(background)
             brd_img = pygame.image.load("monopoly.png")
             brd_img = brd_img.convert()
-            
-            player1_pos = self.blocks[self.players[0].location].position
-            player2_pos = self.blocks[self.players[1].location].position
-            if player2_pos==player1_pos:
-                player2_pos = (player2_pos[0]+20,player2_pos[1]+20) 
-            
-            pygame.draw.rect(brd_img, (255,0,255), [player1_pos[0],player1_pos[1],20,20])
-            pygame.draw.rect(brd_img, (255,255,25), [player2_pos[0],player2_pos[1],20,20])
+            player_pos = []
+            for p in self.players:
+                player_pos.append(self.blocks[p.location].position)
+            i = 0
+            for pos in player_pos:
+                if not i == 0:
+                    if pos==player_pos[i-1]:
+                        pos = (pos[0]+20,pos[1]+20) 
+                pygame.draw.rect(brd_img, p_colors[i], [pos[0],pos[1],20,20])
+                i += 1
             
             background.blit(brd_img, (5,5))            
             
