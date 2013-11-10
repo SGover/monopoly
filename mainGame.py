@@ -1,7 +1,6 @@
 from gameClasses import *
 import console as _console
-from statusWindow import *
-from random import *
+from random import randrange
 
 START='start'
 INGAME='ingame'
@@ -19,7 +18,7 @@ class monoGame():
     commands=allComands
     gameState=START
     
-    def __init__(self,board,num_players=2,players=[]):      #changing num of players will surely result in crash!:D
+    def __init__(self,board,num_players=2,players=[]):      
         self.players=players
         self.board=board
         self.console=_console.console()
