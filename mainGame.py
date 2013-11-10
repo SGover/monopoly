@@ -31,7 +31,7 @@ class monoGame():
     
     
     def start(self):
-        self.board.show(self.players)
+        
         self.console.start()
         i = 0
         while i < self.num_players:
@@ -39,7 +39,7 @@ class monoGame():
             new_player1 = player(name_player,self.default_money)
             self.players.append(new_player1)
             i += 1
-            
+        self.board.show(self.players)    
         init_state(self.players,self.board,self.console)
                              
         self.current_player_index = randrange(len(self.players))

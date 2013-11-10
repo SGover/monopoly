@@ -6,7 +6,7 @@ from operator import attrgetter
 UTILITY = "UTILTIES"
 RW_STATION = "RAILWAY STATIONS"
 INDIGO = "INDIGO COLOR" # or whatever this color is #171363
-WHITE = "WHITE COLOR"
+WHITE = "LIGHTBLUE COLOR"
 PURPLE = "PURPLE COLOR"
 ORANGE = "ORANGE COLOR"
 RED = "RED COLOR"
@@ -156,16 +156,17 @@ class moveToNearestCard(card):
 #represents a block on the board that containing an asset
 #this block can belong to a player
 class block():
-    def __init__(self, name):
+    def __init__(self, name, position):
         self.name = name
+        self.position = position
     def pass_(self):
         pass
     def getActions(self):
         pass
     
 class utilBlock(block):         #utilities and railway stations
-    def __init__(self, name, uType, price):
-        block.__init__(self, name)
+    def __init__(self, name, uType, price, position):
+        block.__init__(self, name, position)
         self.color = uType    #utiltiy or railway station !see top at the file
         self.price = price
         self.owner=None
@@ -217,8 +218,8 @@ class utilBlock(block):         #utilities and railway stations
         
 
 class assetBlock(block):
-    def __init__(self,name,color,price):
-        block.__init__(self,name)        
+    def __init__(self,name,color,price, position):
+        block.__init__(self,name, position)        
         self.color=color
         self.price=price
         self.houses=0
@@ -269,8 +270,8 @@ class assetBlock(block):
 
 #represent a block on the board that landing on means u need to pull a card from some deck        
 class cardBlock():
-    def __init__(self, name,deck):
-        block.__init__(self, name)
+    def __init__(self, name,deck, position):
+        block.__init__(self, name, position)
         self.deck=deck
     def getCard(self):
         card=self.deck.getCard()
@@ -285,8 +286,8 @@ class cardBlock():
         return self.name
 
 class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLand
-    def __init__(self, name, money):      # action is just adding or subtracting money
-        block.__init__(self, name)
+    def __init__(self, name, money, position):      # action is just adding or subtracting money
+        block.__init__(self, name, position)
         self.deck=deck
         self.money = money
     
@@ -308,8 +309,8 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
     
     
 class goToJailBlock(block):
-    def __init__(self, name="'Go TO Jail'"):
-        block.__init__(self, name)
+    def __init__(self, position, name="'Go TO Jail'"):
+        block.__init__(self, name, position)
 
     def __str__(self):
         return self.name
@@ -379,9 +380,9 @@ class player():
         self.jailCounter=0
         while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
-    def howMany(aType):
-        if aType in assets:
-            return len(assets[aType])
+    def howMany(self,aType):        #please for the sake of good practice dont use camelCase,
+        if aType in self.assets:    # its ugly, man! and against the python coding style too!
+            return len(self.assets[aType])
         else:
             return 0
     def buyHouse(self,block):

@@ -6,7 +6,7 @@ import os
 colors = {"UTILTIES": (150,150,150),
           "RAILWAY STATIONS":(50,50,50),
           "INDIGO COLOR":(75,60,130),
-          "WHITE COLOR":(128,225,255),
+          "LIGHTBLUE COLOR":(128,225,255),
           "PURPLE COLOR":(170,40,150),
           "ORANGE COLOR":(250,140,10),
           "RED COLOR":(250,10,10),
@@ -37,7 +37,7 @@ class statusWindow():
             background.blit(txt_name, textpos)
             
             txt_money = self.fnt_money.render("$"+str(p.money), 3, (10, 10, 10))
-            textpos = txt_money.get_rect().move(X+400,20+height)
+            textpos = txt_money.get_rect().move(X+350,20+height)
             background.blit(txt_money, textpos)
             
             i = 0
