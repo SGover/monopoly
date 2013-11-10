@@ -23,7 +23,6 @@ class monoGame():
         self.players=players
         self.board=board
         self.console=_console.console()
-        self.statusWin=statusWindow()
         self.default_money = 1500
         self.current_player_index = 0 # index of the current player
         self.winner = -1
@@ -32,6 +31,7 @@ class monoGame():
     
     
     def start(self):
+        
         self.console.start()
         i = 0
         while i < self.num_players:
@@ -39,9 +39,9 @@ class monoGame():
             new_player1 = player(name_player,self.default_money)
             self.players.append(new_player1)
             i += 1
-            
+        self.board.show(self.players)    
         init_state(self.players,self.board,self.console)
-        self.statusWin.start(self.players,self.board);                      
+                             
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
@@ -138,6 +138,7 @@ class monoGame():
                     self.curr_player.updateRoll(dice_sum)
                     
                     self.do_move(dice_sum)
+                    #self.do_move(1)
                     
         else:
                     self.console.display("You have already rolled the dice")
