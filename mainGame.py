@@ -1,7 +1,6 @@
 from gameClasses import *
 import console as _console
-from statusWindow import *
-from random import *
+from random import randrange
 
 START='start'
 INGAME='ingame'
@@ -19,32 +18,19 @@ class monoGame():
     commands=allComands
     gameState=START
     
-    def __init__(self,board,num_players=2,players=[]):
+    def __init__(self,board,num_players=2,players=[]):      
         self.players=players
         self.board=board
         self.console=_console.console()
-        self.statusWindow=statusWindow()
         self.default_money = 1500
         self.current_player_index = 0 # index of the current player
         self.winner = -1
         self.num_players = num_players
         
-    def do_move(self,diceSum):
-        player=self.players[self.current_player_index]        
-        prevBlock=self.board.blocks[player.location]
-        prevBlock.player = NOPLAYER
-        targetMove=(player.location+diceSum)%len(self.board.blocks)
-        currBlock=self.board.blocks[targetMove]
-        player.landOn(currBlock,targetMove)
-        actions=currBlock.getActions()
-        if(len(actions)==1):
-            for key in actions.keys():
-                actions[key](self.console)
-        else:
-            self.console.chooseFromOptions(actions)
     
     
     def start(self):
+        
         self.console.start()
         i = 0
         while i < self.num_players:
@@ -52,43 +38,32 @@ class monoGame():
             new_player1 = player(name_player,self.default_money)
             self.players.append(new_player1)
             i += 1
-            
+        self.board.show(self.players)    
         init_state(self.players,self.board,self.console)
-                              
+                             
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
         
         while not self.is_complete():
-            
+            self.console.display(" ")
             self.next_turn()
             
         if not self.winner == -1:
             self.console.show_winner(self.winner)
             
-            
-    def try_jail_break(self):
-        if not self.jail_try:
-            dice = self.board.roll_dice()
-            self.console.display("Dice rolled {}".format(dice))
-            self.jail_try=True        
-            dice_sum=dice[0]+dice[1]
-            self.rolled_allready=True
-            if dice[0]==dice[1]:
-                self.console.display("Double! you are out of jail")
-                self.do_move(dice_sum)            
+    def next_turn(self):
+        # main game logic
+        self.init_turn()#intiate the turn varibals
+        while not self.end_turn:                        
+            self.curr_player.printPlayer()
+            if self.curr_player.inJail and not self.jail_try and not self.rolled_already:
+                self.console.display(self.curr_player.name + " is in Jail")
+                self.do_in_jail_commands()                
             else:
-                self.console.display("no Double. try again next time")
-        else:
-            self.console.display("Already tried to break out of jail")
-    
-    def pay_jail_fine(self):
-        player=self.curr_player
-        player.inJail=False
-        player.money-=100
-        self.console.display(player.name+" paid a 100$ fine for getting out of jail")
-        self.do_all_commands()
-
+                self.do_all_commands()
+        #complete the turn than change to next player
+        self.change_next_player()
 
     def init_turn(self):
         self.commands=allComands
@@ -96,20 +71,23 @@ class monoGame():
         self.end_turn = False
         self.jail_try=False
         self.curr_player_name = self.players[self.current_player_index].name
-        self.console.display("{} takes the turn!".format(self.curr_player_name))        
+        self.console.display("{} takes the turn!".format(self.curr_player_name))    
+
     def do_in_jail_commands(self):
-        cmd=self.console.propmpt_commands(["break","pay","end"])
+        cmd=self.console.prompt_commands(["break","pay","end"])
         self.curr_player.inc_jail_count()
         if cmd == "break":
-            self.try_break()
+            self.try_jail_break()
         elif cmd=="pay":
             self.pay_jail_fine()
         elif cmd == "end":
             self.do_end_turn()                
         else:
             self.console.display("Invalid command input!")     
+            
     def do_all_commands(self):
-        cmd = self.console.prompt_commands(self.commands)            
+        cmd = self.console.prompt_commands(self.commands)
+        self.console.display(" ")            
         if cmd == "roll":
             self.do_roll()
         elif cmd == "end":
@@ -125,22 +103,29 @@ class monoGame():
         else:
             self.console.display("Invalid command input!")     
     
-    def next_turn(self):
-        # main game logic
-        self.init_turn()#intiate the turn varibals
-    
-        while not self.end_turn:                        
-            self.curr_player.printPlayer()            
-            if self.curr_player.inJail and not self.jail_try and not self.rolled_already:
-                self.console.display(self.curr_player+" is in Jail")
-                self.do_in_jail_commands()                
+    def try_jail_break(self):
+        if not self.jail_try:
+            dice = self.board.roll_dice()
+            self.console.display("Dice rolled {}".format(dice))
+            self.jail_try=True        
+            dice_sum=dice[0]+dice[1]
+            self.rolled_allready=True
+            self.curr_player.updateRoll(dice_sum)
+            if dice[0]==dice[1]:
+                self.console.display("Double! you are out of jail")
+                self.do_move(dice_sum)            
             else:
-                self.do_all_commands()
-        #complete the turn than change to next player
-        self.change_next_player()
-        pass
+                self.console.display("no Double. try again next time")
+        else:
+            self.console.display("Already tried to break out of jail")
     
-
+    def pay_jail_fine(self):
+        player=self.curr_player
+        player.inJail=False
+        player.money-=100
+        self.console.display(player.name+" paid a 100$ fine for getting out of jail")
+        self.do_all_commands()
+    
     def do_roll(self):
         if not self.rolled_already:
                     
@@ -149,23 +134,35 @@ class monoGame():
                     self.rolled_already = True
                     # movement around the board and actions on landing
                     dice_sum=dice[0]+dice[1]
-                    self.do_move(dice_sum)    
+                    self.curr_player.updateRoll(dice_sum)
                     
-                    
+                    self.do_move(dice_sum)
+                    #self.do_move(2)
                     
         else:
                     self.console.display("You have already rolled the dice")
-                    
-                                
+    
     def do_end_turn(self):
         if not self.rolled_already:
                     self.console.display("You first have to roll the dice")
         else:
                     self.end_turn = True
                     self.console.display("{} ends his turn".format(self.curr_player_name))
-    
-    
-    
+                    
+    def do_move(self,diceSum):
+        player=self.players[self.current_player_index]        
+        prevBlock=self.board.blocks[player.location]
+        prevBlock.player = NOPLAYER
+        targetMove=(player.location+diceSum)%len(self.board.blocks)
+        currBlock=self.board.blocks[targetMove]
+        player.landOn(currBlock,targetMove)
+        actions=currBlock.getActions()
+        if(len(actions)==1):
+            for key in actions.keys():
+                actions[key]()
+        else:
+            self.console.chooseFromOptions(actions)
+                                        
     def change_next_player(self):
         self.current_player_index = (self.current_player_index+1)%len(self.players)
         self.curr_player=self.players[self.current_player_index]
