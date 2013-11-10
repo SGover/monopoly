@@ -123,7 +123,7 @@ class advanceToCard(card):
             for key in actions.keys():
                 actions[key]()
         else:
-            self.console.chooseFromOptions(actions)                
+            console.chooseFromOptions(actions)                
 
 
 class moveToNearestCard(card):
@@ -145,7 +145,7 @@ class moveToNearestCard(card):
             for key in actions.keys():
                 actions[key]()
         else:
-            self.console.chooseFromOptions(actions)
+            console.chooseFromOptions(actions)
 
 ###################
 # Blocks Section
