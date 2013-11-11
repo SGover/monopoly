@@ -5,7 +5,7 @@ import pygame
 from pygame.locals import QUIT
 from threading import Thread
 import os
-from gui import guiButton
+from gui import guiButton, guiImageList
 
 P_COLORS = [(255,255,25),(255,25,255),
             (25,255,255),(255,25,25),
@@ -86,8 +86,7 @@ class board():
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         clock = pygame.time.Clock()
-        brd_img = pygame.image.load("images\monopoly.png")
-        brd_img = brd_img.convert()
+        #l2 = guiImageList((50,50),["images\dog.png","images\military.png","images\piece.png","images\dog.png","images\dog.png"])
         # Event loop
         while 1:
             clock.tick(60)  #FPS
@@ -95,6 +94,8 @@ class board():
                 if event.type == QUIT or self.quit:
                     return
             background.fill((180, 190, 180))
+            brd_img = pygame.image.load("images\monopoly.png")
+            brd_img = brd_img.convert()
             background = self.statusWin.draw(background)    #status window
             
             player_pos = []
@@ -110,7 +111,8 @@ class board():
                 check.append(pos)
                 i += 1
             
-            background.blit(brd_img, (5,5))            
+            background.blit(brd_img, (5,5))
+            #background.blit(l2, l2.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
         
