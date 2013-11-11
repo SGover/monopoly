@@ -213,6 +213,7 @@ class monoGame():
                 self.current_player_index=1
                 self.curr_player=self.players[self.current_player_index]
             if action=='move':
+                self.curr_player.updateRoll(value)
                 self.do_move(value)
             elif action=='jail':                
                 self.curr_player.goToJail()
