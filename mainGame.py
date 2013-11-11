@@ -25,19 +25,23 @@ class monoGame():
         self.default_money = 1500
         self.current_player_index = 0 # index of the current player
         self.winner = -1
-        self.num_players = num_players
+        if num_players == 1:
+            self.num_players = 2    #Its not a game of one
+        else:    
+            self.num_players = num_players
         
     
     
     def start(self):
         
         self.console.start()
-        i = 0
-        while i < self.num_players:
-            name_player = self.console.get_player_name()
-            new_player1 = player(name_player,self.default_money)
-            self.players.append(new_player1)
-            i += 1
+        if self.players==[]:
+            i = 0
+            while i < self.num_players:
+                name_player = self.console.get_player_name()
+                new_player1 = player(name_player,self.default_money)
+                self.players.append(new_player1)
+                i += 1
         self.board.show(self.players)    
         init_state(self.players,self.board,self.console)
                              
@@ -92,14 +96,16 @@ class monoGame():
             self.do_roll()
         elif cmd == "end":
             self.do_end_turn()                
+        elif cmd == "sell":    
+            pass
         elif cmd == "build":    
-                    pass
+            pass
         elif cmd == "mortage":    
-                    pass
+            pass
         elif cmd == "unmortage":    
-                    pass
+            pass
         elif cmd == "trade":    
-                    pass
+            pass
         else:
             self.console.display("Invalid command input!")     
     
