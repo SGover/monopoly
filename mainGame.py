@@ -197,6 +197,7 @@ class monoGame():
         return False
     ################
     #####debug code#############
+    #####################
     def do_debug_mode(self):
         cmd=""
         self.console.display("entered debug mode type exit to leave")
@@ -220,7 +221,10 @@ class monoGame():
             elif action=='money':
                 self.curr_player.money+=value
             elif action=='assets':
-                print (str(self.curr_player.how_many(value)))
+                if value==-1:
+                    print (self.curr_player.assets)
+                else:
+                    print (str(self.curr_player.how_many(value)))
             elif action=='buy':
                 self.curr_player.buy(self.board.blocks[value])
 
