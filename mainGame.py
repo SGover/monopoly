@@ -106,6 +106,8 @@ class monoGame():
             pass
         elif cmd == "trade":    
             pass
+        elif cmd == "dMode":
+            self.do_debug_mode()
         else:
             self.console.display("Invalid command input!")     
     
@@ -115,7 +117,8 @@ class monoGame():
             self.console.display("Dice rolled {}".format(dice))
             self.jail_try=True        
             dice_sum=dice[0]+dice[1]
-            self.rolled_allready=True
+            
+            self.rolled_already = True
             self.curr_player.updateRoll(dice_sum)
             if dice[0]==dice[1]:
                 self.console.display("Double! you are out of jail")
@@ -191,4 +194,31 @@ class monoGame():
             self.gameState=FINISH
             return True
         self.gameState=INGAME
-        return False    
+        return False
+    ################
+    #####debug code#############
+    def do_debug_mode(self):
+        cmd=""
+        self.console.display("entered debug mode type exit to leave")
+        while cmd!="exit":
+            cmd=self.console.prompt_commands("debug mode commands")
+            if not cmd=='exit':
+                value =int(cmd.split('(')[1].replace(")",''))
+                player=cmd.split('(')[0].split('.')[0]
+                action=cmd.split('(')[0].split('.')[1]
+            if player=='1':                
+                self.current_player_index=0
+                self.curr_player=self.players[self.current_player_index]
+            elif player=='2':
+                self.current_player_index=1
+                self.curr_player=self.players[self.current_player_index]
+            if action=='move':
+                self.do_move(value)
+            elif action=='jail':
+                self.curr_player.goToJail()
+
+            
+            
+
+
+        
