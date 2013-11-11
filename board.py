@@ -3,8 +3,9 @@ from random import randrange
 from gameFactory import initFromFile
 import pygame
 from pygame.locals import QUIT
-import threading
+from threading import Thread
 import os
+from gui import guiButton
 
 P_COLORS = [(255,255,25),(255,25,255),
             (25,255,255),(255,25,25),
@@ -72,7 +73,7 @@ class board():
     def show(self, players):
         self.players = players
         self.statusWin.start(self.players)
-        thread = threading.Thread(target=self.draw)
+        thread = Thread(target=self.draw)
         thread.start()
     
     def draw(self):
@@ -85,31 +86,34 @@ class board():
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         clock = pygame.time.Clock()
+        brd_img = pygame.image.load("images\monopoly.png")
+        brd_img = brd_img.convert()
         # Event loop
         while 1:
-            clock.tick(60)
+            clock.tick(60)  #FPS
             for event in pygame.event.get():
                 if event.type == QUIT or self.quit:
                     return
             background.fill((180, 190, 180))
-            background = self.statusWin.draw(background)
-            brd_img = pygame.image.load("monopoly.png")
-            brd_img = brd_img.convert()
+            background = self.statusWin.draw(background)    #status window
+            
             player_pos = []
             for p in self.players:
                 player_pos.append(self.blocks[p.location].position)
             i = 0
+            check = []
             for pos in player_pos:
-                if not i == 0:
-                    if pos==player_pos[i-1]:
-                        pos = (pos[0]+20,pos[1]+20) 
+                for c in check:
+                    if pos==c:
+                        pos = (pos[0]+15,pos[1]+15) 
                 pygame.draw.rect(brd_img, P_COLORS[i], [pos[0],pos[1],20,20])
+                check.append(pos)
                 i += 1
             
             background.blit(brd_img, (5,5))            
-            
             screen.blit(background, (0, 0))
             pygame.display.flip()
+        
             
     def stop(self):
         self.quit = True
