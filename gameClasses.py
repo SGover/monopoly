@@ -45,6 +45,7 @@ class deck():
         self.name=name
         self.cards=cards
         self.discard=[]
+        self.shuffle()
     def shuffle(self):
         """Rearranging cards and shuffling"""
         reorder(self.cards)     #importing shuffle as reorder
@@ -205,7 +206,7 @@ class utilBlock(block):         #utilities and railway stations
         elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
-            return {"payrent":self.pay_rent()}                            
+            return {"payrent":self.pay_rent}                            
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
             #player=getPlayerFromName(self.owner)
