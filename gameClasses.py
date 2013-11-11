@@ -179,12 +179,12 @@ class utilBlock(block):         #utilities and railway stations
     def pay_rent(self):        
         if self.color==RW_STATION:
             player=getPlayerFromName(self.owner)
-            num=player.howMany(RW_STATION)
+            num=player.how_many(RW_STATION)
             rent=25*(2**(num-1))
         else:            
             player=getPlayerFromName(self.owner)
             diceRoll=self.player.getLatestRoll()
-            num=player.howMany(RW_STATION)
+            num=player.how_many(RW_STATION)
             if num==1:
                 rent=4*diceRoll
             elif num==2:
@@ -379,15 +379,15 @@ class player():
         self.jailCounter=0
         while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
-    def howMany(self,aType):        #please for the sake of good practice dont use camelCase,
-        if aType in self.assets:    # its ugly, man! and against the python coding style too!
+    def how_many(self,aType):       
+        if aType in self.assets:   
             return len(self.assets[aType])
         else:
             return 0
     def buyHouse(self,block):
         if block.owner==self.name:
             if block.color!=UTILITY and block.color!=RW_STATION:
-                if self.howMany(block.color)==getAmount(block.color):
+                if self.how_many(block.color)==getAmount(block.color):
                     if block.houses<4:
                         block.houses+=1
                         self.pay(150)
