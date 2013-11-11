@@ -214,8 +214,14 @@ class monoGame():
                 self.curr_player=self.players[self.current_player_index]
             if action=='move':
                 self.do_move(value)
-            elif action=='jail':
+            elif action=='jail':                
                 self.curr_player.goToJail()
+            elif action=='money':
+                self.curr_player.money+=value
+            elif action=='assets':
+                print (str(self.curr_player.how_many(value)))
+            elif action=='buy':
+                self.curr_player.buy(self.board.blocks[value])
 
             
             
