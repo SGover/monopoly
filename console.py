@@ -11,7 +11,10 @@ class console():
         print("******************************\n    New Game of Monopoly!\n******************************")
      
     def get_player_name(self):
-        return input("Enter the Player name :_ ");
+        name = input("Enter the Player name :_ ");
+        while name=="":
+            name = input("Empty input string, Please Enter the Player name :_ ");
+        return name 
     
     def show_winner(self, winner):
         print(winner,"is the winner!")

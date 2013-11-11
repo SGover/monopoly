@@ -23,20 +23,20 @@ class statusWindow():
         self.players = players
         # setting fonts
         pygame.font.init()
-        self.fnt_name = pygame.font.Font(None, 28)
-        self.fnt_money = pygame.font.Font(None, 24)
-        self.fnt_asset = pygame.font.Font(None, 16)
+        self.fnt_name = pygame.font.Font("fonts\Kabel-Heavy.ttf", 28)
+        self.fnt_money = pygame.font.Font("fonts\Kabel-Heavy.ttf", 24)
+        self.fnt_asset = pygame.font.Font("fonts\Kabel-Heavy.ttf", 16)
             
     def draw(self, background):
         l = 0
         for p in self.players:
             height = l * 200
-            txt_name = self.fnt_name.render(p.name, 3, P_COLORS[l])
+            txt_name = self.fnt_name.render(p.name, True, P_COLORS[l])
             textpos = txt_name.get_rect().move(X+15,10+height)
             background.blit(txt_name, textpos)
             
-            txt_money = self.fnt_money.render("$"+str(p.money), 3, (10, 10, 10))
-            textpos = txt_money.get_rect().move(X+350,20+height)
+            txt_money = self.fnt_money.render("$"+str(p.money), True, (10, 10, 10))
+            textpos = txt_money.get_rect().move(X+320,25+height)
             background.blit(txt_money, textpos)
             
             i = 0
@@ -45,7 +45,7 @@ class statusWindow():
                 text = ""
                 for asset in p.assets[c]:
                     text = text + asset.name + " | " 
-                txt_money = self.fnt_asset.render(text, 3, color)    
+                txt_money = self.fnt_asset.render(text, True, color)    
                 textpos = txt_money.get_rect().move(X+10,50+height+(i*20))
                 background.blit(txt_money, textpos)
                 i += 1
