@@ -88,7 +88,41 @@ class monoGame():
             self.do_end_turn()                
         else:
             self.console.display("Invalid command input!")     
-            
+    def do_build(self):
+        build_list=self.curr_player.get_build_assets()
+        if(len(build_list)==0):
+            self.console.display("nowhere to build houses")
+        else:
+            build_list.append("pass")
+            cmd=''
+            while cmd!='pass':
+                self.console.display("select section:")
+                cmd=self.console.prompt_commands(build_list)
+                if cmd in build_list and cmd!='pass':                    
+                    section=self.curr_player.assets[cmd]
+                    name_list=[]
+                    for s in section:
+                            name_list.append(s.name)                    
+                    name_list.append("pass")
+                    while cmd!='pass':
+                        self.console.display("select street:")                                        
+                        cmd=self.console.prompt_commands_index(name_list)
+                        is_street=False
+                        if cmd!='pass':
+                            for street in section:
+                                if street.name==cmd:
+                                    is_street=True
+                                    if street.houses<4:
+                                        self.curr_player.buy_house(street)
+                                    else:
+                                        self.curr_player.buy_hotel(street)
+                                    cmd='pass'
+                        elif is_street:
+                            self.console.display('no such section plz select from the options')
+                elif cmd!='pass':
+                    self.console.display('no such section plz select from the options')
+                
+                
     def do_all_commands(self):
         cmd = self.console.prompt_commands(self.commands)
         self.console.display(" ")            
@@ -99,13 +133,15 @@ class monoGame():
         elif cmd == "sell":    
             pass
         elif cmd == "build":    
-            pass
+            self.do_build()
         elif cmd == "mortage":    
             pass
         elif cmd == "unmortage":    
             pass
         elif cmd == "trade":    
             pass
+        elif cmd == "dMode":
+            self.do_debug_mode()
         else:
             self.console.display("Invalid command input!")     
     
@@ -115,7 +151,8 @@ class monoGame():
             self.console.display("Dice rolled {}".format(dice))
             self.jail_try=True        
             dice_sum=dice[0]+dice[1]
-            self.rolled_allready=True
+            
+            self.rolled_already = True
             self.curr_player.updateRoll(dice_sum)
             if dice[0]==dice[1]:
                 self.console.display("Double! you are out of jail")
@@ -160,6 +197,8 @@ class monoGame():
         prevBlock=self.board.blocks[player.location]
         prevBlock.player = NOPLAYER
         targetMove=(player.location+diceSum)%len(self.board.blocks)
+        if player.location+diceSum>=len(self.board.blocks):
+            self.console.display(player.name+" went throught start, got $200")
         currBlock=self.board.blocks[targetMove]
         player.landOn(currBlock,targetMove)
         actions=currBlock.getActions()
@@ -189,4 +228,49 @@ class monoGame():
             self.gameState=FINISH
             return True
         self.gameState=INGAME
-        return False    
+        return False
+    ################
+    #####debug code#############
+    #####################
+    def do_debug_mode(self):
+        cmd=""
+        self.console.display("entered debug mode type exit to leave")
+        while cmd!="exit":
+            cmd=self.console.prompt_commands("debug mode commands")
+            if not cmd=='exit':
+                value =int(cmd.split('(')[1].replace(")",''))
+                player=cmd.split('(')[0].split('.')[0]
+                action=cmd.split('(')[0].split('.')[1]
+            if player=='1':                
+                self.current_player_index=0
+                self.curr_player=self.players[self.current_player_index]
+            elif player=='2':
+                self.current_player_index=1
+                self.curr_player=self.players[self.current_player_index]
+            if action=='move':
+                self.curr_player.updateRoll(value)
+                self.do_move(value)
+            elif action=='jail':                
+                self.curr_player.goToJail()
+            elif action=='money':
+                self.curr_player.money+=value
+            elif action=='assets':
+                if value==-1:
+                    print (self.curr_player.assets)
+                else:
+                    print (str(self.curr_player.how_many(value)))
+            elif action=='buy':
+                self.board.blocks[value].player=self.curr_player
+                self.curr_player.buy(self.board.blocks[value])
+            elif action=='house':
+                self.curr_player.buy_house(self.board.blocks[value])
+            elif action=='hotel':
+                self.curr_player.buy_hotel(self.board.blocks[value])
+            elif action=='build':
+                self.do_build()
+
+            
+            
+
+
+        

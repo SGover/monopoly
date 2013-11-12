@@ -1,6 +1,10 @@
 from random import shuffle as reorder
 
 
+#CONSTANT VALUES
+JAIL_FEE=100
+
+
 #typer and colors
 UTILITY = "UTILTIES"
 RW_STATION = "RAILWAY STATIONS"
@@ -26,9 +30,12 @@ def init_state(newPlayers,newBoard,newConsole):
 ########################################################################
 def getAmount(aType):
     counter=0
+    assetBlock1=assetBlock('test',1,1, 1,1,[])
+    utilBlock1=utilBlock('name',1,1,1)
     for block in board.blocks:
-        if block.color==aType:
-            counter+=1
+        if type(block)==type(assetBlock1) or type(block)==type(utilBlock1):
+            if block.color==aType:
+                counter+=1
     return counter            
     
 def getPlayerFromName(name):
@@ -45,6 +52,7 @@ class deck():
         self.name=name
         self.cards=cards
         self.discard=[]
+        self.shuffle()
     def shuffle(self):
         """Rearranging cards and shuffling"""
         reorder(self.cards)     #importing shuffle as reorder
@@ -168,7 +176,7 @@ class utilBlock(block):         #utilities and railway stations
         block.__init__(self, name, position)
         self.color = uType    #utiltiy or railway station !see top at the file
         self.price = price
-        self.owner=None
+        self.owner=NOPLAYER
     def __str__(self):
         return self.name + " of " + self.color
     
@@ -179,12 +187,12 @@ class utilBlock(block):         #utilities and railway stations
     def pay_rent(self):        
         if self.color==RW_STATION:
             player=getPlayerFromName(self.owner)
-            num=player.howMany(RW_STATION)
+            num=player.how_many(RW_STATION)
             rent=25*(2**(num-1))
         else:            
             player=getPlayerFromName(self.owner)
             diceRoll=self.player.getLatestRoll()
-            num=player.howMany(RW_STATION)
+            num=player.how_many(RW_STATION)
             if num==1:
                 rent=4*diceRoll
             elif num==2:
@@ -193,19 +201,15 @@ class utilBlock(block):         #utilities and railway stations
         self.player.pay(rent)
         getPlayerFromName(self.owner).money+=rent
     def purchase(self):
-        if not self.player==NOPLAYER:
-            if self.player.money >= self.price:
-                self.player.buy(self)
-                console.display("{} bought the {} for ${}".format(self.player.name,str(self),self.price))
-            else:    
-                console.display("{} don't have ${} to buy {}".format(self.player.name,self.price,str(self)))        
+        self.player.buy(self)
+        
     def getActions(self):
-        if self.owner==None :
+        if self.owner==NOPLAYER :
             return {"buy":self.purchase,"pass":self.pass_}            
         elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
-            return {"payrent":self.pay_rent()}                            
+            return {"payrent":self.pay_rent}                            
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
             #player=getPlayerFromName(self.owner)
@@ -217,13 +221,15 @@ class utilBlock(block):         #utilities and railway stations
         
 
 class assetBlock(block):
-    def __init__(self,name,color,price, position):
-        block.__init__(self,name, position)        
+    def __init__(self,name,color,price, position,house_price,rent_list):
+        block.__init__(self,name, position)
+        self.house_price=house_price
+        self.rent_list=rent_list
         self.color=color
         self.price=price
         self.houses=0
         self.hotel=False
-        self.owner=None
+        self.owner=NOPLAYER
         
     def __str__(self):
         return self.name + " of " + self.color
@@ -232,27 +238,25 @@ class assetBlock(block):
         return self.name + " of " + self.color
     
     def pay_rent(self):
-        rent=self.price//30
+        index=self.houses
+        if self.hotel:
+            index+=1
+        rent=self.rent_list[index]        
         self.player.pay(rent)
         getPlayerFromName(self.owner).money+=rent
         console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
     
     def getActions(self):
-        if self.owner==None :
+        if self.owner==NOPLAYER :
             return {"buy":self.purchase,"pass":self.pass_}            #auction???
         elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
             return {"payrent":self.pay_rent}                        
     
-    def purchase(self):            #buy function should not exist, whole process should be in purchase
-        if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
-            if self.player.money >= self.price:     
-                self.player.buy(self)           #only one class should be calling other class!
-                console.display("{} bought the {} for ${}".format(self.player.name,str(self),self.price))
-            else:    
-                console.display("{} don't have ${} to buy {}".format(self.player.name,self.price,str(self)))
-                
+    def purchase(self):      
+        self.player.buy(self)
+        
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
             #player = getPlayerFromName(self.owner)
@@ -347,12 +351,30 @@ class player():
         self.money-=ammount
         
     def buy(self,assetBlock):
-        self.money-=assetBlock.price
-        assetBlock.owner=self.name
-        if(assetBlock.color in self.assets):
-            self.assets[assetBlock.color].append(assetBlock)
+        if assetBlock.owner==NOPLAYER :
+            if self.money >= assetBlock.price:
+                self.money-=assetBlock.price
+                assetBlock.owner=self.name
+                if(assetBlock.color in self.assets):
+                    self.assets[assetBlock.color].append(assetBlock)
+                else:
+                    self.assets[assetBlock.color]=[assetBlock]
+                console.display("{} bought the {} for ${}".format(self.name,str(assetBlock),assetBlock.price))
+            else:    
+                console.display("{} don't have ${} to buy {}".format(self.name,assetBlock.price,str(assetBlock)))
         else:
-            self.assets[assetBlock.color]=[assetBlock,]
+            console.display("this property already have an owner")
+                
+    def sell_house(self,block):
+        if block.houses>0:
+            self.money+=block.house_price//2
+            block.houses-=1
+            console.display("{} sold a house on {} for ${} \n now he have {} houses on this property".format(self.name,block.name,str(block.house_price//2),block.houses))
+    def sell_hotel(self,block):
+        if block.hotel:
+            self.money+=block.house_price//2
+            block.hotel=False
+            console.display("{} sold the hotel on {} for ${}  ".format(self.name,block.name,str(block.house_price//2)))
     def printPlayer(self):
         console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
         
@@ -372,26 +394,75 @@ class player():
         return (houses,hotels)    
     def inc_jail_count(self):
         self.jailCounter+=1
-        if self.jailCounter>=3:
+        if self.jailCounter>=2:
             self.inJail=False
+            console.display("last turn in jail next turn you are a free man")
     def goToJail(self):
         self.inJail=True
         self.jailCounter=0
         while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
-    def howMany(self,aType):        #please for the sake of good practice dont use camelCase,
-        if aType in self.assets:    # its ugly, man! and against the python coding style too!
+    def how_many(self,aType):       
+        if aType in self.assets:   
             return len(self.assets[aType])
         else:
             return 0
-    def buyHouse(self,block):
+        
+    #buying houses function
+    def buy_house(self,block):
         if block.owner==self.name:
-            if block.color!=UTILITY and block.color!=RW_STATION:
-                if self.howMany(block.color)==getAmount(block.color):
-                    if block.houses<4:
-                        block.houses+=1
-                        self.pay(150)
-    
+            if block.color!=UTILITY and block.color!=RW_STATION:                
+                if self.how_many(block.color)==getAmount(block.color):
+                    can_build=True
+                    for street in self.assets[block.color]:
+                        if street.houses<block.houses:
+                            can_build=False
+                    if can_build:
+                        if block.houses<4:
+                                block.houses+=1
+                                self.pay(block.house_price)
+                                console.display(self.name+" bought an house for $"+str(block.house_price)+" on "+block.name)
+                                console.display(self.name+" have "+str(block.houses)+" houses on this property")
+                        else:
+                                console.display("u cant build more than 4 houses on property")                                            
+                    else:
+                        console.display("u cant build on this block until u developed all the properties on this section")
+                            
+                else:
+                    console.display("u cant build until u have all properties on this block")
+        else:
+            console.display("u cant build this block don't belong to u")
+    #buying hotel function                                
+    def buy_hotel(self,block):
+        if block.owner==self.name:
+            if block.color!=UTILITY and block.color!=RW_STATION:                
+                if self.how_many(block.color)==getAmount(block.color):
+                    can_build=True
+                    for street in self.assets[block.color]:
+                        if street.houses<block.houses:
+                            can_build=False
+                    if can_build:
+                        if block.houses==4:
+                                block.hotel=True
+                                self.pay(block.house_price)
+                                console.display(self.name+" bought an hotel for $"+str(block.house_price)+" on "+block.name)                                
+                        else:
+                                console.display("u need 4 houses to build an hotel")                                                
+                    else:
+                        console.display("u cant build on this block until u developed all the properties on this section")
+                            
+                else:
+                    console.display("u cant build until u have all properties on this block")
+        else:
+            console.display("u cant build this block don't belong to u")
+        
+    def get_build_assets(self):
+        return_list=[]
+        for section in self.assets.keys():
+            if section!=UTILITY and section!=RW_STATION:                
+               if self.how_many(self.assets[section][0].color)==getAmount(self.assets[section][0].color):
+                   return_list.append(section)
+        return return_list
     def is_bankrupt(self):
         if self.money<=0:
             return True
