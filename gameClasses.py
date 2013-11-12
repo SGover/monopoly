@@ -26,9 +26,12 @@ def init_state(newPlayers,newBoard,newConsole):
 ########################################################################
 def getAmount(aType):
     counter=0
+    assetBlock1=assetBlock('test',1,1, 1)
+    utilBlock1=utilBlock('name',1,1,1)
     for block in board.blocks:
-        if block.color==aType:
-            counter+=1
+        if type(block)==type(assetBlock1) or type(block)==type(utilBlock1):
+            if block.color==aType:
+                counter+=1
     return counter            
     
 def getPlayerFromName(name):
@@ -385,14 +388,64 @@ class player():
             return len(self.assets[aType])
         else:
             return 0
-    def buyHouse(self,block):
+        
+    #buying houses function
+    def buy_house(self,block):
         if block.owner==self.name:
-            if block.color!=UTILITY and block.color!=RW_STATION:
+            if block.color!=UTILITY and block.color!=RW_STATION:                
                 if self.how_many(block.color)==getAmount(block.color):
-                    if block.houses<4:
-                        block.houses+=1
-                        self.pay(150)
-    
+                    can_build=True
+                    for street in self.assets[block.color]:
+                        if street.houses<block.houses:
+                            can_build=False
+                    if can_build:
+                        if block.houses<4:
+                                block.houses+=1
+                                self.pay(150)
+                                console.display(self.name+" bought an house for $150 on "+block.name)
+                                console.display(self.name+" have "+str(block.houses)+" houses on this property")
+                        else:
+                                console.display("u cant build more than 4 houses on property")
+                        
+                        
+                    else:
+                        console.display("u cant build on this block until u developed all the properties on this section")
+                            
+                else:
+                    console.display("u cant build until u have all properties on this block")
+        else:
+            console.display("u cant build this block don't belong to u")
+    #buying hotel function                                
+    def buy_hotel(self,block):
+        if block.owner==self.name:
+            if block.color!=UTILITY and block.color!=RW_STATION:                
+                if self.how_many(block.color)==getAmount(block.color):
+                    can_build=True
+                    for street in self.assets[block.color]:
+                        if street.houses<block.houses:
+                            can_build=False
+                    if can_build:
+                        if block.houses==4:
+                                block.hotel=True
+                                self.pay(200)
+                                console.display(self.name+" bought an hotel for $200 on "+block.name)                                
+                        else:
+                                console.display("u need 4 houses to build an hotel")                                                
+                    else:
+                        console.display("u cant build on this block until u developed all the properties on this section")
+                            
+                else:
+                    console.display("u cant build until u have all properties on this block")
+        else:
+            console.display("u cant build this block don't belong to u")
+        
+    def get_build_assets(self):
+        return_list=[]
+        for section in self.assets.keys():
+            if section!=UTILITY and section!=RW_STATION:                
+               if self.how_many(self.assets[section][0].color)==getAmount(self.assets[section][0].color):
+                   return_list.append(section)
+        return return_list
     def is_bankrupt(self):
         if self.money<=0:
             return True
