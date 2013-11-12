@@ -88,7 +88,33 @@ class monoGame():
             self.do_end_turn()                
         else:
             self.console.display("Invalid command input!")     
-            
+    def do_build(self):
+        build_list=self.curr_player.get_build_assets()
+        if(len(build_list)==0):
+            self.console.display("nowhere to build houses")
+        else:
+            build_list.append("pass")
+            cmd=''
+            while cmd!='pass':
+                self.console.display("select section:")
+                cmd=self.console.prompt_commands(build_list)
+                if cmd in build_list and cmd!='pass':                    
+                    section=self.curr_player.assets[cmd]
+                    section.append("pass")
+                    while cmd!='pass':
+                        self.console.display("select street:")                        
+                        cmd=self.console.prompt_commands(section)
+                        if cmd in section and cmd!='pass':
+                            for street in block:
+                                if street.name==cmd:
+                                    self.curr_player.buy_house(street.position)
+                                    cmd='pass'
+                        elif cmd!='pass':
+                            self.console.display('no such section plz select from the options')
+                elif cmd!='pass':
+                    self.console.display('no such section plz select from the options')
+                
+                
     def do_all_commands(self):
         cmd = self.console.prompt_commands(self.commands)
         self.console.display(" ")            
@@ -99,7 +125,7 @@ class monoGame():
         elif cmd == "sell":    
             pass
         elif cmd == "build":    
-            pass
+            self.do_build()
         elif cmd == "mortage":    
             pass
         elif cmd == "unmortage":    
@@ -227,6 +253,12 @@ class monoGame():
                     print (str(self.curr_player.how_many(value)))
             elif action=='buy':
                 self.curr_player.buy(self.board.blocks[value])
+            elif action=='house':
+                self.curr_player.buy_house(self.board.blocks[value])
+            elif action=='hotel':
+                self.curr_player.buy_hotel(self.board.blocks[value])
+            elif action=='build':
+                self.do_build()
 
             
             
