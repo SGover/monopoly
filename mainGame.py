@@ -197,6 +197,7 @@ class monoGame():
         return False
     ################
     #####debug code#############
+    #####################
     def do_debug_mode(self):
         cmd=""
         self.console.display("entered debug mode type exit to leave")
@@ -213,9 +214,19 @@ class monoGame():
                 self.current_player_index=1
                 self.curr_player=self.players[self.current_player_index]
             if action=='move':
+                self.curr_player.updateRoll(value)
                 self.do_move(value)
-            elif action=='jail':
+            elif action=='jail':                
                 self.curr_player.goToJail()
+            elif action=='money':
+                self.curr_player.money+=value
+            elif action=='assets':
+                if value==-1:
+                    print (self.curr_player.assets)
+                else:
+                    print (str(self.curr_player.how_many(value)))
+            elif action=='buy':
+                self.curr_player.buy(self.board.blocks[value])
 
             
             
