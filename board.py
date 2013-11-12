@@ -10,7 +10,8 @@ from gui import guiButton, guiImageList
 TOKENS = ["images\\dog.png","images\\military.png",
           "images\\piece.png","images\\eye.png",
           "images\\scanner.png","images\\skull.png",
-          "images\\tank.png","images\\tron.png","images\\worm.png"]
+          "images\\tank.png","images\\tron.png",
+          "images\\and.png","images\\worm.png"]
 
 P_COLORS = [(255,255,25),(255,25,255),
             (25,255,255),(255,25,25),
@@ -79,6 +80,7 @@ class board():
         self.players = players
         self.statusWin.start(self.players)
         thread = Thread(target=self.draw)
+        thread.daemon = True
         thread.start()
     
     def draw(self):
@@ -92,6 +94,11 @@ class board():
         background = background.convert()
         clock = pygame.time.Clock()
         #image_list = guiImageList((50,50), TOKENS)
+        def do():
+            button1.set_enabled(False)
+        button = guiButton("Build",(50,50), do)
+        button1 = guiButton("Mortage",(200,50), do)
+        
         # Event loop
         while 1:
             clock.tick(60)  #FPS
@@ -118,9 +125,14 @@ class board():
             
             background.blit(brd_img, (5,5))
             #background.blit(image_list, image_list.position)
+            background.blit(button, button.position)
+            background.blit(button1, button1.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
         
             
     def stop(self):
         self.quit = True
+        
+
+    
