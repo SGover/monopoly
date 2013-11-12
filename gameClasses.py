@@ -1,6 +1,10 @@
 from random import shuffle as reorder
 
 
+#CONSTANT VALUES
+JAIL_FEE=100
+
+
 #typer and colors
 UTILITY = "UTILTIES"
 RW_STATION = "RAILWAY STATIONS"
@@ -26,7 +30,7 @@ def init_state(newPlayers,newBoard,newConsole):
 ########################################################################
 def getAmount(aType):
     counter=0
-    assetBlock1=assetBlock('test',1,1, 1)
+    assetBlock1=assetBlock('test',1,1, 1,1,[])
     utilBlock1=utilBlock('name',1,1,1)
     for block in board.blocks:
         if type(block)==type(assetBlock1) or type(block)==type(utilBlock1):
@@ -217,8 +221,10 @@ class utilBlock(block):         #utilities and railway stations
         
 
 class assetBlock(block):
-    def __init__(self,name,color,price, position):
-        block.__init__(self,name, position)        
+    def __init__(self,name,color,price, position,house_price,rent_list):
+        block.__init__(self,name, position)
+        self.house_price=house_price
+        self.rent_list=rent_list
         self.color=color
         self.price=price
         self.houses=0
@@ -232,11 +238,10 @@ class assetBlock(block):
         return self.name + " of " + self.color
     
     def pay_rent(self):
-        rent=self.price//10
-        if self.houses!=0:
-            rent+=self.price//(5-self.houses)
+        index=self.houses
         if self.hotel:
-            rent+=self.price
+            index+=1
+        rent=self.rent_list[index]        
         self.player.pay(rent)
         getPlayerFromName(self.owner).money+=rent
         console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
@@ -360,7 +365,16 @@ class player():
         else:
             console.display("this property already have an owner")
                 
-        
+    def sell_house(self,block):
+        if block.houses>0:
+            self.money+=block.house_price//2
+            block.houses-=1
+            console.display("{} sold a house on {} for ${} \n now he have {} houses on this property".format(self.name,block.name,str(block.house_price//2),block.houses))
+    def sell_hotel(self,block):
+        if block.hotel:
+            self.money+=block.house_price//2
+            block.hotel=False
+            console.display("{} sold the hotel on {} for ${}  ".format(self.name,block.name,str(block.house_price//2)))
     def printPlayer(self):
         console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
         
@@ -406,13 +420,11 @@ class player():
                     if can_build:
                         if block.houses<4:
                                 block.houses+=1
-                                self.pay(150)
-                                console.display(self.name+" bought an house for $150 on "+block.name)
+                                self.pay(block.house_price)
+                                console.display(self.name+" bought an house for $"+str(block.house_price)+" on "+block.name)
                                 console.display(self.name+" have "+str(block.houses)+" houses on this property")
                         else:
-                                console.display("u cant build more than 4 houses on property")
-                        
-                        
+                                console.display("u cant build more than 4 houses on property")                                            
                     else:
                         console.display("u cant build on this block until u developed all the properties on this section")
                             
@@ -432,8 +444,8 @@ class player():
                     if can_build:
                         if block.houses==4:
                                 block.hotel=True
-                                self.pay(200)
-                                console.display(self.name+" bought an hotel for $200 on "+block.name)                                
+                                self.pay(block.house_price)
+                                console.display(self.name+" bought an hotel for $"+str(block.house_price)+" on "+block.name)                                
                         else:
                                 console.display("u need 4 houses to build an hotel")                                                
                     else:
