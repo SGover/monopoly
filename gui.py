@@ -39,7 +39,7 @@ class guiButton(pygame.Surface):
         clock = pygame.time.Clock()
         # Event loop
         while True:
-            clock.tick(500)
+            clock.tick(100)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
@@ -73,15 +73,17 @@ class guiImageList(pygame.Surface):
         self.position = position
         self.images = []
         self.scrollx = 0
-        self.selected = 2
+        self.selected = 0
         #loading from files
         for img in image_paths:
             self.images.append(pygame.image.load(img).convert_alpha())
         self.left = pygame.image.load("images\\left.png").convert_alpha()
         self.right = pygame.image.load("images\\right.png").convert_alpha()
-        self.slct_img =  pygame.image.load("images\\sel.png")
-        self.width = 224
-        self.height = 64
+        self.cover = pygame.image.load("images\\cover.png").convert_alpha()
+        self.bg = pygame.image.load("images\\bg.png").convert_alpha()
+        self.slct_img =  pygame.Surface((52,52))
+        self.width = 240
+        self.height = 70
         #calling parent constructor
         pygame.Surface.__init__(self, size=(self.width,self.height),flags=pygame.SRCALPHA)
         #filling surface with transparent color and than pasting button on it
@@ -91,39 +93,51 @@ class guiImageList(pygame.Surface):
         
     def update_surface(self):
         self.fill((155,200,255))
+        self.slct_img.fill((225, 231, 68))
+        self.blit(self.bg, (0, 0))
         i = 0
         for img in self.images:
             if self.selected == i:
                 self.slct_img.blit(img, (2, 2))
                 img = self.slct_img
-            self.blit(img,((64*i)+(-self.scrollx)+32, 8))
+            self.blit(img,((64*i)+(-self.scrollx)+32, 10))
             i += 1
-        self.blit(self.left, (8,0))
-        self.blit(self.right, (self.width-(self.right.get_width()+8),0))        
+        self.blit(self.cover, (0, 0))
+        self.blit(self.left, (8,2))
+        self.blit(self.right, (self.width-(self.right.get_width()+9),2))        
         
     def mouse_event(self):
         global MOUSEDOWN
         clock = pygame.time.Clock()
         # Event loop
         while True:
-            clock.tick(500)
+            clock.tick(100)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
-            left = pygame.mouse.get_pressed()[2]
+            left = pygame.mouse.get_pressed()[0]
             if left:
                 if not MOUSEDOWN:
                     MOUSEDOWN = True
             elif not left:
                 if MOUSEDOWN:
                     pos = pygame.mouse.get_pos()
-                    if self.left.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-                        self.scrollx += 48
-                        self.update_surface()
-                        logging.warn("{}".format(self.scrollx))
-                    if self.right.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-                        if self.scrollx > 48:
-                            self.scrollx -= 48
+                    if self.left.get_rect().collidepoint((pos[0]-(self.position[0]+8),pos[1]-self.position[1])):
+                        if self.scrollx >= 64:
+                            self.scrollx -= 64
                             self.update_surface()
-                    
-                MOUSEDOWN = False   
+                    elif self.right.get_rect().collidepoint((pos[0]-(self.position[0]+self.width-(self.right.get_width()+8)),pos[1]-self.position[1])):
+                        if self.scrollx < (len(self.images)-3) * 64:
+                            self.scrollx += 64
+                            self.update_surface()
+                    else:
+                        i = 0    
+                        for img in self.images:
+                            if img.get_rect().collidepoint(pos[0]-(self.position[0]+(64*i)+(-self.scrollx)+32),pos[1]-(self.position[1]+8)):
+                                self.selected = i
+                                self.update_surface()
+                            i += 1    
+                        
+                MOUSEDOWN = False
+                
+                

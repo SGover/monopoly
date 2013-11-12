@@ -7,6 +7,11 @@ from threading import Thread
 import os
 from gui import guiButton, guiImageList
 
+TOKENS = ["images\\dog.png","images\\military.png",
+          "images\\piece.png","images\\eye.png",
+          "images\\scanner.png","images\\skull.png",
+          "images\\tank.png","images\\tron.png","images\\worm.png"]
+
 P_COLORS = [(255,255,25),(255,25,255),
             (25,255,255),(255,25,25),
             (25,25,255),(25,255,25)]
@@ -86,7 +91,7 @@ class board():
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         clock = pygame.time.Clock()
-        #l2 = guiImageList((50,50),["images\dog.png","images\military.png","images\piece.png","images\dog.png","images\dog.png"])
+        #image_list = guiImageList((50,50), TOKENS)
         # Event loop
         while 1:
             clock.tick(60)  #FPS
@@ -112,7 +117,7 @@ class board():
                 i += 1
             
             background.blit(brd_img, (5,5))
-            #background.blit(l2, l2.position)
+            #background.blit(image_list, image_list.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
         
