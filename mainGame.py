@@ -100,16 +100,24 @@ class monoGame():
                 cmd=self.console.prompt_commands(build_list)
                 if cmd in build_list and cmd!='pass':                    
                     section=self.curr_player.assets[cmd]
-                    section.append("pass")
+                    name_list=[]
+                    for s in section:
+                            name_list.append(s.name)                    
+                    name_list.append("pass")
                     while cmd!='pass':
-                        self.console.display("select street:")                        
-                        cmd=self.console.prompt_commands(section)
-                        if cmd in section and cmd!='pass':
-                            for street in block:
+                        self.console.display("select street:")                                        
+                        cmd=self.console.prompt_commands_index(name_list)
+                        is_street=False
+                        if cmd!='pass':
+                            for street in section:
                                 if street.name==cmd:
-                                    self.curr_player.buy_house(street.position)
+                                    is_street=True
+                                    if street.houses<4:
+                                        self.curr_player.buy_house(street)
+                                    else:
+                                        self.curr_player.buy_hotel(street)
                                     cmd='pass'
-                        elif cmd!='pass':
+                        elif is_street:
                             self.console.display('no such section plz select from the options')
                 elif cmd!='pass':
                     self.console.display('no such section plz select from the options')
