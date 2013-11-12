@@ -260,6 +260,7 @@ class monoGame():
                 else:
                     print (str(self.curr_player.how_many(value)))
             elif action=='buy':
+                self.board.blocks[value].player=self.curr_player
                 self.curr_player.buy(self.board.blocks[value])
             elif action=='house':
                 self.curr_player.buy_house(self.board.blocks[value])

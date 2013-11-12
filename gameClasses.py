@@ -172,7 +172,7 @@ class utilBlock(block):         #utilities and railway stations
         block.__init__(self, name, position)
         self.color = uType    #utiltiy or railway station !see top at the file
         self.price = price
-        self.owner=None
+        self.owner=NOPLAYER
     def __str__(self):
         return self.name + " of " + self.color
     
@@ -197,14 +197,10 @@ class utilBlock(block):         #utilities and railway stations
         self.player.pay(rent)
         getPlayerFromName(self.owner).money+=rent
     def purchase(self):
-        if not self.player==NOPLAYER:
-            if self.player.money >= self.price:
-                self.player.buy(self)
-                console.display("{} bought the {} for ${}".format(self.player.name,str(self),self.price))
-            else:    
-                console.display("{} don't have ${} to buy {}".format(self.player.name,self.price,str(self)))        
+        self.player.buy(self)
+        
     def getActions(self):
-        if self.owner==None :
+        if self.owner==NOPLAYER :
             return {"buy":self.purchase,"pass":self.pass_}            
         elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
@@ -227,7 +223,7 @@ class assetBlock(block):
         self.price=price
         self.houses=0
         self.hotel=False
-        self.owner=None
+        self.owner=NOPLAYER
         
     def __str__(self):
         return self.name + " of " + self.color
@@ -242,21 +238,16 @@ class assetBlock(block):
         console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
     
     def getActions(self):
-        if self.owner==None :
+        if self.owner==NOPLAYER :
             return {"buy":self.purchase,"pass":self.pass_}            #auction???
         elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
             return {"payrent":self.pay_rent}                        
     
-    def purchase(self):            #buy function should not exist, whole process should be in purchase
-        if not self.player==NOPLAYER:       #And believe me is against principles! both classes are mutuly dependent, 
-            if self.player.money >= self.price:     
-                self.player.buy(self)           #only one class should be calling other class!
-                console.display("{} bought the {} for ${}".format(self.player.name,str(self),self.price))
-            else:    
-                console.display("{} don't have ${} to buy {}".format(self.player.name,self.price,str(self)))
-                
+    def purchase(self):      
+        self.player.buy(self)
+        
     def mortage(self):
         if(self.owner!='bank' and self.owner!=None):
             #player = getPlayerFromName(self.owner)
@@ -351,12 +342,21 @@ class player():
         self.money-=ammount
         
     def buy(self,assetBlock):
-        self.money-=assetBlock.price
-        assetBlock.owner=self.name
-        if(assetBlock.color in self.assets):
-            self.assets[assetBlock.color].append(assetBlock)
+        if assetBlock.owner==NOPLAYER :
+            if self.money >= assetBlock.price:
+                self.money-=assetBlock.price
+                assetBlock.owner=self.name
+                if(assetBlock.color in self.assets):
+                    self.assets[assetBlock.color].append(assetBlock)
+                else:
+                    self.assets[assetBlock.color]=[assetBlock]
+                console.display("{} bought the {} for ${}".format(self.name,str(assetBlock),assetBlock.price))
+            else:    
+                console.display("{} don't have ${} to buy {}".format(self.name,assetBlock.price,str(assetBlock)))
         else:
-            self.assets[assetBlock.color]=[assetBlock,]
+            console.display("this property already have an owner")
+                
+        
     def printPlayer(self):
         console.display(self.name+" has money: "+str(self.money)+" and assets : "+str(self.assets))
         
