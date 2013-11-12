@@ -376,8 +376,9 @@ class player():
         return (houses,hotels)    
     def inc_jail_count(self):
         self.jailCounter+=1
-        if self.jailCounter>=3:
+        if self.jailCounter>=2:
             self.inJail=False
+            console.display("last turn in jail next turn you are a free man")
     def goToJail(self):
         self.inJail=True
         self.jailCounter=0
