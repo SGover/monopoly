@@ -232,7 +232,11 @@ class assetBlock(block):
         return self.name + " of " + self.color
     
     def pay_rent(self):
-        rent=self.price//30
+        rent=self.price//10
+        if self.houses!=0:
+            rent+=self.price//(5-self.houses)
+        if self.hotel:
+            rent+=self.price
         self.player.pay(rent)
         getPlayerFromName(self.owner).money+=rent
         console.display(self.player.name+" paid rent of "+str(rent)+" to "+self.owner)
