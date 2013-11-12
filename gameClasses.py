@@ -276,6 +276,7 @@ class cardBlock():
     def __init__(self, name,deck, position):
         block.__init__(self, name, position)
         self.deck=deck
+        self.color = -1
     def getCard(self):
         card=self.deck.getCard()
         console.display(self.player.name+" got Card : "+card.title+" , "+card.text)
@@ -293,6 +294,7 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
         block.__init__(self, name, position)
         self.deck=deck
         self.money = money
+        self.color = -1
     
     def __str__(self):
         return self.name
@@ -314,6 +316,7 @@ class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLa
 class goToJailBlock(block):
     def __init__(self, position, name="'Go TO Jail'"):
         block.__init__(self, name, position)
+        self.color = -1
 
     def __str__(self):
         return self.name
