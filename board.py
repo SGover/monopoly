@@ -110,7 +110,7 @@ class board():
             for event in pygame.event.get(QUIT):
                 if event.type == QUIT or self.quit:
                     pygame.quit()
-                    sys.quit() 
+                    os.kill(os.getpid(),0)
             background.fill((180, 190, 180))
             brd_img = pygame.image.load("images\\monopoly.png")
             brd_img = brd_img.convert()

@@ -4,7 +4,9 @@ import threading
 import logging
 
 MOUSEDOWN = False
+BACKDOWN = False
 KEYDOWN = False
+SPACEDOWN = False
 ENABLED_TEXT_COLOR = (235,235,235)
 DISABLED_TEXT_COLOR = (200,200,200)
 
@@ -33,6 +35,7 @@ class guiButton(pygame.Surface):
         self.update_surface()
         #starting event listener
         thread = threading.Thread(target=self.mouse_event)
+        thread.daemon = True
         thread.start()
     
     def update_surface(self):
@@ -127,6 +130,7 @@ class guiImageList(pygame.Surface):
         #filling surface with transparent color and than pasting button on it
         self.update_surface()
         thread = threading.Thread(target=self.mouse_event)
+        thread.daemon = True
         thread.start()
         
     def update_surface(self):
@@ -168,8 +172,10 @@ class guiImageList(pygame.Surface):
                                     self.selected = i
                                     self.update_surface()
                                 i += 1    
-                        
-                
+################
+# guiTextBox
+################                        
+
 class guiTextBox(pygame.Surface):
     def __init__(self, position, focus=False, label="Your Text Here ..."):
         self.position = position
@@ -185,13 +191,17 @@ class guiTextBox(pygame.Surface):
         #filling surface with transparent color and than pasting button on it
         self.update_surface()
         thread = threading.Thread(target=self.mouse_event)
+        thread.daemon = True
         thread.start()        
+        thread1 = threading.Thread(target=self.key_event)
+        thread1.daemon = True
+        thread1.start()
         
     def update_surface(self):
         self.fill((155,200,255))
         self.blit(self.mask, (0, 0))
-        text_surf = self.font.render(self.text, True, (50,50,50))
-        textpos = text_surf.get_rect().move(5,self.get_rect().center[1] - text_surf.get_rect().centery/4)
+        text_surf = self.font.render(self.text+"_", True, (50,50,50))
+        textpos = text_surf.get_rect().move(5,self.get_rect().center[1] - text_surf.get_rect().centery)
         if not self.focus and self.text=="":
             text_surf = self.font.render(self.label, True, (200,200,200,150))
             textpos = text_surf.get_rect().move(5,self.get_rect().center[1] - text_surf.get_rect().centery)
@@ -214,18 +224,42 @@ class guiTextBox(pygame.Surface):
                         
     def key_event(self):
         global KEYDOWN
+        global BACKDOWN
+        global SPACEDOWN
         clock = pygame.time.Clock()
         # Event loop
         while True:
             clock.tick(100)
-            k_list = pygame.key.get_pressed()
-            if k_list[K_BACKSPACE]:
-                print("backspace")
-            k_list = k_list[K_a:K_DELETE]
-            print(chr(k_list.index(True)))
-            m = pygame.key.get_mods()
-            if m & KMOD_SHIFT:
-                print('shift pressed')
+            if self.focus:
+                k_list = pygame.key.get_pressed()
+                if k_list[K_BACKSPACE]:
+                    if not BACKDOWN:
+                        self.text = self.text[:len(self.text)-1]
+                        self.update_surface()
+                        BACKDOWN = True
+                else:
+                    BACKDOWN = False
+                    
+                if k_list[K_SPACE]:
+                    if not SPACEDOWN:
+                        self.text = self.text + ' '
+                        self.update_surface()
+                        SPACEDOWN = True
+                else:
+                    SPACEDOWN = False        
+                        
+                k_list1 = k_list[K_a:K_DELETE]
+                if True in k_list1:
+                    if not KEYDOWN:
+                        if pygame.key.get_mods() & KMOD_SHIFT:
+                            self.text = self.text + chr(k_list1.index(True)+65)
+                            self.update_surface()
+                        else:
+                            self.text = self.text + chr(k_list1.index(True)+97)
+                            self.update_surface()
+                        KEYDOWN = True
+                else:
+                    KEYDOWN = False
             
             
 
