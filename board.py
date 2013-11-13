@@ -94,10 +94,9 @@ class board():
         background = background.convert()
         clock = pygame.time.Clock()
         #image_list = guiImageList((50,50), TOKENS)
-        def do():
-            button1.set_enabled(False)
-        button = guiButton("Build",(50,50), do)
-        button1 = guiButton("Mortage",(200,50), do)
+#         button1 = guiButton("Mortage",(200,50))
+#         button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
+        
         
         # Event loop
         while 1:
@@ -106,27 +105,36 @@ class board():
                 if event.type == QUIT or self.quit:
                     return
             background.fill((180, 190, 180))
-            brd_img = pygame.image.load("images\monopoly.png")
+            brd_img = pygame.image.load("images\\monopoly.png")
             brd_img = brd_img.convert()
             background = self.statusWin.draw(background)    #status window
-            
+            for block in self.blocks:
+                if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
+                    if block.hotel:
+                        #draw hotel
+                        pass
+                    elif block.houses>=1:
+                        #draw houses
+                        pass
+            #get players location on board
             player_pos = []
             for p in self.players:
                 player_pos.append(self.blocks[p.location].position)
+            #draw players
             i = 0
             check = []
             for pos in player_pos:
                 for c in check:
                     if pos==c:
-                        pos = (pos[0]+15,pos[1]+15) 
+                        pos = (pos[0],pos[1]+25) 
                 pygame.draw.rect(brd_img, P_COLORS[i], [pos[0],pos[1],20,20])
                 check.append(pos)
                 i += 1
             
             background.blit(brd_img, (5,5))
             #background.blit(image_list, image_list.position)
-            background.blit(button, button.position)
-            background.blit(button1, button1.position)
+#             background.blit(button, button.position)
+#             background.blit(button1, button1.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
         
