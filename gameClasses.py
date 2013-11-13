@@ -507,8 +507,7 @@ class player():
     def get_build_assets(self):
         return_list=[]
         for section in self.assets.keys():
-            if section!=UTILITY and section!=RW_STATION:
-                print (str(self.how_many(self.assets[section][0].color))+ ":"+str(getAmount(self.assets[section][0].color)))
+            if section!=UTILITY and section!=RW_STATION:                
                 if self.how_many(self.assets[section][0].color)==getAmount(self.assets[section][0].color):
                     return_list.append(section)
         return return_list

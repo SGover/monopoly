@@ -83,9 +83,10 @@ class board():
     def show(self, players):
         self.players = players
         self.statusWin.start(self.players)
-        thread = Thread(target=self.draw)
-        thread.daemon = True
-        thread.start()
+        self.thread = Thread(target=self.draw)
+        self.thread.daemon = True
+        self.thread.start()
+        
     
     def draw(self):
         # Initialise screen
@@ -108,7 +109,8 @@ class board():
             clock.tick(60)  #FPS
             for event in pygame.event.get(QUIT):
                 if event.type == QUIT or self.quit:
-                    return
+                    pygame.quit()
+                    sys.quit() 
             background.fill((180, 190, 180))
             brd_img = pygame.image.load("images\\monopoly.png")
             brd_img = brd_img.convert()
