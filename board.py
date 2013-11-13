@@ -98,10 +98,10 @@ class board():
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         clock = pygame.time.Clock()
-        #image_list = guiImageList((50,50), TOKENS)
-#         button1 = guiButton("Mortage",(200,50), lambda: print("clicked"))
-#         button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
-#         textbox = guiTextBox((100,100), focus=False)
+        image_list = guiImageList((500,200), TOKENS)
+        button1 = guiButton("Mortage",(200,50), lambda: print("clicked"))
+        button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
+        textbox = guiTextBox((100,100), focus=False)
         
         
         # Event loop
@@ -110,7 +110,7 @@ class board():
             for event in pygame.event.get(QUIT):
                 if event.type == QUIT or self.quit:
                     pygame.quit()
-                    sys.quit() 
+                    os.kill(os.getpid(),0)
             background.fill((180, 190, 180))
             brd_img = pygame.image.load("images\\monopoly.png")
             brd_img = brd_img.convert()
@@ -141,10 +141,10 @@ class board():
                 i += 1
             
             background.blit(brd_img, (5,5))
-            #background.blit(image_list, image_list.position)
-#             background.blit(button, button.position)
-#             background.blit(button1, button1.position)
-#             background.blit(textbox,textbox.position)
+            background.blit(image_list, image_list.position)
+            background.blit(button, button.position)
+            background.blit(button1, button1.position)
+            background.blit(textbox,textbox.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
         
