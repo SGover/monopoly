@@ -133,9 +133,10 @@ class monoGame():
                 self.console.display("select asset to sell houses:")                                        
                 cmd=self.console.prompt_commands_index(sell_list)
                 for asset in sell_list:
-                    if asset.name==cmd:
-                        cmd='pass'
-                        self.curr_player.sell_house(asset)
+                    if asset!='pass':
+                        if asset.name==cmd.name:
+                            cmd='pass'
+                            self.curr_player.sell_house(asset)
                 
                     
             #cond is True for unMortage and False for mortage
@@ -311,6 +312,13 @@ class monoGame():
                 self.curr_player.buy_hotel(self.board.blocks[value])
             elif action=='build':
                 self.do_build()
+            elif action=='sell':
+                self.do_sell()
+            elif action=='mortage':
+                self.do_mortage(False)
+            elif action=='unmortage':
+                self.do_mortage(True)
+                
 
             
             

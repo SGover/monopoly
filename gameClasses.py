@@ -220,7 +220,7 @@ class utilBlock(block):         #utilities and railway stations
     def unmortage(self,player):
         if self.mortaged and player.name==self.owner:
             player.money-=(self.price//2)*1.1
-            self.mortages=False
+            self.mortaged=False
             console.display("{} unmortaged {} for ${}".format(player.name,self.name,str(round((self.price//2)*1.1,2))))
         
 
@@ -271,7 +271,7 @@ class assetBlock(block):
     def unmortage(self,player):
         if self.mortaged and player.name==self.owner:
             player.money-=(self.price//2)*1.1
-            self.mortages=False
+            self.mortaged=False
             console.display("{} unmortaged {} for ${}".format(player.name,self.name,str(round((self.price//2)*1.1,2))))
     
 
@@ -449,8 +449,9 @@ class player():
         count=0
         if aType in self.assets:   
             for block in self.assets[aType]:
-                if not block.mortage:
+                if not block.mortaged:
                     count+=1
+            return count
         else:
             return 0
         
@@ -481,7 +482,8 @@ class player():
     #buying hotel function                                
     def buy_hotel(self,block):
         if block.owner==self.name:
-            if block.color!=UTILITY and block.color!=RW_STATION:                
+            if block.color!=UTILITY and block.color!=RW_STATION:
+                
                 if self.how_many(block.color)==getAmount(block.color):
                     can_build=True
                     for street in self.assets[block.color]:
@@ -505,9 +507,10 @@ class player():
     def get_build_assets(self):
         return_list=[]
         for section in self.assets.keys():
-            if section!=UTILITY and section!=RW_STATION:                
-               if self.how_many(self.assets[section][0].color)==getAmount(self.assets[section][0].color):
-                   return_list.append(section)
+            if section!=UTILITY and section!=RW_STATION:
+                print (str(self.how_many(self.assets[section][0].color))+ ":"+str(getAmount(self.assets[section][0].color)))
+                if self.how_many(self.assets[section][0].color)==getAmount(self.assets[section][0].color):
+                    return_list.append(section)
         return return_list
     def is_bankrupt(self):
         if self.money<=0:
@@ -543,7 +546,7 @@ class player():
         r_list=[]
         for  v in self.assets.values():
             for a in v:
-                if a.houses>=0:
+                if a.houses>0:
                     r_list.append(a)
         return r_list
         
