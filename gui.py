@@ -4,13 +4,13 @@ import threading
 import logging
 
 MOUSEDOWN = False
+KEYDOWN = False
 ENABLED_TEXT_COLOR = (235,235,235)
 DISABLED_TEXT_COLOR = (200,200,200)
 
 class guiButton(pygame.Surface):
     def __init__(self, caption, position, action=0):
         #initializing
-        pygame.init()
         self.caption = caption      
         self.position = position
         self.action = action
@@ -56,6 +56,23 @@ class guiButton(pygame.Surface):
         while True:
             clock.tick(100)
             if self._enable:
+                left = pygame.mouse.get_pressed()[0]
+                if left:
+                    if not MOUSEDOWN:
+                        MOUSEDOWN = True
+                        pos = pygame.mouse.get_pos()
+                        if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
+                            self.img = self.pressed.copy()
+                            self.update_surface()
+                elif not left:
+                    if MOUSEDOWN:
+                        pos = pygame.mouse.get_pos()
+                        if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
+                            if not self.action==0:
+                                self.action()
+                        self.img = self.btn.copy()
+                        self.update_surface()
+                    MOUSEDOWN = False
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         return
@@ -71,23 +88,7 @@ class guiButton(pygame.Surface):
                                 self.hover.fill((255,255,255,0))
                                 self.update_surface()
                                 hover = False
-                left = pygame.mouse.get_pressed()[0]
-                if left:
-                    if not MOUSEDOWN:
-                        pos = pygame.mouse.get_pos()
-                        if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-                            self.img = self.pressed.copy()
-                            self.update_surface()
-                        MOUSEDOWN = True
-                elif not left:
-                    pos = pygame.mouse.get_pos()
-                    if MOUSEDOWN:
-                        if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-                            if not self.action==0:
-                                self.action()
-                        self.img = self.btn.copy()
-                        self.update_surface()
-                    MOUSEDOWN = False
+                
                     
     def set_enabled(self, enable):
         self._enable = enable
@@ -187,4 +188,78 @@ class guiImageList(pygame.Surface):
                         
                 MOUSEDOWN = False
                 
-                
+class guiTextBox(pygame.Surface):
+    def __init__(self, position, focus=False, label="Your Text Here ..."):
+        self.position = position
+        self.label = label
+        self.focus = focus
+        self.mask = pygame.image.load("images\\gui\\textbox.png")
+        self.font = pygame.font.Font("fonts\\Kabel.ttf", 16)
+        self.text = ""
+        self._width = self.mask.get_width()
+        self._height = self.mask.get_height()
+        #calling parent constructor
+        pygame.Surface.__init__(self, size=(self._width,self._height),flags=pygame.SRCALPHA)
+        #filling surface with transparent color and than pasting button on it
+        self.update_surface()
+        thread = threading.Thread(target=self.mouse_event)
+        thread.start()        
+        
+    def update_surface(self):
+        self.fill((155,200,255))
+        self.blit(self.mask, (0, 0))
+        text_surf = self.font.render(self.text, True, (50,50,50))
+        textpos = text_surf.get_rect().move(5,self.get_rect().center[1] - text_surf.get_rect().centery/4)
+        if not self.focus and self.text=="":
+            text_surf = self.font.render(self.label, True, (200,200,200,150))
+            textpos = text_surf.get_rect().move(5,self.get_rect().center[1] - text_surf.get_rect().centery)
+        self.blit(text_surf, textpos)
+        
+    def mouse_event(self):
+        global MOUSEDOWN
+        clock = pygame.time.Clock()
+        # Event loop
+        while True:
+            clock.tick(100)
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    return
+            left = pygame.mouse.get_pressed()[0]
+            if left:
+                if not MOUSEDOWN:
+                    MOUSEDOWN = True
+            elif not left:
+                if MOUSEDOWN:
+                    pos = pygame.mouse.get_pos()
+                    if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
+                        self.focus = True
+                        self.update_surface()
+                    else:
+                        self.focus = False
+                        self.update_surface()
+                MOUSEDOWN = False    
+    def key_event(self):
+        global KEYDOWN
+        clock = pygame.time.Clock()
+        # Event loop
+        while True:
+            clock.tick(100)
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    return
+#             key = pygame.key.get_pressed()[0]
+#             if left:
+#                 if not MOUSEDOWN:
+#                     MOUSEDOWN = True
+#             elif not left:
+#                 if MOUSEDOWN:
+#                     pos = pygame.mouse.get_pos()
+#                     if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
+#                         self.focus = True
+#                         self.update_surface()
+#                     else:
+#                         self.focus = False
+#                         self.update_surface()
+#                 MOUSEDOWN = False
+            
+            
