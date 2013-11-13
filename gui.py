@@ -48,35 +48,14 @@ class guiButton(pygame.Surface):
         self.blit(self.hover,(0,0))
         
     def mouse_event(self):
-        global MOUSEDOWN
         clock = pygame.time.Clock()
         hover = False
-        left = False
         # Event loop
         while True:
             clock.tick(100)
             if self._enable:
-                left = pygame.mouse.get_pressed()[0]
-                if left:
-                    if not MOUSEDOWN:
-                        MOUSEDOWN = True
-                        pos = pygame.mouse.get_pos()
-                        if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-                            self.img = self.pressed.copy()
-                            self.update_surface()
-                elif not left:
-                    if MOUSEDOWN:
-                        pos = pygame.mouse.get_pos()
-                        if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-                            if not self.action==0:
-                                self.action()
-                        self.img = self.btn.copy()
-                        self.update_surface()
-                    MOUSEDOWN = False
-                for event in pygame.event.get():
-                    if event.type == QUIT:
-                        return
-                    elif event.type == 4:
+                for event in pygame.event.get([MOUSEBUTTONDOWN,4,MOUSEBUTTONUP]):
+                    if event.type == 4:
                         if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
                             if not hover:
                                 self.hover.fill((255,255,255,20))
@@ -88,7 +67,18 @@ class guiButton(pygame.Surface):
                                 self.hover.fill((255,255,255,0))
                                 self.update_surface()
                                 hover = False
-                
+                    elif event.type==MOUSEBUTTONDOWN:
+                        if event.button == 1:
+                            if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                                self.img = self.pressed.copy()
+                                self.update_surface()
+                    elif event.type==MOUSEBUTTONUP:
+                        if event.button == 1:
+                            if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                                if not self.action==0:
+                                    self.action()
+                        self.img = self.btn.copy()
+                        self.update_surface()
                     
     def set_enabled(self, enable):
         self._enable = enable
@@ -155,38 +145,30 @@ class guiImageList(pygame.Surface):
         self.blit(self.right, (self.width-(self.right.get_width()+9),2))        
         
     def mouse_event(self):
-        global MOUSEDOWN
         clock = pygame.time.Clock()
         # Event loop
         while True:
             clock.tick(100)
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    return
-            left = pygame.mouse.get_pressed()[0]
-            if left:
-                if not MOUSEDOWN:
-                    MOUSEDOWN = True
-            elif not left:
-                if MOUSEDOWN:
-                    pos = pygame.mouse.get_pos()
-                    if self.left.get_rect().collidepoint((pos[0]-(self.position[0]+8),pos[1]-self.position[1])):
-                        if self.scrollx >= 64:
-                            self.scrollx -= 64
-                            self.update_surface()
-                    elif self.right.get_rect().collidepoint((pos[0]-(self.position[0]+self.width-(self.right.get_width()+8)),pos[1]-self.position[1])):
-                        if self.scrollx < (len(self.images)-3) * 64:
-                            self.scrollx += 64
-                            self.update_surface()
-                    else:
-                        i = 0    
-                        for img in self.images:
-                            if img.get_rect().collidepoint(pos[0]-(self.position[0]+(64*i)+(-self.scrollx)+32),pos[1]-(self.position[1]+8)):
-                                self.selected = i
+            for event in pygame.event.get(MOUSEBUTTONUP):
+                if event.type==MOUSEBUTTONUP:
+                    if event.button==1:
+                        pos = event.pos
+                        if self.left.get_rect().collidepoint((pos[0]-(self.position[0]+8),pos[1]-self.position[1])):
+                            if self.scrollx >= 64:
+                                self.scrollx -= 64
                                 self.update_surface()
-                            i += 1    
+                        elif self.right.get_rect().collidepoint((pos[0]-(self.position[0]+self.width-(self.right.get_width()+8)),pos[1]-self.position[1])):
+                            if self.scrollx < (len(self.images)-3) * 64:
+                                self.scrollx += 64
+                                self.update_surface()
+                        else:
+                            i = 0    
+                            for img in self.images:
+                                if img.get_rect().collidepoint(pos[0]-(self.position[0]+(64*i)+(-self.scrollx)+32),pos[1]-(self.position[1]+8)):
+                                    self.selected = i
+                                    self.update_surface()
+                                i += 1    
                         
-                MOUSEDOWN = False
                 
 class guiTextBox(pygame.Surface):
     def __init__(self, position, focus=False, label="Your Text Here ..."):
@@ -216,50 +198,35 @@ class guiTextBox(pygame.Surface):
         self.blit(text_surf, textpos)
         
     def mouse_event(self):
-        global MOUSEDOWN
         clock = pygame.time.Clock()
         # Event loop
         while True:
             clock.tick(100)
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    return
-            left = pygame.mouse.get_pressed()[0]
-            if left:
-                if not MOUSEDOWN:
-                    MOUSEDOWN = True
-            elif not left:
-                if MOUSEDOWN:
-                    pos = pygame.mouse.get_pos()
-                    if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-                        self.focus = True
-                        self.update_surface()
-                    else:
-                        self.focus = False
-                        self.update_surface()
-                MOUSEDOWN = False    
+            for event in pygame.event.get(MOUSEBUTTONDOWN):
+                if event.type == MOUSEBUTTONDOWN:
+                    if event.button==1:
+                        if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                            self.focus = True
+                            self.update_surface()
+                        else:
+                            self.focus = False
+                            self.update_surface()
+                        
     def key_event(self):
         global KEYDOWN
         clock = pygame.time.Clock()
         # Event loop
         while True:
             clock.tick(100)
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    return
-#             key = pygame.key.get_pressed()[0]
-#             if left:
-#                 if not MOUSEDOWN:
-#                     MOUSEDOWN = True
-#             elif not left:
-#                 if MOUSEDOWN:
-#                     pos = pygame.mouse.get_pos()
-#                     if self.get_rect().collidepoint((pos[0]-self.position[0],pos[1]-self.position[1])):
-#                         self.focus = True
-#                         self.update_surface()
-#                     else:
-#                         self.focus = False
-#                         self.update_surface()
-#                 MOUSEDOWN = False
+            k_list = pygame.key.get_pressed()
+            if k_list[K_BACKSPACE]:
+                print("backspace")
+            k_list = k_list[K_a:K_DELETE]
+            print(chr(k_list.index(True)))
+            m = pygame.key.get_mods()
+            if m & KMOD_SHIFT:
+                print('shift pressed')
             
             
+
+    
