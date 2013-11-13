@@ -135,7 +135,7 @@ class monoGame():
                 for asset in sell_list:
                     if asset!='pass':
                         if asset.name==cmd.name:
-                            cmd='pass'
+                            cmd='pass'                            
                             self.curr_player.sell_house(asset)
                 
                     
