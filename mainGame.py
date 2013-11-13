@@ -135,7 +135,7 @@ class monoGame():
                 for asset in sell_list:
                     if asset!='pass':
                         if asset.name==cmd.name:
-                            cmd='pass'
+                            cmd='pass'                            
                             self.curr_player.sell_house(asset)
                 
                     
@@ -282,7 +282,9 @@ class monoGame():
         while cmd!="exit":
             cmd=self.console.prompt_commands("debug mode commands")
             if not cmd=='exit':
-                value =int(cmd.split('(')[1].replace(")",''))
+                v=cmd.split('(')[1].replace(")",'')
+                if (v!=''):
+                    value =int(v)
                 player=cmd.split('(')[0].split('.')[0]
                 action=cmd.split('(')[0].split('.')[1]
             if player=='1':                
