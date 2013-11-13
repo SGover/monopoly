@@ -122,7 +122,50 @@ class monoGame():
                 elif cmd!='pass':
                     self.console.display('no such section plz select from the options')
                 
+    def do_sell(self):
+        sell_list=self.curr_player.house_asset_list()
+        if(len(sell_list)==0):
+            self.console.display("no houses to sell")
+        else:
+            sell_list.append("pass")
+            cmd=''
+            while cmd!='pass':
+                self.console.display("select asset to sell houses:")                                        
+                cmd=self.console.prompt_commands_index(sell_list)
+                for asset in sell_list:
+                    if asset.name==cmd:
+                        cmd='pass'
+                        self.curr_player.sell_house(asset)
                 
+                    
+            #cond is True for unMortage and False for mortage
+    def do_mortage(self,cond):        
+        mort_list=self.curr_player.mortage_list(cond)                
+        if(len(mort_list)==0):
+            if cond:
+                self.console.display("no assets to unmortage")
+            else:
+                self.console.display("no assets to mortage")
+        else:
+            mort_list.append("pass")
+            cmd=''
+            while cmd!='pass':
+                if cond:
+                    self.console.display("select asset to unmortage:")
+                else:
+                    self.console.display("select asset to mortage") 
+                cmd=self.console.prompt_commands_index(mort_list)
+                for asset in mort_list:
+                    if asset.name==cmd:
+                        cmd='pass'
+                        if cond:
+                            self.curr_player.unmortage(asset)
+                        else:
+                            self.curr_player.mortage(asset)
+                        
+
+    def do_trade(self):
+        my_trader=
     def do_all_commands(self):
         cmd = self.console.prompt_commands(self.commands)
         self.console.display(" ")            
@@ -131,15 +174,15 @@ class monoGame():
         elif cmd == "end":
             self.do_end_turn()                
         elif cmd == "sell":    
-            pass
+            self.do_sell()
         elif cmd == "build":    
             self.do_build()
         elif cmd == "mortage":    
-            pass
+            self.do_mortage(False)
         elif cmd == "unmortage":    
-            pass
+            self.do_mortage(True)
         elif cmd == "trade":    
-            pass
+            self.do_trade()
         elif cmd == "dMode":
             self.do_debug_mode()
         else:
