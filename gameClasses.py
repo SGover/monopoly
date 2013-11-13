@@ -177,6 +177,7 @@ class utilBlock(block):         #utilities and railway stations
         self.color = uType    #utiltiy or railway station !see top at the file
         self.price = price
         self.owner=NOPLAYER
+        self.mortaged=False
     def __str__(self):
         return self.name + " of " + self.color
     
@@ -211,13 +212,16 @@ class utilBlock(block):         #utilities and railway stations
         else:
             return {"payrent":self.pay_rent}                            
     def mortage(self):
-        if(self.owner!='bank' and self.owner!=None):
-            #player=getPlayerFromName(self.owner)
+        if not self.mortaged and not self.owner!=NOPLAYER:
+            player = getPlayerFromName(self.owner)
             player.money+=self.price/2
-            self.owner='bank'
+            self.mortaged=True
+            console.display("{} mortage {} for ${}".format(player.name,self.name,str((self.price//2))))
     def reMortage(self,player):
-        if self.owner=='bank':
-            player.buy(self)
+        if self.mortaged and player.name==self.owner:
+            player.money-=(self.price//2)*1.1
+            self.mortages=False
+            console.display("{} remortage {} for ${}".format(player.name,self.name,str((self.price//2)*1.1)))
         
 
 class assetBlock(block):
@@ -230,7 +234,7 @@ class assetBlock(block):
         self.houses=0
         self.hotel=False
         self.owner=NOPLAYER
-        
+        self.mortaged=False
     def __str__(self):
         return self.name + " of " + self.color
     
@@ -258,17 +262,16 @@ class assetBlock(block):
         self.player.buy(self)
         
     def mortage(self):
-        if(self.owner!='bank' and self.owner!=None):
-            #player = getPlayerFromName(self.owner)
+        if not self.mortaged and not self.owner!=NOPLAYER:
+            player = getPlayerFromName(self.owner)
             player.money+=self.price/2
-            self.owner='bank'
+            self.mortaged=True
     def reMortage(self,player):
-        if self.owner=='bank':
-            player.buy(self)
-    def buildHouse(self):
-        pass
-    def buildHotel(self):
-        pass
+        if self.mortaged and player.name==self.owner:
+            player.money-=(self.price//2)*1.1
+            self.mortages=False
+            console.display("{} remortage {} for ${}".format(player.name,self.name,str((self.price//2)*1.1)))
+    
 
 
 #represent a block on the board that landing on means u need to pull a card from some deck        
@@ -332,7 +335,42 @@ class goToJailBlock(block):
         return {'Go To jail':self.goToJail}
                
 
+###############
+#trader
+##############
+class trader():
+    def __init__(self,player1,player2):
+        self.player1=player1
+        self.player2=player2
+        self.player1_blocks=[]
+        self.player1_money=0
+        self.player2_blocks=[]
+        self.player2_money=0
+    def add_asset_1(self,asset):
+        self.player1_blocks.append(asset)
+    def add_asset_2(self,asset):
+        self.player2_blocks.append(asset)
+    def set_money1(self,ammount):
+        if self.player1.money>=ammount:
+            self.player1_money=ammount
+    def set_money2(self,ammount):
+        if self.player1.money>=ammount:
+            self.player1_money=ammount            
+    def make_trade(self):
+        self.player2.money-=self.player2_money
+        self.player2.money+=self.player1_money
+        console.display("{} paid ${} and got ${} ".format(self.player2.name,self.player2_money,self.player1_money))
+        for asset in self.player1_blocks:
+            self.player1.remove_asset(asset)
+            self.player2.add_asset(asset)
+        self.player1.money-=self.player1_money
+        self.player1.money+=self.player2_money
+        console.display("{} paid ${} and got ${} ".format(self.player1.name,self.player1_money,self.player2_money))
+        for asset in self.player2_blocks:
+            self.player1.remove_asset(asset)
+            self.player2.add_asset(asset)
 
+    
 ##################
 # Player Section
 ##################
@@ -406,8 +444,11 @@ class player():
         while board.blocks[self.location].name!=JAIL:            
             self.location=(self.location+1)%len(board.blocks)
     def how_many(self,aType):       
+        count=0
         if aType in self.assets:   
-            return len(self.assets[aType])
+            for block in self.assets[aType]:
+                if not block.mortage:
+                    count+=1
         else:
             return 0
         
@@ -470,7 +511,37 @@ class player():
         if self.money<=0:
             return True
         return False
+    def add_asset(self,asset):
+        if(asset.color in self.assets):
+            self.assets[asset.color].append(asset)
+        else:
+            self.assets[asset.color]=[asset]
+        console.display("{} was added to {} properties under {} group".format(asset.name,self.name,asset.color))
+    def remove_asset(self,asset):
+        console.display("{} was removed from {} properties ".format(asset.name,self.name))
+        if asset.color in self.assets:
+            assets[asset.color].remove(asset)
     def updateRoll(self,roll):
         self.latestRoll=roll
     def getLatestRoll(self):
         return self.latestRoll
+    def assets_list(self):
+        r_list=[]
+        for  v in self.assets.values():
+            r_list.extend(v)
+        return r_list
+    def mortage_list(self,condition=True):
+        r_list=[]
+        for  v in self.assets.values():
+            for a in v:
+                if a.mortaged==condition:
+                    r_list.append(a)
+        return r_list
+    def house_asset_list(self):
+        r_list=[]
+        for  v in self.assets.values():
+            for a in v:
+                if a.houses>=0:
+                    r_list.append(a)
+        return r_list
+        
