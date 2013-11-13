@@ -212,16 +212,16 @@ class utilBlock(block):         #utilities and railway stations
         else:
             return {"payrent":self.pay_rent}                            
     def mortage(self):
-        if not self.mortaged and not self.owner!=NOPLAYER:
+        if not self.mortaged and not self.owner==NOPLAYER:
             player = getPlayerFromName(self.owner)
-            player.money+=self.price/2
+            player.money+=self.price//2
             self.mortaged=True
-            console.display("{} mortage {} for ${}".format(player.name,self.name,str((self.price//2))))
-    def reMortage(self,player):
+            console.display("{} mortaged {} for ${}".format(player.name,self.name,str((self.price//2))))
+    def unmortage(self,player):
         if self.mortaged and player.name==self.owner:
             player.money-=(self.price//2)*1.1
             self.mortages=False
-            console.display("{} remortage {} for ${}".format(player.name,self.name,str((self.price//2)*1.1)))
+            console.display("{} unmortaged {} for ${}".format(player.name,self.name,str(round((self.price//2)*1.1,2))))
         
 
 class assetBlock(block):
@@ -262,15 +262,17 @@ class assetBlock(block):
         self.player.buy(self)
         
     def mortage(self):
-        if not self.mortaged and not self.owner!=NOPLAYER:
+        if not self.mortaged and not self.owner==NOPLAYER:
             player = getPlayerFromName(self.owner)
-            player.money+=self.price/2
+            player.money+=self.price//2
             self.mortaged=True
-    def reMortage(self,player):
+            console.display("{} mortaged {} for ${}".format(player.name,self.name,str((self.price//2))))
+            
+    def unmortage(self,player):
         if self.mortaged and player.name==self.owner:
             player.money-=(self.price//2)*1.1
             self.mortages=False
-            console.display("{} remortage {} for ${}".format(player.name,self.name,str((self.price//2)*1.1)))
+            console.display("{} unmortaged {} for ${}".format(player.name,self.name,str(round((self.price//2)*1.1,2))))
     
 
 
@@ -520,7 +522,7 @@ class player():
     def remove_asset(self,asset):
         console.display("{} was removed from {} properties ".format(asset.name,self.name))
         if asset.color in self.assets:
-            assets[asset.color].remove(asset)
+            self.assets[asset.color].remove(asset)
     def updateRoll(self,roll):
         self.latestRoll=roll
     def getLatestRoll(self):

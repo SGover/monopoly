@@ -149,23 +149,23 @@ class monoGame():
         else:
             mort_list.append("pass")
             cmd=''
-            while cmd!='pass':
-                if cond:
-                    self.console.display("select asset to unmortage:")
-                else:
-                    self.console.display("select asset to mortage") 
-                cmd=self.console.prompt_commands_index(mort_list)
-                for asset in mort_list:
-                    if asset.name==cmd:
-                        cmd='pass'
-                        if cond:
-                            self.curr_player.unmortage(asset)
-                        else:
-                            self.curr_player.mortage(asset)
+            if cond:
+                self.console.display("select asset to unmortage:")
+            else:
+                self.console.display("select asset to mortage") 
+            cmd=self.console.prompt_commands_index(mort_list)
+            mort_list.remove("pass")
+            for asset in mort_list:
+                if asset==cmd:
+                    if cond:
+                        asset.unmortage(self.curr_player)
+                    else:
+                        asset.mortage()
                         
 
     def do_trade(self):
-        my_trader=
+        #my_trader=
+        pass
     def do_all_commands(self):
         cmd = self.console.prompt_commands(self.commands)
         self.console.display(" ")            

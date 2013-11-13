@@ -5,13 +5,17 @@ import pygame
 from pygame.locals import QUIT
 from threading import Thread
 import os
-from gui import guiButton, guiImageList
+from gui import guiButton, guiImageList, guiTextBox
 
 TOKENS = ["images\\dog.png","images\\military.png",
           "images\\piece.png","images\\eye.png",
           "images\\scanner.png","images\\skull.png",
           "images\\tank.png","images\\tron.png",
           "images\\and.png","images\\worm.png"]
+
+BUILDINGS = ["images\\hotel.png","images\\h1.png",
+             "images\\h2.png","images\\h3.png",
+             "images\\h4.png"]
 
 P_COLORS = [(255,255,25),(255,25,255),
             (25,255,255),(255,25,25),
@@ -94,14 +98,15 @@ class board():
         background = background.convert()
         clock = pygame.time.Clock()
         #image_list = guiImageList((50,50), TOKENS)
-#         button1 = guiButton("Mortage",(200,50))
+#         button1 = guiButton("Mortage",(200,50), lambda: print("clicked"))
 #         button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
+#         textbox = guiTextBox((100,100), focus=False)
         
         
         # Event loop
         while 1:
             clock.tick(60)  #FPS
-            for event in pygame.event.get():
+            for event in pygame.event.get(QUIT):
                 if event.type == QUIT or self.quit:
                     return
             background.fill((180, 190, 180))
@@ -112,10 +117,12 @@ class board():
                 if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
                     if block.hotel:
                         #draw hotel
-                        pass
+                        h = pygame.image.load(BUILDINGS[0])
+                        brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
                     elif block.houses>=1:
                         #draw houses
-                        pass
+                        h = pygame.image.load(BUILDINGS[block.houses])
+                        brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
             #get players location on board
             player_pos = []
             for p in self.players:
@@ -135,6 +142,7 @@ class board():
             #background.blit(image_list, image_list.position)
 #             background.blit(button, button.position)
 #             background.blit(button1, button1.position)
+#             background.blit(textbox,textbox.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
         
