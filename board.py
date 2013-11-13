@@ -98,9 +98,9 @@ class board():
         background = background.convert()
         clock = pygame.time.Clock()
         #image_list = guiImageList((50,50), TOKENS)
-        button1 = guiButton("Mortage",(200,50), lambda: print("clicked"))
-        button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
-        textbox = guiTextBox((100,100), focus=False)
+#         button1 = guiButton("Mortage",(200,50), lambda: print("clicked"))
+#         button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
+#         textbox = guiTextBox((100,100), focus=False)
         
         
         # Event loop
@@ -113,8 +113,6 @@ class board():
             brd_img = pygame.image.load("images\\monopoly.png")
             brd_img = brd_img.convert()
             background = self.statusWin.draw(background)    #status window
-            self.blocks[16].houses = 4
-            self.blocks[18].hotel = True
             for block in self.blocks:
                 if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
                     if block.hotel:
@@ -142,9 +140,9 @@ class board():
             
             background.blit(brd_img, (5,5))
             #background.blit(image_list, image_list.position)
-            background.blit(button, button.position)
-            background.blit(button1, button1.position)
-            background.blit(textbox,textbox.position)
+#             background.blit(button, button.position)
+#             background.blit(button1, button1.position)
+#             background.blit(textbox,textbox.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
         

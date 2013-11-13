@@ -22,12 +22,13 @@ class console():
     def prompt_commands(self, list_cmds):
         print("\nSelect a command:")
         return input(" {} : ".format(list_cmds))
+    
     def prompt_commands_index(self,list_cmds):
         print ("use the number to select an option from the following options:")
         str1=''
         for cmd in list_cmds:
             str1+=" "+str(list_cmds.index(cmd)+1)+". "+str(cmd)
-        index=-1
+        index = -1
         while index<0 or index>=len(list_cmds):
             index= int(input(str1+'\n'))-1
         return list_cmds[index]
