@@ -5,7 +5,7 @@ import pygame
 from pygame.locals import QUIT
 from threading import Thread
 import os
-from gui import guiButton, guiImageList, guiTextBox
+#from gui import guiButton, guiImageList, guiTextBox
 
 TOKENS = ["images\\dog.png","images\\military.png",
           "images\\piece.png","images\\eye.png",
@@ -17,7 +17,7 @@ BUILDINGS = ["images\\hotel.png","images\\h1.png",
              "images\\h2.png","images\\h3.png",
              "images\\h4.png"]
 
-P_COLORS = [(255,255,25),(255,25,255),
+P_COLORS = [(255,25,255),
             (25,255,255),(255,25,25),
             (25,25,255),(25,255,25)]
 IFF=initFromFile("gameProperties.txt")
@@ -92,13 +92,16 @@ class board():
         # Initialise screen
         pygame.init()
         os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,50)  # x,y position of the screen
-        screen = pygame.display.set_mode((950, 550))       #witdth and height
+        screen = pygame.display.set_mode((1020, 550))       #witdth and height
         pygame.display.set_caption('Monopoly')
         # Fill background
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         clock = pygame.time.Clock()
         bg_img = pygame.image.load("images\\gui\\bigbg.png")
+        token_list = []
+        for p in self.players:
+            token_list.append(pygame.image.load(TOKENS[p.token_index]).convert_alpha())
 #         image_list = guiImageList((500,200), TOKENS)
 #         button1 = guiButton("Mortage",(200,50), lambda: print("clicked"))
 #         button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
@@ -139,7 +142,7 @@ class board():
                 for c in check:
                     if pos==c:
                         pos = (pos[0],pos[1]+25) 
-                pygame.draw.rect(brd_img, P_COLORS[i], [pos[0],pos[1],20,20])
+                brd_img.blit(token_list[i], (pos[0]-15,pos[1]-10))
                 check.append(pos)
                 i += 1
             

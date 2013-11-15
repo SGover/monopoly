@@ -1,6 +1,7 @@
 from gameClasses import *
 import console as _console
 from random import randrange
+from gui import nameDialog,imageDialog
 
 START='start'
 INGAME='ingame'
@@ -38,8 +39,9 @@ class monoGame():
         if self.players==[]:
             i = 0
             while i < self.num_players:
-                name_player = self.console.get_player_name()
+                name_player = nameDialog("Enter Player Name :").show()
                 new_player1 = player(name_player,self.default_money)
+                new_player1.token_index = imageDialog().show()
                 self.players.append(new_player1)
                 i += 1
         self.board.show(self.players)    

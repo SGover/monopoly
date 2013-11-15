@@ -1,12 +1,14 @@
 import pygame
 from pygame.locals import *  
 import threading
-import logging
+import os
+from board import TOKENS
 
 MOUSEDOWN = False
 BACKDOWN = False
 KEYDOWN = False
 SPACEDOWN = False
+GUIQUIT = False
 ENABLED_TEXT_COLOR = (235,235,235)
 DISABLED_TEXT_COLOR = (200,200,200)
 
@@ -35,7 +37,7 @@ class guiButton(pygame.Surface):
         self.update_surface()
         #starting event listener
         thread = threading.Thread(target=self.mouse_event)
-        thread.daemon = True
+        #thread.daemon = True
         thread.start()
     
     def update_surface(self):
@@ -56,6 +58,8 @@ class guiButton(pygame.Surface):
         # Event loop
         while True:
             clock.tick(100)
+            if GUIQUIT:
+                return
             if self._enable:
                 for event in pygame.event.get([MOUSEBUTTONDOWN,4,MOUSEBUTTONUP]):
                     if event.type == 4:
@@ -153,6 +157,8 @@ class guiImageList(pygame.Surface):
         # Event loop
         while True:
             clock.tick(100)
+            if GUIQUIT:
+                return
             for event in pygame.event.get(MOUSEBUTTONUP):
                 if event.type==MOUSEBUTTONUP:
                     if event.button==1:
@@ -191,7 +197,7 @@ class guiTextBox(pygame.Surface):
         #filling surface with transparent color and than pasting button on it
         self.update_surface()
         thread = threading.Thread(target=self.mouse_event)
-        thread.daemon = True
+        #thread.daemon = True
         thread.start()        
         thread1 = threading.Thread(target=self.key_event)
         thread1.daemon = True
@@ -211,6 +217,8 @@ class guiTextBox(pygame.Surface):
         clock = pygame.time.Clock()
         # Event loop
         while True:
+            if GUIQUIT:
+                return
             clock.tick(100)
             for event in pygame.event.get(MOUSEBUTTONDOWN):
                 if event.type == MOUSEBUTTONDOWN:
@@ -229,6 +237,8 @@ class guiTextBox(pygame.Surface):
         clock = pygame.time.Clock()
         # Event loop
         while True:
+            if GUIQUIT:
+                return
             clock.tick(100)
             if self.focus:
                 k_list = pygame.key.get_pressed()
@@ -262,5 +272,112 @@ class guiTextBox(pygame.Surface):
                     KEYDOWN = False
             
             
-
+class nameDialog():
+               
+    def __init__(self, prompt):
+        self.prompt = prompt
+        self.result = ""
     
+    def show(self):
+        self.thread = threading.Thread(target=self.draw)
+        self.thread.daemon = True
+        self.thread.start()
+        self.thread.join()
+        pygame.quit()
+        global GUIQUIT
+        GUIQUIT = False
+        return self.result
+    
+    def draw(self):
+        # Initialise screen
+        pygame.init()
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(400,300)  # x,y position of the screen
+        screen = pygame.display.set_mode((270, 98))       #witdth and height
+        pygame.display.set_caption("Monopoly")
+        # Fill background
+        background = pygame.Surface(screen.get_size())
+        background = background.convert()
+        clock = pygame.time.Clock()
+        bg_img = pygame.image.load("images\\gui\\d.png")
+        font = pygame.font.Font("fonts\\Kabel.ttf", 12)
+        self.text_surf = font.render(self.prompt, True, (30,30,30))
+        cancel_button = guiButton("Cancel",(190,60), lambda: os.kill(os.getpid(),0))
+        okay_button = guiButton("Ok",(110,60), lambda: get_input())
+        textbox = guiTextBox((15,20), focus=True, label=self.prompt)
+        def get_input():
+            if not textbox.text == "":
+                self.result=textbox.text
+                global GUIQUIT
+                GUIQUIT = True
+            else:
+                self.text_surf = font.render(self.prompt, True, (255,30,30))
+        
+        # Event loop
+        while 1:
+            clock.tick(30)  #FPS
+            if GUIQUIT:
+                return
+            for event in pygame.event.get(QUIT):
+                if event.type == QUIT:
+                    pygame.quit()
+                    os.kill(os.getpid(),0)
+            background.fill((180, 190, 180))
+            background.blit(bg_img, (0,0))
+            background.blit(self.text_surf, (15,2))
+            background.blit(okay_button, okay_button.position)
+            background.blit(cancel_button, cancel_button.position)
+            background.blit(textbox,textbox.position)
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+
+class imageDialog():
+               
+    def __init__(self):
+        self.result = 0
+    
+    def show(self):
+        self.thread = threading.Thread(target=self.draw)
+        self.thread.daemon = True
+        self.thread.start()
+        self.thread.join()
+        pygame.quit()
+        global GUIQUIT
+        GUIQUIT = False
+        return self.result
+    
+    def draw(self):
+        # Initialise screen
+        pygame.init()
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(400,300)  # x,y position of the screen
+        screen = pygame.display.set_mode((270, 124))       #witdth and height
+        pygame.display.set_caption("Monopoly")
+        # Fill background
+        background = pygame.Surface(screen.get_size())
+        background = background.convert()
+        clock = pygame.time.Clock()
+        bg_img = pygame.image.load("images\\gui\\d2.png")
+        cancel_button = guiButton("Cancel",(190,85), lambda: os.kill(os.getpid(),0))
+        okay_button = guiButton("Ok",(110,85), lambda: get_input())
+        imagelist = guiImageList((15,10), TOKENS)
+        def get_input():
+                self.result=imagelist.selected
+                global GUIQUIT
+                GUIQUIT = True
+        
+        # Event loop
+        while 1:
+            clock.tick(30)  #FPS
+            if GUIQUIT:
+                return
+            for event in pygame.event.get(QUIT):
+                if event.type == QUIT:
+                    pygame.quit()
+                    os.kill(os.getpid(),0)
+            background.fill((180, 190, 180))
+            background.blit(bg_img, (0,0))
+            background.blit(okay_button, okay_button.position)
+            background.blit(cancel_button, cancel_button.position)
+            background.blit(imagelist,imagelist.position)
+            screen.blit(background, (0, 0))
+            pygame.display.flip()
+     
