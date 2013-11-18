@@ -38,7 +38,7 @@ class statusWindow():
             
             background.blit(self.img, (X,height+5))
             
-            txt_name = self.fnt_name.render(p.name, True, P_COLORS[l])
+            txt_name = self.fnt_name.render(p.name, True, (235,235,235))
             textpos = txt_name.get_rect().move(X+15,20+height)
             background.blit(txt_name, textpos)
             
