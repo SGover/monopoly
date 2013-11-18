@@ -9,6 +9,7 @@ BACKDOWN = False
 KEYDOWN = False
 SPACEDOWN = False
 GUIQUIT = False
+hover = False
 ENABLED_TEXT_COLOR = (235,235,235)
 DISABLED_TEXT_COLOR = (200,200,200)
 
@@ -19,6 +20,7 @@ class guiButton(pygame.Surface):
         self.position = position
         self.action = action
         self.font_size = 14
+        self.events = [MOUSEBUTTONDOWN,4,MOUSEBUTTONUP]
         #loading from files
         self.img = pygame.image.load("images\\gui\\blue.png")
         self.pressed = pygame.image.load("images\\gui\\pressed.png")
@@ -35,10 +37,6 @@ class guiButton(pygame.Surface):
         pygame.Surface.__init__(self, size=(self._width,self._height),flags=pygame.SRCALPHA)
         #update surface
         self.update_surface()
-        #starting event listener
-        thread = threading.Thread(target=self.mouse_event)
-        #thread.daemon = True
-        thread.start()
     
     def update_surface(self):
         #writing caption on button in the center
@@ -52,40 +50,34 @@ class guiButton(pygame.Surface):
         self.blit(self.img,(0,0))
         self.blit(self.hover,(0,0))
         
-    def mouse_event(self):
-        clock = pygame.time.Clock()
-        hover = False
-        # Event loop
-        while True:
-            clock.tick(100)
-            if GUIQUIT:
-                return
-            if self._enable:
-                for event in pygame.event.get([MOUSEBUTTONDOWN,4,MOUSEBUTTONUP]):
-                    if event.type == 4:
-                        if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
-                            if not hover:
-                                self.hover.fill((255,255,255,20))
-                                self.update_surface()
-                                hover = True
-                        else:
-                            if hover:
-                                self.img = self.btn.copy()
-                                self.hover.fill((255,255,255,0))
-                                self.update_surface()
-                                hover = False
-                    elif event.type==MOUSEBUTTONDOWN:
-                        if event.button == 1:
-                            if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
-                                self.img = self.pressed.copy()
-                                self.update_surface()
-                    elif event.type==MOUSEBUTTONUP:
-                        if event.button == 1:
-                            if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
-                                if not self.action==0:
-                                    self.action()
+    def handle_event(self, event):
+        global hover
+        if self._enable:
+            if event.type == 4:
+                if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                    if not hover:
                         self.img = self.btn.copy()
+                        self.hover.fill((255,255,255,20))
                         self.update_surface()
+                        hover = True
+                else:
+                    if hover:
+                        self.img = self.btn.copy()
+                        self.hover.fill((255,255,255,0))
+                        self.update_surface()
+                        hover = False
+            elif event.type==MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                        self.img = self.pressed.copy()
+                        self.update_surface()
+            elif event.type==MOUSEBUTTONUP:
+                if event.button == 1:
+                    if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                        if not self.action==0:
+                            self.action()
+                self.img = self.btn.copy()
+                self.update_surface()
                     
     def set_enabled(self, enable):
         self._enable = enable
@@ -119,6 +111,7 @@ class guiImageList(pygame.Surface):
         self.images = []
         self.scrollx = 0
         self.selected = 0
+        self.events = [MOUSEBUTTONUP]
         #loading from files
         for img in image_paths:
             self.images.append(pygame.image.load(img).convert_alpha())
@@ -133,9 +126,6 @@ class guiImageList(pygame.Surface):
         pygame.Surface.__init__(self, size=(self.width,self.height),flags=pygame.SRCALPHA)
         #filling surface with transparent color and than pasting button on it
         self.update_surface()
-        thread = threading.Thread(target=self.mouse_event)
-        thread.daemon = True
-        thread.start()
         
     def update_surface(self):
         self.fill((155,200,255))
@@ -152,32 +142,25 @@ class guiImageList(pygame.Surface):
         self.blit(self.left, (8,2))
         self.blit(self.right, (self.width-(self.right.get_width()+9),2))        
         
-    def mouse_event(self):
-        clock = pygame.time.Clock()
-        # Event loop
-        while True:
-            clock.tick(100)
-            if GUIQUIT:
-                return
-            for event in pygame.event.get(MOUSEBUTTONUP):
-                if event.type==MOUSEBUTTONUP:
-                    if event.button==1:
-                        pos = event.pos
-                        if self.left.get_rect().collidepoint((pos[0]-(self.position[0]+8),pos[1]-self.position[1])):
-                            if self.scrollx >= 64:
-                                self.scrollx -= 64
-                                self.update_surface()
-                        elif self.right.get_rect().collidepoint((pos[0]-(self.position[0]+self.width-(self.right.get_width()+8)),pos[1]-self.position[1])):
-                            if self.scrollx < (len(self.images)-3) * 64:
-                                self.scrollx += 64
-                                self.update_surface()
-                        else:
-                            i = 0    
-                            for img in self.images:
-                                if img.get_rect().collidepoint(pos[0]-(self.position[0]+(64*i)+(-self.scrollx)+32),pos[1]-(self.position[1]+8)):
-                                    self.selected = i
-                                    self.update_surface()
-                                i += 1    
+    def handle_event(self, event):
+        if event.type==MOUSEBUTTONUP:
+            if event.button==1:
+                pos = event.pos
+                if self.left.get_rect().collidepoint((pos[0]-(self.position[0]+8),pos[1]-self.position[1])):
+                    if self.scrollx >= 64:
+                        self.scrollx -= 64
+                        self.update_surface()
+                elif self.right.get_rect().collidepoint((pos[0]-(self.position[0]+self.width-(self.right.get_width()+8)),pos[1]-self.position[1])):
+                    if self.scrollx < (len(self.images)-3) * 64:
+                        self.scrollx += 64
+                        self.update_surface()
+                else:
+                    i = 0    
+                    for img in self.images:
+                        if img.get_rect().collidepoint(pos[0]-(self.position[0]+(64*i)+(-self.scrollx)+32),pos[1]-(self.position[1]+8)):
+                            self.selected = i
+                            self.update_surface()
+                        i += 1    
 ################
 # guiTextBox
 ################                        
@@ -187,6 +170,8 @@ class guiTextBox(pygame.Surface):
         self.position = position
         self.label = label
         self.focus = focus
+        self.events = [MOUSEBUTTONDOWN]
+
         self.mask = pygame.image.load("images\\gui\\textbox.png")
         self.font = pygame.font.Font("fonts\\Kabel.ttf", 16)
         self.text = ""
@@ -196,9 +181,6 @@ class guiTextBox(pygame.Surface):
         pygame.Surface.__init__(self, size=(self._width,self._height),flags=pygame.SRCALPHA)
         #filling surface with transparent color and than pasting button on it
         self.update_surface()
-        thread = threading.Thread(target=self.mouse_event)
-        #thread.daemon = True
-        thread.start()        
         thread1 = threading.Thread(target=self.key_event)
         thread1.daemon = True
         thread1.start()
@@ -206,29 +188,25 @@ class guiTextBox(pygame.Surface):
     def update_surface(self):
         self.fill((155,200,255))
         self.blit(self.mask, (0, 0))
-        text_surf = self.font.render(self.text+"_", True, (50,50,50))
+        if not self.focus:
+            text_surf = self.font.render(self.text, True, (50,50,50))
+        else:
+            text_surf = self.font.render(self.text+"_", True, (50,50,50))
         textpos = text_surf.get_rect().move(5,self.get_rect().center[1] - text_surf.get_rect().centery)
         if not self.focus and self.text=="":
             text_surf = self.font.render(self.label, True, (200,200,200,150))
             textpos = text_surf.get_rect().move(5,self.get_rect().center[1] - text_surf.get_rect().centery)
         self.blit(text_surf, textpos)
         
-    def mouse_event(self):
-        clock = pygame.time.Clock()
-        # Event loop
-        while True:
-            if GUIQUIT:
-                return
-            clock.tick(100)
-            for event in pygame.event.get(MOUSEBUTTONDOWN):
-                if event.type == MOUSEBUTTONDOWN:
-                    if event.button==1:
-                        if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
-                            self.focus = True
-                            self.update_surface()
-                        else:
-                            self.focus = False
-                            self.update_surface()
+    def handle_event(self, event):
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button==1:
+                if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                    self.focus = True
+                    self.update_surface()
+                else:
+                    self.focus = False
+                    self.update_surface()
                         
     def key_event(self):
         global KEYDOWN
@@ -272,10 +250,9 @@ class guiTextBox(pygame.Surface):
                     KEYDOWN = False
             
             
-class nameDialog():
+class playerDialog():
                
-    def __init__(self, prompt):
-        self.prompt = prompt
+    def __init__(self):
         self.result = ""
     
     def show(self):
@@ -291,93 +268,68 @@ class nameDialog():
     def draw(self):
         # Initialise screen
         pygame.init()
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(400,300)  # x,y position of the screen
-        screen = pygame.display.set_mode((270, 98))       #witdth and height
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(200,100)  # x,y position of the screen
+        screen = pygame.display.set_mode((720, 540))       #witdth and height
         pygame.display.set_caption("Monopoly")
         # Fill background
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         clock = pygame.time.Clock()
-        bg_img = pygame.image.load("images\\gui\\d.png")
-        font = pygame.font.Font("fonts\\Kabel.ttf", 12)
-        self.text_surf = font.render(self.prompt, True, (30,30,30))
-        cancel_button = guiButton("Cancel",(190,60), lambda: os.kill(os.getpid(),0))
-        okay_button = guiButton("Ok",(110,60), lambda: get_input())
-        textbox = guiTextBox((15,20), focus=True, label=self.prompt)
+        #load
+        bg_img = pygame.image.load("images\\gui\\bigbg.png")
+        font = pygame.font.Font("fonts\\Kabel.ttf", 14)
+        font2 = pygame.font.Font("fonts\\Kabel.ttf", 40)
+        #controls
+        p_num1 = font2.render("Player 1", True, (200,200,200))
+        self.text_surf1 = font.render("Name : ", True, (30,30,30))
+        self.tok_surf1 = font.render("Token : ", True, (30,30,30))
+        p_num2 = font2.render("Player 2", True, (200,200,200))
+        self.text_surf2 = font.render("Name : ", True, (30,30,30))
+        self.tok_surf2 = font.render("Token : ", True, (30,30,30))
+        control_list = []
+        control_list.append(guiTextBox((50,200), focus=True, label="player1"))
+        control_list.append(guiImageList((50,270), TOKENS))
+        control_list.append(guiTextBox((360 + 50,200), focus=False, label="player2"))
+        control_list.append(guiImageList((360 + 50,270), TOKENS))
+        
+        control_list.append(guiButton("Exit",(30,495), lambda: os.kill(os.getpid(),0)))
+        control_list.append(guiButton("Play!",(620,495), lambda: get_input()))
+
         def get_input():
-            if not textbox.text == "":
-                self.result=textbox.text
+            if not control_list[0].text == "" and not control_list[2].text == "":
+                self.result=[[control_list[0].text,control_list[1].selected],[control_list[2].text,control_list[3].selected]]
                 global GUIQUIT
                 GUIQUIT = True
             else:
-                self.text_surf = font.render(self.prompt, True, (255,30,30))
+                if control_list[0].text == "":
+                    self.text_surf1 = font.render("Name : ", True, (255,30,30))
+                if control_list[2].text == "":
+                    self.text_surf2 = font.render("Name : ", True, (255,30,30))
         
         # Event loop
         while 1:
-            clock.tick(30)  #FPS
+            clock.tick(100)  #FPS
             if GUIQUIT:
                 return
-            for event in pygame.event.get(QUIT):
+            for event in pygame.event.get():
+                for control in control_list:
+                    if event.type in control.events:
+                        control.handle_event(event)
                 if event.type == QUIT:
                     pygame.quit()
                     os.kill(os.getpid(),0)
             background.fill((180, 190, 180))
             background.blit(bg_img, (0,0))
-            background.blit(self.text_surf, (15,2))
-            background.blit(okay_button, okay_button.position)
-            background.blit(cancel_button, cancel_button.position)
-            background.blit(textbox,textbox.position)
+            background.blit(p_num1, (80, 70))
+            background.blit(self.tok_surf1,(50,245))
+            background.blit(self.text_surf1,(50,175))
+            
+            background.blit(p_num2, (360 + 80, 70))
+            background.blit(self.tok_surf2,(360 + 50,245))
+            background.blit(self.text_surf2,(360 + 50,175))
+            
+            for control in control_list:
+                background.blit(control,control.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
 
-class imageDialog():
-               
-    def __init__(self):
-        self.result = 0
-    
-    def show(self):
-        self.thread = threading.Thread(target=self.draw)
-        self.thread.daemon = True
-        self.thread.start()
-        self.thread.join()
-        pygame.quit()
-        global GUIQUIT
-        GUIQUIT = False
-        return self.result
-    
-    def draw(self):
-        # Initialise screen
-        pygame.init()
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(400,300)  # x,y position of the screen
-        screen = pygame.display.set_mode((270, 124))       #witdth and height
-        pygame.display.set_caption("Monopoly")
-        # Fill background
-        background = pygame.Surface(screen.get_size())
-        background = background.convert()
-        clock = pygame.time.Clock()
-        bg_img = pygame.image.load("images\\gui\\d2.png")
-        cancel_button = guiButton("Cancel",(190,85), lambda: os.kill(os.getpid(),0))
-        okay_button = guiButton("Ok",(110,85), lambda: get_input())
-        imagelist = guiImageList((15,10), TOKENS)
-        def get_input():
-                self.result=imagelist.selected
-                global GUIQUIT
-                GUIQUIT = True
-        
-        # Event loop
-        while 1:
-            clock.tick(30)  #FPS
-            if GUIQUIT:
-                return
-            for event in pygame.event.get(QUIT):
-                if event.type == QUIT:
-                    pygame.quit()
-                    os.kill(os.getpid(),0)
-            background.fill((180, 190, 180))
-            background.blit(bg_img, (0,0))
-            background.blit(okay_button, okay_button.position)
-            background.blit(cancel_button, cancel_button.position)
-            background.blit(imagelist,imagelist.position)
-            screen.blit(background, (0, 0))
-            pygame.display.flip()
-     
