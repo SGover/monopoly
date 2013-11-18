@@ -389,6 +389,7 @@ class player():
         self.location=0
         self.getOutOfJailCard=False
         self.inJail=False
+        self.token_index = -1
         
     def pay(self,ammount):
         self.money-=ammount
