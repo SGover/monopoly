@@ -340,7 +340,7 @@ class goToJailBlock(block):
 ###############
 #trader
 ##############
-class trader():
+class Trader():
     def __init__(self,player1,player2):
         self.player1=player1
         self.player2=player2
@@ -352,6 +352,10 @@ class trader():
         self.player1_blocks.append(asset)
     def add_asset_2(self,asset):
         self.player2_blocks.append(asset)
+    def remove_asset_1(self,asset):
+        self.player1_blocks.remove(asset)
+    def remove_asset_2(self,asset):
+        self.player2_blocks.remove(asset)
     def set_money1(self,ammount):
         if self.player1.money>=ammount:
             self.player1_money=ammount
@@ -371,7 +375,7 @@ class trader():
         for asset in self.player2_blocks:
             self.player1.remove_asset(asset)
             self.player2.add_asset(asset)
-
+   
     
 ##################
 # Player Section

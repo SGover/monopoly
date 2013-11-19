@@ -165,8 +165,43 @@ class monoGame():
                         
 
     def do_trade(self):
-        #my_trader=
-        pass
+        trader=Trader(self.players[0],self.players[1])
+        cmd=''
+        name1=self.players[0].name
+        name2=self.players[1].name
+        while cmd!='pass' and cmd!='finish':
+            cmd = self.console.prompt_commands(['pass','finish',name1,name2])
+            if cmd==name1 or cmd==name2:
+                cmd2=''
+                while cmd2!='pass' and cmd2!='finish':
+                    cmd2 = self.console.prompt_commands(['money','asset','pass','finish'])
+                    if cmd2 == 'money':
+                        ammount=int(input("enter ammount : "))
+                        if cmd==name1:
+                            trader.set_money1(ammount)
+                        else:
+                            trader.set_money2(ammount)
+                    elif cmd2=='asset':
+                        add_remove=self.console.prompt_commands(['add','remove'])
+                        if add_remove=='add':
+                            if cmd==name1:
+                                asset=self.console.prompt_commands_index(self.players[0].assets_list())
+                                trader.add_asset_1(asset)
+                            else:
+                                asset=self.console.prompt_commands_index(self.players[1].assets_list())
+                                trader.add_asset_2(asset)
+                        else:
+                            if cmd==name1 and len(trader.player1_blocks)>0:
+                                asset=self.console.prompt_commands_index(trader.player1_blocks)
+                                trader.remove_asset_1(asset)
+                            elif len(trader.player2_blocks)>0:
+                                asset=self.console.prompt_commands_index(trader.player2_blocks)
+                                trader.remove_asset_2(asset)
+                            else:
+                                self.console.display("no assets to remove from trader for "+cmd)
+        if cmd=='finish':
+            trader.make_trade()
+                
     def do_all_commands(self):
         cmd = self.console.prompt_commands(self.commands)
         self.console.display(" ")            
@@ -320,6 +355,8 @@ class monoGame():
                 self.do_mortage(False)
             elif action=='unmortage':
                 self.do_mortage(True)
+            elif action=='trade':
+                self.do_trade()
                 
 
             
