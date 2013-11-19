@@ -6,9 +6,11 @@ P_COLORS = [(255,25,255),
     
 class console():
     init=False
+    
     def __init__(self):
         self.massage='New Game of Monopoly!'
-        self.massege_list=['New Game of Monopoly!']
+        self.massege_list=['New Game of Monopoly!']        
+        self.buttons=[]
     def display(self, string):
         print(string)
         self.massege_list.append(string)
@@ -18,15 +20,33 @@ class console():
     def draw(self,surface):
         if not self.init:
             pygame.font.init()
-            self.font = pygame.font.Font("fonts\Kabel-Heavy.ttf", 28)
+            self.font = pygame.font.Font("fonts\Kabel.ttf", 22)
         size=len(self.massege_list)    
         for i in range(1,9):
             if (size-i)>=0 and size-i<size:
                 txt = self.font.render('>> '+self.massege_list[size-i], True, (0,0,0))
-                text_pos = txt.get_rect().move(55,800-i*30)
+                text_pos = txt.get_rect().move(55,780-i*30)
                 surface.blit(txt, text_pos)                
-        
+        if len(self.buttons)>0:
+            for button in self.buttons:
+                button.draw(surface)
+                
         return surface
+    #####GUI TODO TASKS#####
+    
+    #replace choose from options
+    def create_buttons_from_action_dict(self,action_dict):
+        pass
+    
+    #replace prompt commands and prompt commands index
+    def create_selection_menu(self,options):
+        pass
+    
+    #passing events from the main pygame thread(currently in gameWindow) 
+    def handle_event(self,event):
+        pass
+    ######################
+    
     def get_player_name(self):
         name = input("Enter the Player name :_ ");
         while name=="":

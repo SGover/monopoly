@@ -39,9 +39,9 @@ class StatusWindow():
         self.players = players
         # setting fonts
         pygame.font.init()
-        self.fnt_name = pygame.font.Font("fonts\Kabel-Heavy.ttf", 28)
-        self.fnt_money = pygame.font.Font("fonts\Kabel-Heavy.ttf", 24)
-        self.fnt_asset = pygame.font.Font("fonts\Kabel-Heavy.ttf", 16)
+        self.fnt_name = pygame.font.Font("fonts\Kabel.ttf", 28)
+        self.fnt_money = pygame.font.Font("fonts\Kabel.ttf", 24)
+        self.fnt_asset = pygame.font.Font("fonts\Kabel.ttf", 16)
         self.img = pygame.image.load("images\\gui\\status.png")
         
             
@@ -119,6 +119,7 @@ class GameWindow():
             brd_img = pygame.image.load("images\\monopoly.png")            
             brd_img = brd_img.convert()
             for event in pygame.event.get(QUIT):
+                self.console.handle_event(event)
                 if event.type == QUIT or self.quit:
                     pygame.quit()
                     os.kill(os.getpid(),0)
