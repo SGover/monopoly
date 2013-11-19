@@ -2,7 +2,8 @@ from gameClasses import *
 import console as _console
 from random import randrange
 from gui import playerDialog
-
+from board import Board
+from gameGui import GameWindow
 START='start'
 INGAME='ingame'
 FINISH='finish'
@@ -19,9 +20,10 @@ class monoGame():
     commands=allComands
     gameState=START
     
-    def __init__(self,board,num_players=2,players=[]):      
+    def __init__(self,num_players=2,players=[]):      
         self.players=players
-        self.board=board
+        self.board=Board()
+        self.gameWindow=None
         self.console=_console.console()
         self.default_money = 1500
         self.current_player_index = 0 # index of the current player
@@ -31,7 +33,7 @@ class monoGame():
         else:    
             self.num_players = num_players
         
-    
+      
     
     def start(self):
         
@@ -42,8 +44,10 @@ class monoGame():
                 new_player1 = player(x[0],self.default_money)
                 new_player1.token_index = x[1]
                 self.players.append(new_player1)
-        self.board.show(self.players)    
         init_state(self.players,self.board,self.console)
+
+        gameWindow=GameWindow(self.board,self.players,self.console)
+        gameWindow.run()
                              
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]

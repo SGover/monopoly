@@ -7,19 +7,7 @@ from threading import Thread
 import os
 #from gui import guiButton, guiImageList, guiTextBox
 
-TOKENS = ["images\\dog.png","images\\military.png",
-          "images\\piece.png","images\\eye.png",
-          "images\\scanner.png","images\\skull.png",
-          "images\\tank.png","images\\tron.png",
-          "images\\and.png","images\\worm.png"]
 
-BUILDINGS = ["images\\hotel.png","images\\h1.png",
-             "images\\h2.png","images\\h3.png",
-             "images\\h4.png"]
-
-P_COLORS = [(255,25,255),
-            (25,255,255),(255,25,25),
-            (25,25,255),(25,255,25)]
 IFF=initFromFile("gameProperties.txt")
 CHANCE_DECK,CHEST_DECK=deck(IFF.chanceCards,"chance"),deck(IFF.chestCards,"chest")
 CHANCE_DECK.shuffle()
@@ -67,12 +55,11 @@ BLOCK_ARR = [moneyBlock("GO!", 200,(480,480)),
              assetBlock("BROAD WALK", BLUE,400, (480,425),200,[50,200,600,1400,1700,2000]),
              ]
 
-class board():
+class Board():
 
                
-    def __init__(self, statusW):
-        self.blocks = BLOCK_ARR
-        self.statusWin = statusW
+    def __init__(self):
+        self.blocks = BLOCK_ARR        
         self.quit = False
     
     def roll_dice(self):
@@ -80,83 +67,4 @@ class board():
         dice2 = randrange(6) + 1
         return (dice1, dice2)
     
-    def show(self, players):
-        self.players = players
-        self.statusWin.start(self.players)
-        self.thread = Thread(target=self.draw)
-        self.thread.daemon = True
-        self.thread.start()
-        
-    
-    def draw(self):
-        # Initialise screen
-        pygame.init()
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,50)  # x,y position of the screen
-        screen = pygame.display.set_mode((1020, 550))       #witdth and height
-        pygame.display.set_caption('Monopoly')
-        # Fill background
-        background = pygame.Surface(screen.get_size())
-        background = background.convert()
-        clock = pygame.time.Clock()
-        bg_img = pygame.image.load("images\\gui\\bigbg.png")
-        token_list = []
-        for p in self.players:
-            token_list.append(pygame.image.load(TOKENS[p.token_index]).convert_alpha())
-#         image_list = guiImageList((500,200), TOKENS)
-#         button1 = guiButton("Mortage",(200,50), lambda: print("clicked"))
-#         button = guiButton("Build",(50,50), lambda: button1.set_enabled(False))
-#         textbox = guiTextBox((100,100), focus=False)
-        
-        
-        # Event loop
-        while 1:
-            clock.tick(30)  #FPS
-            for event in pygame.event.get(QUIT):
-                if event.type == QUIT or self.quit:
-                    pygame.quit()
-                    os.kill(os.getpid(),0)
-            background.fill((180, 190, 180))
-            background.blit(bg_img, (0,0))
-            brd_img = pygame.image.load("images\\monopoly.png")
-            
-            brd_img = brd_img.convert()
-            background = self.statusWin.draw(background)    #status window
-            for block in self.blocks:
-                if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
-                    if block.hotel:
-                        #draw hotel
-                        h = pygame.image.load(BUILDINGS[0])
-                        brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
-                    elif block.houses>=1:
-                        #draw houses
-                        h = pygame.image.load(BUILDINGS[block.houses])
-                        brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
-            #get players location on board
-            player_pos = []
-            for p in self.players:
-                player_pos.append(self.blocks[p.location].position)
-            #draw players
-            i = 0
-            check = []
-            for pos in player_pos:
-                for c in check:
-                    if pos==c:
-                        pos = (pos[0],pos[1]+25) 
-                brd_img.blit(token_list[i], (pos[0]-15,pos[1]-10))
-                check.append(pos)
-                i += 1
-            
-            background.blit(brd_img, (5,5))
-#             background.blit(image_list, image_list.position)
-#             background.blit(button, button.position)
-#             background.blit(button1, button1.position)
-#             background.blit(textbox,textbox.position)
-            screen.blit(background, (0, 0))
-            pygame.display.flip()
-        
-            
-    def stop(self):
-        self.quit = True
-        
-
-    
+       

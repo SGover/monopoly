@@ -2,7 +2,8 @@ import pygame
 from pygame.locals import *  
 import threading
 import os
-from board import TOKENS
+from gameGui import P_COLORS, TOKENS
+
 
 MOUSEDOWN = False
 BACKDOWN = False
@@ -332,4 +333,3 @@ class playerDialog():
                 background.blit(control,control.position)
             screen.blit(background, (0, 0))
             pygame.display.flip()
-
