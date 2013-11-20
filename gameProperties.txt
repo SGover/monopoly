@@ -1,4 +1,3 @@
-
 ChestMoneyCards
 {
 Bank error in your favor,collect 50$,50
