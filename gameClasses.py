@@ -185,15 +185,17 @@ class utilBlock(block):         #utilities and railway stations
         return self.name + " of " + self.color
      
     
-    def pay_rent(self):        
+    def pay_rent(self):
+        #rent in the case of railway station
         if self.color==RW_STATION:
             player=getPlayerFromName(self.owner)
             num=player.how_many(RW_STATION)
             rent=25*(2**(num-1))
+        #rent in the case of utility
         else:            
             player=getPlayerFromName(self.owner)
             diceRoll=self.player.getLatestRoll()
-            num=player.how_many(RW_STATION)
+            num=player.how_many(UTILITY)
             if num==1:
                 rent=4*diceRoll
             elif num==2:

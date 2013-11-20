@@ -4,6 +4,7 @@ from random import randrange
 from gui import playerDialog
 from board import Board
 from gameGui import GameWindow
+import time
 START='start'
 INGAME='ingame'
 FINISH='finish'
@@ -52,7 +53,7 @@ class monoGame():
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
-        
+        time.sleep(2)
         while not self.is_complete():
             self.console.display(" ")
             self.next_turn()
@@ -64,7 +65,7 @@ class monoGame():
         # main game logic
         self.init_turn()#intiate the turn varibals
         while not self.end_turn:                        
-            self.curr_player.printPlayer()
+            #self.curr_player.printPlayer()
             if self.curr_player.inJail and not self.jail_try and not self.rolled_already:
                 self.console.display(self.curr_player.name + " is in Jail")
                 self.do_in_jail_commands()                

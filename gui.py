@@ -15,10 +15,12 @@ ENABLED_TEXT_COLOR = (235,235,235)
 DISABLED_TEXT_COLOR = (200,200,200)
 
 class guiButton(pygame.Surface):
-    def __init__(self, caption, position, action=0):
+    def __init__(self, caption, position, action=0,parameter=0):
         #initializing
+        self.clicked=False
         self.caption = caption      
         self.position = position
+        self.parameter=parameter
         self.action = action
         self.font_size = 14
         self.events = [MOUSEBUTTONDOWN,4,MOUSEBUTTONUP]
@@ -74,9 +76,13 @@ class guiButton(pygame.Surface):
                         self.update_surface()
             elif event.type==MOUSEBUTTONUP:
                 if event.button == 1:
-                    if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                    if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):                        
                         if not self.action==0:
-                            self.action()
+                            self.clicked=True
+                            if self.parameter==0:
+                                self.action()
+                            else:
+                                self.action(self.parameter)
                 self.img = self.btn.copy()
                 self.update_surface()
                     
@@ -101,7 +107,10 @@ class guiButton(pygame.Surface):
                 
     def set_action(self, action):
         self.action = action
-        
+
+
+
+                
 ####################
 #guiImageList        
 ###################
