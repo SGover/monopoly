@@ -30,6 +30,24 @@ BUILDINGS = ["images\\hotel.png","images\\h1.png",
 P_COLORS = [(255,25,255),
             (25,255,255),(255,25,25),
             (25,25,255),(25,255,25)]
+class PopupWindow:
+    def __init__(self,gameWindow,massage,buttons):
+        self.gameWindow=gameWindow
+        self.massage=massage
+        self.buttons=buttons
+        self.background=pygame.Surface((400,600))
+        self.background.fill((255,255,255))
+    def draw(self,surf):        
+        for button in self.buttons:
+            self.background.blit(button,button.position)
+        surf.blit(self.background,(0,0))
+    def handle_event(self,event):
+        for button in self.buttons:
+            button.handle_event(event)
+    def close(self):
+        self.gameWindow.popup=False
+        self.gameWindow.popupWindow=None
+        del[self]
 class StatusWindow():
     players = []
     def __init__(self):
@@ -147,13 +165,17 @@ class GameWindow():
         self.quit=False
         self.statusWin=StatusWindow()
         self.statusWin.start(self.players)
-        
+        self.popup=False
+        self.popupWindow=None
 
     #creating a thread and run its draw function on it
     def run(self):        
         self.thread = Thread(target=self.draw)
         self.thread.daemon = True        
-        self.thread.start()    
+        self.thread.start()
+    def open_popup(self,popup):
+        self.popup=True
+        self.popupWindow=popup
     def draw(self):        
         # Initialise screen
         pygame.init()  
@@ -177,47 +199,57 @@ class GameWindow():
         # Event loop
         while 1:
             clock.tick(30)  #FPS
-            brd_img = pygame.image.load("images\\monopoly.png")            
-            brd_img = brd_img.convert()
-            for event in pygame.event.get():
-                self.console.handle_event(event)
-                if event.type == QUIT or self.quit:
-                    pygame.quit()
-                    os.kill(os.getpid(),0)            
-            background.fill((180, 190, 180))
-            background = self.console.draw(background)   # console
-            background.blit(bg_img, (0,0))
-            background = self.statusWin.draw(background)    #status window            
-            for block in self.board.blocks:
-                if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
-                    if block.hotel:
-                        #draw hotel
-                        h = pygame.image.load(BUILDINGS[0])
-                        brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
-                    elif block.houses>=1:
-                        #draw houses
-                        h = pygame.image.load(BUILDINGS[block.houses])
-                        brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
-            #get players location on board
+            if not self.popup:
+                brd_img = pygame.image.load("images\\monopoly.png")            
+                brd_img = brd_img.convert()
+                for event in pygame.event.get():
+                    self.console.handle_event(event)
+                    if event.type == QUIT or self.quit:
+                        pygame.quit()
+                        os.kill(os.getpid(),0)            
+                background.fill((180, 190, 180))
+                background = self.console.draw(background)   # console
+                background.blit(bg_img, (0,0))
+                background = self.statusWin.draw(background)    #status window            
+                for block in self.board.blocks:
+                    if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
+                        if block.hotel:
+                            #draw hotel
+                            h = pygame.image.load(BUILDINGS[0])
+                            brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
+                        elif block.houses>=1:
+                            #draw houses
+                            h = pygame.image.load(BUILDINGS[block.houses])
+                            brd_img.blit(h, (block.position[0]-8,block.position[1]-5))
+                #get players location on board
 
-            player_pos = []
-            for p in self.players:
-                player_pos.append(self.board.blocks[p.location].position)
-            #draw players
-            i = 0
-            check = []
-            for pos in player_pos:
-                for c in check:
-                    if pos==c:
-                        pos = (pos[0],pos[1]+25) 
-                brd_img.blit(token_list[i], (pos[0]-15,pos[1]-10))
-                check.append(pos)
-                i += 1
-            
-            background.blit(brd_img, (5,5))
+                player_pos = []
+                for p in self.players:
+                    player_pos.append(self.board.blocks[p.location].position)
+                #draw players
+                i = 0
+                check = []
+                for pos in player_pos:
+                    for c in check:
+                        if pos==c:
+                            pos = (pos[0],pos[1]+25) 
+                    brd_img.blit(token_list[i], (pos[0]-15,pos[1]-10))
+                    check.append(pos)
+                    i += 1
+                
+                background.blit(brd_img, (5,5))
 
-            screen.blit(background, (0, 0))            
-            pygame.display.flip()
+                screen.blit(background, (0, 0))            
+                pygame.display.flip()
+            #popup
+            else:
+                for event in pygame.event.get():
+                    self.popupWindow.handle_event(event)
+                    if event.type == QUIT or self.quit:
+                        pygame.quit()
+                        os.kill(os.getpid(),0) 
+                self.popupWindow.draw(screen)
+                pygame.display.flip()
         
             
     def stop(self):

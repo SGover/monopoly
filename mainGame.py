@@ -49,7 +49,7 @@ class monoGame():
 
         gameWindow=GameWindow(self.board,self.players,self.console)
         gameWindow.run()
-                             
+        self.console.setGameWindow(gameWindow)                             
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
@@ -291,7 +291,7 @@ class monoGame():
             for key in actions.keys():
                 actions[key]()
         else:
-            self.console.chooseFromOptions(actions)
+            self.console.createChooseButtonPopup(actions)
                                         
     def change_next_player(self):
         self.current_player_index = (self.current_player_index+1)%len(self.players)
