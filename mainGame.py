@@ -239,6 +239,7 @@ class monoGame():
             self.rolled_already = True
             self.curr_player.updateRoll(dice_sum)
             if dice[0]==dice[1]:
+                self.curr_player.inJail=False
                 self.console.display("Double! you are out of jail")
                 self.do_move(dice_sum)            
             else:

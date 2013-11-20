@@ -552,7 +552,8 @@ class player():
         r_list=[]
         for  v in self.assets.values():
             for a in v:
-                if a.houses>0:
-                    r_list.append(a)
+                if a.color!=UTILITY and a.color!=RW_STATION:                
+                    if a.houses>0:
+                        r_list.append(a)
         return r_list
         
