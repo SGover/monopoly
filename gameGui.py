@@ -98,7 +98,7 @@ class GameWindow():
         pygame.init()  
         os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,50)  # x,y position of the screen
         
-        screen = pygame.display.set_mode((1020, 800))       #witdth and height
+        screen = pygame.display.set_mode((1020, 700))       #witdth and height
         
         pygame.display.set_caption('Monopoly')
         # Fill background
@@ -118,16 +118,16 @@ class GameWindow():
             clock.tick(30)  #FPS
             brd_img = pygame.image.load("images\\monopoly.png")            
             brd_img = brd_img.convert()
-            for event in pygame.event.get(QUIT):
+            for event in pygame.event.get():
                 self.console.handle_event(event)
                 if event.type == QUIT or self.quit:
                     pygame.quit()
                     os.kill(os.getpid(),0)
 
             background.fill((180, 190, 180))
-            background.blit(bg_img, (0,0))            
-            background = self.statusWin.draw(background)    #status window
             background = self.console.draw(background)   # console
+            background.blit(bg_img, (0,0))
+            background = self.statusWin.draw(background)    #status window            
             for block in self.board.blocks:
                 if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
                     if block.hotel:

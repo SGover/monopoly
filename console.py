@@ -20,12 +20,12 @@ class console():
     def draw(self,surface):
         if not self.init:
             pygame.font.init()
-            self.font = pygame.font.Font("fonts\Kabel.ttf", 22)
+            self.font = pygame.font.Font("fonts\consola.ttf", 16)
         size=len(self.massege_list)    
         for i in range(1,9):
             if (size-i)>=0 and size-i<size:
                 txt = self.font.render('>> '+self.massege_list[size-i], True, (0,0,0))
-                text_pos = txt.get_rect().move(55,780-i*30)
+                text_pos = txt.get_rect().move(15,690-i*16)
                 surface.blit(txt, text_pos)                
         if len(self.buttons)>0:
             for button in self.buttons:
