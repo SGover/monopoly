@@ -122,8 +122,7 @@ class GameWindow():
                 self.console.handle_event(event)
                 if event.type == QUIT or self.quit:
                     pygame.quit()
-                    os.kill(os.getpid(),0)
-
+                    os.kill(os.getpid(),0)            
             background.fill((180, 190, 180))
             background = self.console.draw(background)   # console
             background.blit(bg_img, (0,0))

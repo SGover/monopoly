@@ -15,19 +15,26 @@ ENABLED_TEXT_COLOR = (235,235,235)
 DISABLED_TEXT_COLOR = (200,200,200)
 
 class guiButton(pygame.Surface):
-    def __init__(self, caption, position, action=0):
+    def __init__(self, caption, position, action=0,parameter=0,sizing=1,font_size=14):
         #initializing
+        self.clicked=False
         self.caption = caption      
         self.position = position
+        self.parameter=parameter
         self.action = action
-        self.font_size = 14
+        self.sizing=sizing
+        self.font_size = font_size
         self.events = [MOUSEBUTTONDOWN,4,MOUSEBUTTONUP]
         #loading from files
-        self.img = pygame.image.load("images\\gui\\blue.png")
+        self.img = pygame.image.load("images\\gui\\blue.png")        
         self.pressed = pygame.image.load("images\\gui\\pressed.png")
+        if self.sizing!=1:
+            self.img=pygame.transform.scale(self.img,(int(self.img.get_width()*self.sizing),self.img.get_height()))
+            self.pressed=pygame.transform.scale(self.pressed,(int(self.pressed.get_width()*self.sizing),self.pressed.get_height()))
         self.hover = self.img.copy()
         self.hover.fill((255,255,255,0))
         self.btn = self.img.copy()
+        
         self._width = self.img.get_width()
         self._height = self.img.get_height()
         self.img = self.img.convert_alpha()
@@ -74,9 +81,13 @@ class guiButton(pygame.Surface):
                         self.update_surface()
             elif event.type==MOUSEBUTTONUP:
                 if event.button == 1:
-                    if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):
+                    if self.get_rect().collidepoint((event.pos[0]-self.position[0],event.pos[1]-self.position[1])):                        
                         if not self.action==0:
-                            self.action()
+                            self.clicked=True
+                            if self.parameter==0:
+                                self.action()
+                            else:
+                                self.action(self.parameter)
                 self.img = self.btn.copy()
                 self.update_surface()
                     
@@ -101,7 +112,10 @@ class guiButton(pygame.Surface):
                 
     def set_action(self, action):
         self.action = action
-        
+
+
+
+                
 ####################
 #guiImageList        
 ###################
