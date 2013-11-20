@@ -29,7 +29,7 @@ class console():
         for i in range(1,9):
             if (size-i)>=0 and size-i<size:
                 txt = self.font.render('>> '+self.massege_list[size-i], True, (0,0,0))
-                text_pos = txt.get_rect().move(15,690-i*16)
+                text_pos = txt.get_rect().move(5,690-i*16)
                 surface.blit(txt, text_pos)                
         if len(self.controls)>0:
             for control in self.controls:
@@ -43,7 +43,7 @@ class console():
         self.controls=[]
         i=0
         for name in actions.keys():            
-            self.controls.append(guiButton(name,(600+i//3*100,550+(i%3)*50),actions[name]))
+            self.controls.append(guiButton(name,(600+i//3*100,550+(i%3)*50),actions[name],sizing=1.5))
             i+=1
         def check_click():
             for control in self.controls:
@@ -59,9 +59,12 @@ class console():
         i=0
         self.controls=[]
         for option in options:
-            x=600+(i//3)*100
+            x=600+(i//3)*150
             y=550+(i%3)*50
-            self.controls.append(guiButton(str(option),(x,y),set_value,option))
+            if len(str(option))>10:
+                self.controls.append(guiButton(str(option),(x,y),set_value,option,1.75,7))
+            else:
+                self.controls.append(guiButton(str(option),(x,y),set_value,option,1.75))
             i+=1
         self.value=0
         while (self.value==0):
