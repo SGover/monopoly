@@ -4,6 +4,7 @@ from random import randrange
 from gui import playerDialog
 from board import Board
 from gameGui import GameWindow
+from gameGui import *
 import time
 START='start'
 INGAME='ingame'
@@ -290,8 +291,8 @@ class monoGame():
         if(len(actions)==1):
             for key in actions.keys():
                 actions[key]()
-        else:
-            self.console.createChooseButtonPopup(actions)
+        else:            
+            self.console.createChooseButtonPopup(actions,get_asset_image(currBlock))
                                         
     def change_next_player(self):
         self.current_player_index = (self.current_player_index+1)%len(self.players)

@@ -209,7 +209,7 @@ class utilBlock(block):         #utilities and railway stations
         
     def getActions(self):
         if self.owner==NOPLAYER :
-            return {"buy":self.purchase,"pass":self.pass_}            
+            return {"buy $"+str(self.price):self.purchase,"pass":self.pass_}            
         elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:
@@ -255,7 +255,7 @@ class assetBlock(block):
     
     def getActions(self):
         if self.owner==NOPLAYER :
-            return {"buy":self.purchase,"pass":self.pass_}            #auction???
+            return {"buy $"+str(self.price):self.purchase,"pass":self.pass_}            #auction???
         elif self.owner==self.player.name or self.owner=='bank':                        
             return {"pass":self.pass_}
         else:

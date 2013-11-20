@@ -123,18 +123,18 @@ class console():
                     print (block.asset.name+" in : "+block.asset.groupName)
                 elif bType==type(gameClasses.cardBlock):
                     print ("Deck : "+block.deck.name)
-    def createChooseButtonPopup(self,actions):        
+    def createChooseButtonPopup(self,actions,image=None):        
         i=0
         self.buttons=[]
         for name in actions.keys():            
-            self.buttons.append(guiButton(name,(20+i//3*100,20+(i%3)*50),actions[name],sizing=1.5))
+            self.buttons.append(guiButton(name,(70+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))
             i+=1
         def check_click():
             for control in self.buttons:
                 if control.clicked:
                     return True
             return False
-        popup=PopupWindow(self.gameWindow,'Choose',self.buttons)
+        popup=PopupWindow(self.gameWindow,'Choose',self.buttons,image)
         self.gameWindow.open_popup(popup)
         while not check_click():
             time.sleep(0.2)            

@@ -31,13 +31,20 @@ P_COLORS = [(255,25,255),
             (25,255,255),(255,25,25),
             (25,25,255),(25,255,25)]
 class PopupWindow:
-    def __init__(self,gameWindow,massage,buttons):
+    def __init__(self,gameWindow,massage,buttons,image=None):
         self.gameWindow=gameWindow
+        self.image=image
         self.massage=massage
         self.buttons=buttons
         self.background=pygame.Surface((400,600))
-        self.background.fill((255,255,255))
-    def draw(self,surf):        
+        self.background.fill((220,220,220))
+        pygame.font.init()
+        self.fnt = pygame.font.Font("fonts\Kabel.ttf", 20)
+    def draw(self,surf):
+        m=self.fnt.render(self.massage,True,BLACK)
+        if self.image!=None:
+            self.background.blit(self.image,(40,400))
+        self.background.blit(m,(100,20))
         for button in self.buttons:
             self.background.blit(button,button.position)
         surf.blit(self.background,(0,0))
@@ -99,20 +106,20 @@ class StatusWindow():
 def get_asset_image(asset):    
     
     #init fonts
-    fnt_title = pygame.font.Font("fonts\Kabel.ttf", 8)
-    fnt_des = pygame.font.Font("fonts\Kabel.ttf", 8)    
+    fnt_title = pygame.font.Font("fonts\Kabel.ttf", 10)
+    fnt_des = pygame.font.Font("fonts\Kabel.ttf", 9)    
     #creating the image
-    surf=pygame.Surface((80,115))
+    surf=pygame.Surface((90,135))
     surf.fill((255,255,255))
     #filling the top
-    surf.fill(COLORS[asset.color],pygame.Rect(0,0,80,25))
+    surf.fill(COLORS[asset.color],pygame.Rect(0,0,90,30))
     #draw title
     text=asset.name.split(' ')
     title = fnt_title.render(text[0], True, BLACK)    
     pos = title.get_rect().move(1,2)
     surf.blit(title,pos)
     title = fnt_title.render(text[1], True, BLACK)    
-    pos = title.get_rect().move(1,12)
+    pos = title.get_rect().move(1,15)
     surf.blit(title,pos)
   
     #draw rent
@@ -122,17 +129,16 @@ def get_asset_image(asset):
         surf.blit(rent,pos)
         for num in range (1,5):
             rent=fnt_des.render(str(num)+" houses   $"+str(asset.rent_list[num]), True, BLACK)
-            pos = rent.get_rect().move(5,30+num*8)
+            pos = rent.get_rect().move(5,30+num*11)
             surf.blit(rent,pos)
         rent=fnt_des.render("hotel     $"+str(asset.rent_list[5]), True, BLACK)
-        pos = rent.get_rect().move(5,30+40)
+        pos = rent.get_rect().move(5,30+62)
         surf.blit(rent,pos)
         mortage=fnt_des.render("mortage $"+str(asset.price//2), True, BLACK)
-        pos = mortage.get_rect().move(5,30+48)
+        pos = mortage.get_rect().move(5,30+72)
         surf.blit(mortage,pos)
         price=fnt_des.render("house price $"+str(asset.house_price), True, BLACK)
-        pos = price.get_rect().move(5,30+56)
-        surf.blit(price,pos)    
+        pos = price.get_rect().move(5,30+82)
     else:
         if asset.color==UTILITY:
             descripton=['   Rent',
@@ -149,7 +155,7 @@ def get_asset_image(asset):
                         'own 4   $200']
         for line in descripton:
             tline=fnt_des.render(line, True, BLACK)
-            pos = tline.get_rect().move(5,30+descripton.index(line)*8)
+            pos = tline.get_rect().move(5,40+descripton.index(line)*11)
             surf.blit(tline,pos)
         
 
