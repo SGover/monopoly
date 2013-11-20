@@ -77,6 +77,67 @@ class StatusWindow():
         return background
     
 
+
+def get_asset_image(asset):    
+    
+    #init fonts
+    fnt_title = pygame.font.Font("fonts\Kabel.ttf", 8)
+    fnt_des = pygame.font.Font("fonts\Kabel.ttf", 8)    
+    #creating the image
+    surf=pygame.Surface((80,115))
+    surf.fill((255,255,255))
+    #filling the top
+    surf.fill(COLORS[asset.color],pygame.Rect(0,0,80,25))
+    #draw title
+    text=asset.name.split(' ')
+    title = fnt_title.render(text[0], True, BLACK)    
+    pos = title.get_rect().move(1,2)
+    surf.blit(title,pos)
+    title = fnt_title.render(text[1], True, BLACK)    
+    pos = title.get_rect().move(1,12)
+    surf.blit(title,pos)
+  
+    #draw rent
+    if asset.color!=UTILITY and asset.color!=RW_STATION:
+        rent=fnt_des.render("Rent      $"+str(asset.rent_list[0]), True, BLACK)
+        pos = rent.get_rect().move(5,30)
+        surf.blit(rent,pos)
+        for num in range (1,5):
+            rent=fnt_des.render(str(num)+" houses   $"+str(asset.rent_list[num]), True, BLACK)
+            pos = rent.get_rect().move(5,30+num*8)
+            surf.blit(rent,pos)
+        rent=fnt_des.render("hotel     $"+str(asset.rent_list[5]), True, BLACK)
+        pos = rent.get_rect().move(5,30+40)
+        surf.blit(rent,pos)
+        mortage=fnt_des.render("mortage $"+str(asset.price//2), True, BLACK)
+        pos = mortage.get_rect().move(5,30+48)
+        surf.blit(mortage,pos)
+        price=fnt_des.render("house price $"+str(asset.house_price), True, BLACK)
+        pos = price.get_rect().move(5,30+56)
+        surf.blit(price,pos)    
+    else:
+        if asset.color==UTILITY:
+            descripton=['   Rent',
+                        'own 1',
+                        'dice roll X 4',
+                        '',
+                        'own 2',
+                        'dice roll X 10']
+        else:
+            descripton=['   Rent',
+                        'own 1   $25',
+                        'own 2   $50',
+                        'own 3   $100',
+                        'own 4   $200']
+        for line in descripton:
+            tline=fnt_des.render(line, True, BLACK)
+            pos = tline.get_rect().move(5,30+descripton.index(line)*8)
+            surf.blit(tline,pos)
+        
+
+    
+    return surf
+
 class GameWindow():
     #get the board and the players
     def __init__(self,board,players,console):        
@@ -155,7 +216,7 @@ class GameWindow():
             
             background.blit(brd_img, (5,5))
 
-            screen.blit(background, (0, 0))
+            screen.blit(background, (0, 0))            
             pygame.display.flip()
         
             

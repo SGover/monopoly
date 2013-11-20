@@ -6,6 +6,7 @@ JAIL_FEE=100
 
 
 #typer and colors
+BLACK=(0,0,0)
 UTILITY = "UTILTIES"
 RW_STATION = "RAILWAY STATIONS"
 INDIGO = "INDIGO COLOR" # or whatever this color is #171363
