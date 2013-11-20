@@ -24,7 +24,7 @@ class console():
     def draw(self,surface):
         if not self.init:
             pygame.font.init()
-            self.font = pygame.font.Font("fonts\consola.ttf", 16)
+            self.font = pygame.font.Font("fonts\consola.ttf", 14)
         size=len(self.massege_list)    
         for i in range(1,9):
             if (size-i)>=0 and size-i<size:

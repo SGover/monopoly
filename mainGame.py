@@ -33,9 +33,8 @@ class monoGame():
             self.num_players = 2    #Its not a game of one
         else:    
             self.num_players = num_players
-        
-      
-    
+        self.doubles = 0
+   
     def start(self):
         
         self.console.start()
@@ -76,6 +75,7 @@ class monoGame():
 
     def init_turn(self):
         self.commands=allComands
+        self.doubles = 0
         self.rolled_already = False
         self.end_turn = False
         self.jail_try=False
@@ -256,16 +256,27 @@ class monoGame():
     
     def do_roll(self):
         if not self.rolled_already:
-                    
                     dice = self.board.roll_dice()
                     self.console.display("Dice rolled {}".format(dice))
-                    self.rolled_already = True
-                    # movement around the board and actions on landing
-                    dice_sum=dice[0]+dice[1]
-                    self.curr_player.updateRoll(dice_sum)
                     
-                    self.do_move(dice_sum)
-                    #self.do_move(2)
+                    if dice[0]==dice[1]:        #check for doubles!!
+                        self.rolled_already = False
+                        self.doubles += 1
+                        self.console.display("You rolled doubles! Roll again!")
+                    else:
+                        self.rolled_already = True
+                    
+                    if self.doubles>=3:
+                        console.display(self.player.name+ "rolled doubles 3 time! He is now in jail!")
+                        self.rolled_already = True
+                        self.player.goToJail()
+                    else:
+                        # movement around the board and actions on landing
+                        dice_sum=dice[0]+dice[1]
+                        self.curr_player.updateRoll(dice_sum)
+                        
+                        self.do_move(dice_sum)
+                        #self.do_move(2)
                     
         else:
                     self.console.display("You have already rolled the dice")
@@ -364,9 +375,3 @@ class monoGame():
             elif action=='trade':
                 self.do_trade()
                 
-
-            
-            
-
-
-        
