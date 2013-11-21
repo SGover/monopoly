@@ -280,7 +280,7 @@ class assetBlock(block):
 
 
 #represent a block on the board that landing on means u need to pull a card from some deck        
-class cardBlock():
+class cardBlock(block):
     def __init__(self, name,deck, position):
         block.__init__(self, name, position)
         self.deck=deck
@@ -297,7 +297,7 @@ class cardBlock():
     def __repr__(self):
         return self.name
 
-class moneyBlock():                 #Go , tax , luxury tax etc blocks which onLand
+class moneyBlock(block):                 #Go , tax , luxury tax etc blocks which onLand
     def __init__(self, name, money, position):      # action is just adding or subtracting money
         block.__init__(self, name, position)
         self.deck=deck
