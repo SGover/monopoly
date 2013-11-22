@@ -1,6 +1,7 @@
 import gameClasses
 import pygame
 from gui import guiButton
+from gameGui import *
 import time
 P_COLORS = [(255,25,255),
             (25,255,255),(255,25,25),
@@ -15,6 +16,8 @@ class console():
         self.controls=[]
         self.value=0
         self.clicked=False
+    def setGameWindow(self,gameWindow):
+        self.gameWindow=gameWindow
     def display(self, string):
         print(string)
         self.massege_list.append(string)
@@ -120,7 +123,37 @@ class console():
                     print (block.asset.name+" in : "+block.asset.groupName)
                 elif bType==type(gameClasses.cardBlock):
                     print ("Deck : "+block.deck.name)
-    
+    def createChooseButtonPopup(self,actions,image=None):        
+        i=0
+        self.buttons=[]
+        for name in actions.keys():            
+            self.buttons.append(guiButton(name,(70+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))
+            i+=1
+        def check_click():
+            for control in self.buttons:
+                if control.clicked:
+                    return True
+            return False
+        popup=PopupWindow(self.gameWindow,'Choose',self.buttons,image)
+        self.gameWindow.open_popup(popup)
+        while not check_click():
+            time.sleep(0.2)            
+        popup.close()        
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+        
     def chooseFromOptions(self,actions):
         
         self.create_buttons_from_action_dict(actions)

@@ -4,6 +4,7 @@ from random import randrange
 from gui import playerDialog
 from board import Board
 from gameGui import GameWindow
+from gameGui import *
 import time
 START='start'
 INGAME='ingame'
@@ -48,7 +49,7 @@ class monoGame():
 
         gameWindow=GameWindow(self.board,self.players,self.console)
         gameWindow.run()
-                             
+        self.console.setGameWindow(gameWindow)                             
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
@@ -301,8 +302,8 @@ class monoGame():
         if(len(actions)==1):
             for key in actions.keys():
                 actions[key]()
-        else:
-            self.console.chooseFromOptions(actions)
+        else:            
+            self.console.createChooseButtonPopup(actions,get_asset_image(currBlock))
                                         
     def change_next_player(self):
         self.current_player_index = (self.current_player_index+1)%len(self.players)

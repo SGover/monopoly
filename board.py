@@ -14,7 +14,7 @@ CHANCE_DECK.shuffle()
 CHEST_DECK.shuffle()
 
 BLOCK_ARR = [moneyBlock("GO!", 200,(480,480)),
-             assetBlock("MEDITER. RANEAN AVENUE", INDIGO,60,(430,480),50,[2,10,30,90,160,250]),      
+             assetBlock("MEDITER.RANEAN AVENUE", INDIGO,60,(430,480),50,[2,10,30,90,160,250]),      
              cardBlock("COMMUNITY CHEST", CHEST_DECK,(390,480)),
              assetBlock("BALTIC AVENUE", INDIGO,60,(345,480),50,[4,20,60,180,320,450]),
              moneyBlock("INCOME TAX", -200,(305,480)),
