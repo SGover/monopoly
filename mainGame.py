@@ -4,8 +4,8 @@ from random import randrange
 from gui import playerDialog
 from board import Board
 from gameGui import GameWindow
-from gameGui import *
 import time
+
 START='start'
 INGAME='ingame'
 FINISH='finish'
@@ -34,11 +34,9 @@ class monoGame():
             self.num_players = 2    #Its not a game of one
         else:    
             self.num_players = num_players
-        
-      
-    
+        self.doubles = 0
+   
     def start(self):
-        
         self.console.start()
         if self.players==[]:
             p_list = playerDialog().show()
@@ -46,11 +44,10 @@ class monoGame():
                 new_player1 = player(x[0],self.default_money)
                 new_player1.token_index = x[1]
                 self.players.append(new_player1)
-        init_state(self.players,self.board,self.console)
-
-        gameWindow=GameWindow(self.board,self.players,self.console)
-        gameWindow.run()
-        self.console.setGameWindow(gameWindow)                             
+        
+        self.gameWindow=GameWindow(self.board,self.players,self.console)
+        init_state(self.players,self.board,self.console,self.gameWindow)
+        self.gameWindow.run()
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
@@ -77,6 +74,7 @@ class monoGame():
 
     def init_turn(self):
         self.commands=allComands
+        self.doubles = 0
         self.rolled_already = False
         self.end_turn = False
         self.jail_try=False
@@ -84,7 +82,7 @@ class monoGame():
         self.console.display("{} takes the turn!".format(self.curr_player_name))    
 
     def do_in_jail_commands(self):
-        cmd=self.console.prompt_commands(["break","pay","end"])
+        cmd=self.gameWindow.prompt_commands(["break","pay","end"])
         self.curr_player.inc_jail_count()
         if cmd == "break":
             self.try_jail_break()
@@ -103,7 +101,7 @@ class monoGame():
             cmd=''
             while cmd!='pass':
                 self.console.display("select section:")
-                cmd=self.console.prompt_commands(build_list)
+                cmd=self.gameWindow.prompt_commands(build_list)
                 if cmd in build_list and cmd!='pass':                    
                     section=self.curr_player.assets[cmd]
                     name_list=[]
@@ -112,7 +110,7 @@ class monoGame():
                     name_list.append("pass")
                     while cmd!='pass':
                         self.console.display("select street:")                                        
-                        cmd=self.console.prompt_commands_index(name_list)
+                        cmd=self.gameWindow.prompt_commands(name_list)
                         is_street=False
                         if cmd!='pass':
                             for street in section:
@@ -137,7 +135,7 @@ class monoGame():
             cmd=''
             while cmd!='pass':
                 self.console.display("select asset to sell houses:")                                        
-                cmd=self.console.prompt_commands_index(sell_list)
+                cmd=self.gameWindow.prompt_commands(sell_list)
                 for asset in sell_list:
                     if asset!='pass':
                         if asset.name==cmd.name:
@@ -160,7 +158,7 @@ class monoGame():
                 self.console.display("select asset to unmortage:")
             else:
                 self.console.display("select asset to mortage") 
-            cmd=self.console.prompt_commands_index(mort_list)
+            cmd=self.gameWindow.prompt_commands(mort_list)
             mort_list.remove("pass")
             for asset in mort_list:
                 if asset==cmd:
@@ -176,11 +174,11 @@ class monoGame():
         name1=self.players[0].name
         name2=self.players[1].name
         while cmd!='pass' and cmd!='finish':
-            cmd = self.console.prompt_commands(['pass','finish',name1,name2])
+            cmd = self.gameWindow.prompt_commands(['pass','finish',name1,name2])
             if cmd==name1 or cmd==name2:
                 cmd2=''
                 while cmd2!='pass' and cmd2!='finish':
-                    cmd2 = self.console.prompt_commands(['money','asset','pass','finish'])
+                    cmd2 = self.gameWindow.prompt_commands(['money','asset','pass','finish'])
                     if cmd2 == 'money':
                         ammount=int(input("enter ammount : "))
                         if cmd==name1:
@@ -188,20 +186,20 @@ class monoGame():
                         else:
                             trader.set_money2(ammount)
                     elif cmd2=='asset':
-                        add_remove=self.console.prompt_commands(['add','remove'])
+                        add_remove=self.gameWindow.prompt_commands(['add','remove'])
                         if add_remove=='add':
                             if cmd==name1:
-                                asset=self.console.prompt_commands_index(self.players[0].assets_list())
+                                asset=self.gameWindow.prompt_commands(self.players[0].assets_list())
                                 trader.add_asset_1(asset)
                             else:
-                                asset=self.console.prompt_commands_index(self.players[1].assets_list())
+                                asset=self.gameWindow.prompt_commands(self.players[1].assets_list())
                                 trader.add_asset_2(asset)
                         else:
                             if cmd==name1 and len(trader.player1_blocks)>0:
-                                asset=self.console.prompt_commands_index(trader.player1_blocks)
+                                asset=self.gameWindow.prompt_commands(trader.player1_blocks)
                                 trader.remove_asset_1(asset)
                             elif len(trader.player2_blocks)>0:
-                                asset=self.console.prompt_commands_index(trader.player2_blocks)
+                                asset=self.gameWindow.prompt_commands(trader.player2_blocks)
                                 trader.remove_asset_2(asset)
                             else:
                                 self.console.display("no assets to remove from trader for "+cmd)
@@ -209,7 +207,7 @@ class monoGame():
             trader.make_trade()
                 
     def do_all_commands(self):
-        cmd = self.console.prompt_commands(self.commands)
+        cmd = self.gameWindow.prompt_commands(self.commands)
         self.console.display(" ")            
         if cmd == "roll":
             self.do_roll()
@@ -257,16 +255,27 @@ class monoGame():
     
     def do_roll(self):
         if not self.rolled_already:
-                    
                     dice = self.board.roll_dice()
                     self.console.display("Dice rolled {}".format(dice))
-                    self.rolled_already = True
-                    # movement around the board and actions on landing
-                    dice_sum=dice[0]+dice[1]
-                    self.curr_player.updateRoll(dice_sum)
                     
-                    self.do_move(dice_sum)
-                    #self.do_move(2)
+                    if dice[0]==dice[1]:        #check for doubles!!
+                        self.rolled_already = False
+                        self.doubles += 1
+                        self.console.display("You rolled doubles! Roll again!")
+                    else:
+                        self.rolled_already = True
+                    
+                    if self.doubles>=3:
+                        self.console.display(self.curr_player.name+ "rolled doubles 3 time! He is now in jail!")
+                        self.rolled_already = True
+                        self.player.goToJail()
+                    else:
+                        # movement around the board and actions on landing
+                        dice_sum=dice[0]+dice[1]
+                        self.curr_player.updateRoll(dice_sum)
+                        
+                        self.do_move(dice_sum)
+                        #self.do_move(2)
                     
         else:
                     self.console.display("You have already rolled the dice")
@@ -292,7 +301,8 @@ class monoGame():
             for key in actions.keys():
                 actions[key]()
         else:            
-            self.console.createChooseButtonPopup(actions,get_asset_image(currBlock))
+            self.gameWindow.choose_from_options(actions,get_asset_image(currBlock))
+        
                                         
     def change_next_player(self):
         self.current_player_index = (self.current_player_index+1)%len(self.players)
@@ -365,9 +375,3 @@ class monoGame():
             elif action=='trade':
                 self.do_trade()
                 
-
-            
-            
-
-
-        

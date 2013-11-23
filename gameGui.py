@@ -1,4 +1,6 @@
-from gameClasses import *
+from gui import guiButton
+import time
+from constants import *
 from random import randrange
 import pygame
 from pygame.locals import QUIT
@@ -6,33 +8,10 @@ from threading import Thread
 import os
 
 X = 545
-COLORS = {"UTILTIES": (150,150,150),
-          "RAILWAY STATIONS":(50,50,50),
-          "INDIGO COLOR":(75,60,130),
-          "LIGHTBLUE COLOR":(128,225,255),
-          "PURPLE COLOR":(170,40,150),
-          "ORANGE COLOR":(250,140,10),
-          "RED COLOR":(250,10,10),
-          "YELLOW COLOR":(240,240,0),
-          "GREEN COLOR":(10,250,10),
-          "BLUE COLOR":(10,10,250),
-          }
-TOKENS = ["images\\dog.png","images\\military.png",
-          "images\\piece.png","images\\eye.png",
-          "images\\scanner.png","images\\skull.png",
-          "images\\tank.png","images\\tron.png",
-          "images\\and.png","images\\worm.png"]
 
-BUILDINGS = ["images\\hotel.png","images\\h1.png",
-             "images\\h2.png","images\\h3.png",
-             "images\\h4.png"]
-
-P_COLORS = [(255,25,255),
-            (25,255,255),(255,25,25),
-            (25,25,255),(25,255,25)]
 class PopupWindow:
-    def __init__(self,gameWindow,massage,buttons,image=None):
-        self.gameWindow=gameWindow
+    def __init__(self,massage,buttons,image=None):
+        #self.gameWindow=gameWindow
         self.image=image
         self.massage=massage
         self.buttons=buttons
@@ -52,9 +31,10 @@ class PopupWindow:
         for button in self.buttons:
             button.handle_event(event)
     def close(self):
-        self.gameWindow.popup=False
-        self.gameWindow.popupWindow=None
+        #self.gameWindow.popup=False
+        #self.gameWindow.popupWindow=None
         del[self]
+        
 class StatusWindow():
     players = []
     def __init__(self):
@@ -157,9 +137,6 @@ def get_asset_image(asset):
             tline=fnt_des.render(line, True, BLACK)
             pos = tline.get_rect().move(5,40+descripton.index(line)*11)
             surf.blit(tline,pos)
-        
-
-    
     return surf
 
 class GameWindow():
@@ -171,6 +148,7 @@ class GameWindow():
         self.quit=False
         self.statusWin=StatusWindow()
         self.statusWin.start(self.players)
+        self.buttonPad = buttonPad()
         self.popup=False
         self.popupWindow=None
 
@@ -179,16 +157,16 @@ class GameWindow():
         self.thread = Thread(target=self.draw)
         self.thread.daemon = True        
         self.thread.start()
+    
     def open_popup(self,popup):
         self.popup=True
         self.popupWindow=popup
+    
     def draw(self):        
         # Initialise screen
         pygame.init()  
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,50)  # x,y position of the screen
-        
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,20)  # x,y position of the screen
         screen = pygame.display.set_mode((1020, 700))       #witdth and height
-        
         pygame.display.set_caption('Monopoly')
         # Fill background
         background = pygame.Surface(screen.get_size())
@@ -200,7 +178,6 @@ class GameWindow():
         token_list = []
         for p in self.players:
             token_list.append(pygame.image.load(TOKENS[p.token_index]).convert_alpha())
-
         
         # Event loop
         while 1:
@@ -209,12 +186,13 @@ class GameWindow():
                 brd_img = pygame.image.load("images\\monopoly.png")            
                 brd_img = brd_img.convert()
                 for event in pygame.event.get():
-                    self.console.handle_event(event)
+                    self.buttonPad.handle_event(event)
                     if event.type == QUIT or self.quit:
                         pygame.quit()
                         os.kill(os.getpid(),0)            
                 background.fill((180, 190, 180))
                 background = self.console.draw(background)   # console
+                self.buttonPad.draw(background)
                 background.blit(bg_img, (0,0))
                 background = self.statusWin.draw(background)    #status window            
                 for block in self.board.blocks:
@@ -260,3 +238,65 @@ class GameWindow():
             
     def stop(self):
         self.quit = True
+
+    def prompt_commands(self, list_cmds):
+        return self.buttonPad.create_selection_menu(list_cmds)
+    
+    def choose_from_options(self,actions,image=None):
+        i=0
+        self.buttons=[]
+        for name in actions.keys():            
+            self.buttons.append(guiButton(name,(70+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))
+            i+=1
+        def check_click():
+            for control in self.buttons:
+                if control.clicked:
+                    return True
+            return False
+        popup=PopupWindow('Choose',self.buttons,image)
+        self.open_popup(popup)
+        while not check_click():
+            time.sleep(0.2)
+        self.popup=False
+        self.popupWindow=None
+        popup.close()  
+    
+class buttonPad():
+    
+    def __init__(self):
+        self.value=0
+        self.controls=[]
+    
+    #replace prompt commands and prompt commands index
+    def create_selection_menu(self,options):
+        def set_value(value):
+            self.value=value
+        i=0
+        self.controls=[]
+        for option in options:
+            x=600+(i//3)*150
+            y=560+(i%3)*50
+            if len(str(option))>10:
+                self.controls.append(guiButton(str(option),(x,y),set_value,option,1.75,7))
+            else:
+                self.controls.append(guiButton(str(option),(x,y),set_value,option,1.75))
+            i+=1
+        self.value=0
+        while (self.value==0):
+            time.sleep(0.1)
+        print (self.value)
+        return self.value
+    
+    def draw(self,surface):
+        if len(self.controls)>0:
+            for control in self.controls:
+                surface.blit(control,control.position)
+                
+        return surface
+    
+        
+    #passing events from the main pygame thread(currently in gameWindow) 
+    def handle_event(self,event):
+        for control in self.controls:
+            control.handle_event(event)
+            

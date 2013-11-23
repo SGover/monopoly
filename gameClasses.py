@@ -1,33 +1,16 @@
 from random import shuffle as reorder
+from constants import *
+from gameGui import get_asset_image
 
-
-#CONSTANT VALUES
-JAIL_FEE=100
-
-
-#typer and colors
-BLACK=(0,0,0)
-UTILITY = "UTILTIES"
-RW_STATION = "RAILWAY STATIONS"
-INDIGO = "INDIGO COLOR" # or whatever this color is #171363
-WHITE = "LIGHTBLUE COLOR"
-PURPLE = "PURPLE COLOR"
-ORANGE = "ORANGE COLOR"
-RED = "RED COLOR"
-YELLOW = "YELLOW COLOR"
-GREEN = "GREEN COLOR"
-BLUE = "BLUE COLOR"
-NOPLAYER = "I'm no body"
-JAIL="JAIL"
 #this class represents a deck of cards like surprize cards or punishment cards
 board=None
 players=[]
 console = -1
 ###########################################################################
 #dont forget to set this before each game
-def init_state(newPlayers,newBoard,newConsole):
-    global players,board,console
-    players,board,console=newPlayers,newBoard,newConsole
+def init_state(newPlayers,newBoard,newConsole,newWindow):
+    global players,board,console,window
+    players,board,console,window=newPlayers,newBoard,newConsole,newWindow
 ########################################################################
 def getAmount(aType):
     counter=0
@@ -132,7 +115,7 @@ class advanceToCard(card):
             for key in actions.keys():
                 actions[key]()
         else:
-            console.chooseFromOptions(actions)                
+            window.choose_from_options(actions,get_asset_image(board.blocks[loc]))                
 
 
 class moveToNearestCard(card):
@@ -558,3 +541,4 @@ class player():
                         r_list.append(a)
         return r_list
         
+
