@@ -8,9 +8,9 @@ players=[]
 console = -1
 ###########################################################################
 #dont forget to set this before each game
-def init_state(newPlayers,newBoard,newConsole):
+def init_state(newPlayers,newBoard,newConsole,newWindow):
     global players,board,console,window
-    players,board,console=newPlayers,newBoard,newConsole
+    players,board,console,window=newPlayers,newBoard,newConsole,newWindow
 ########################################################################
 def getAmount(aType):
     counter=0

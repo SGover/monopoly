@@ -165,7 +165,7 @@ class GameWindow():
     def draw(self):        
         # Initialise screen
         pygame.init()  
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,50)  # x,y position of the screen
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,20)  # x,y position of the screen
         screen = pygame.display.set_mode((1020, 700))       #witdth and height
         pygame.display.set_caption('Monopoly')
         # Fill background
@@ -275,7 +275,7 @@ class buttonPad():
         self.controls=[]
         for option in options:
             x=600+(i//3)*150
-            y=550+(i%3)*50
+            y=560+(i%3)*50
             if len(str(option))>10:
                 self.controls.append(guiButton(str(option),(x,y),set_value,option,1.75,7))
             else:
