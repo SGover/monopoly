@@ -20,7 +20,7 @@ class console():
     def start(self):
         string = "******************************\n    New Game of Monopoly!\n******************************" 
         print(string)
-        string = string.split(sep="\n")
+        string = string.split("\n")
         for s in string: self.massege_list.append(s)
         
     def draw(self,surface):
