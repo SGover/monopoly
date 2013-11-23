@@ -45,11 +45,11 @@ class monoGame():
                 new_player1 = player(x[0],self.default_money)
                 new_player1.token_index = x[1]
                 self.players.append(new_player1)
+        
         init_state(self.players,self.board,self.console)
-
         gameWindow=GameWindow(self.board,self.players,self.console)
         gameWindow.run()
-        self.console.setGameWindow(gameWindow)                             
+        #self.console.setGameWindow(gameWindow)                             
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
         self.console.display("{} takes the first turn".format(self.curr_player.name))
@@ -268,7 +268,7 @@ class monoGame():
                         self.rolled_already = True
                     
                     if self.doubles>=3:
-                        console.display(self.player.name+ "rolled doubles 3 time! He is now in jail!")
+                        self.console.display(self.curr_player.name+ "rolled doubles 3 time! He is now in jail!")
                         self.rolled_already = True
                         self.player.goToJail()
                     else:
