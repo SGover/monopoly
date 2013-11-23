@@ -37,7 +37,6 @@ class monoGame():
         self.doubles = 0
    
     def start(self):
-        
         self.console.start()
         if self.players==[]:
             p_list = playerDialog().show()
@@ -46,9 +45,9 @@ class monoGame():
                 new_player1.token_index = x[1]
                 self.players.append(new_player1)
         
+        self.gameWindow=GameWindow(self.board,self.players,self.console)
         init_state(self.players,self.board,self.console)
-        gameWindow=GameWindow(self.board,self.players,self.console)
-        gameWindow.run()
+        self.gameWindow.run()
         #self.console.setGameWindow(gameWindow)                             
         self.current_player_index = randrange(len(self.players))
         self.curr_player=self.players[self.current_player_index]
@@ -209,7 +208,7 @@ class monoGame():
             trader.make_trade()
                 
     def do_all_commands(self):
-        cmd = self.console.prompt_commands(self.commands)
+        cmd = self.gameWindow.prompt_commands(self.commands)
         self.console.display(" ")            
         if cmd == "roll":
             self.do_roll()
@@ -303,7 +302,8 @@ class monoGame():
             for key in actions.keys():
                 actions[key]()
         else:            
-            self.console.createChooseButtonPopup(actions,get_asset_image(currBlock))
+            self.gameWindow.choose_from_options(actions,get_asset_image(currBlock))
+        
                                         
     def change_next_player(self):
         self.current_player_index = (self.current_player_index+1)%len(self.players)
