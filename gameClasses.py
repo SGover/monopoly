@@ -26,8 +26,21 @@ def getPlayerFromName(name):
     for player in players:
         if player.name==name:
             return player
-    return None    
-###################
+    return None
+
+
+#########
+#action class
+###############
+class Action():
+    def __init__(self,name,do,pic):
+        self.name=name
+        self.do=do
+        self.pic=pic
+    def do_action(self):
+        self.do()    
+
+##################
 # Cards Section
 ###################
 
