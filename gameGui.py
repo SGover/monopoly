@@ -15,24 +15,29 @@ class PopupWindow:
         self.image=image
         self.massage=massage
         self.buttons=buttons
-        self.background=pygame.Surface((400,600))
-        self.background.fill((220,220,220))
+        for button in self.buttons:
+            button.position = (300+button.position[0],200+button.position[1])
+        self.background=pygame.Surface((400,200))
         pygame.font.init()
         self.fnt = pygame.font.Font("fonts\Kabel.ttf", 20)
+
     def draw(self,surf):
+        self.background.fill((25,25,25))
+        frame = pygame.Surface((390,190))
+        frame.fill((220,220,220))
+        self.background.blit(frame, (5,5))
+        surf.blit(self.background,(300,200))
         m=self.fnt.render(self.massage,True,BLACK)
         if self.image!=None:
-            self.background.blit(self.image,(40,400))
-        self.background.blit(m,(100,20))
+            surf.blit(self.image,(330,240))
+        surf.blit(m,(430,240))
         for button in self.buttons:
-            self.background.blit(button,button.position)
-        surf.blit(self.background,(0,0))
+            surf.blit(button,button.position)
+        
     def handle_event(self,event):
         for button in self.buttons:
             button.handle_event(event)
     def close(self):
-        #self.gameWindow.popup=False
-        #self.gameWindow.popupWindow=None
         del[self]
         
 class StatusWindow():
@@ -181,7 +186,7 @@ class GameWindow():
         
         # Event loop
         while 1:
-            clock.tick(30)  #FPS
+            clock.tick(60)  #FPS
             if not self.popup:
                 brd_img = pygame.image.load("images\\monopoly.png")            
                 brd_img = brd_img.convert()
@@ -246,7 +251,7 @@ class GameWindow():
         i=0
         self.buttons=[]
         for name in actions.keys():            
-            self.buttons.append(guiButton(name,(70+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))
+            self.buttons.append(guiButton(name,(250+i//3*100, 65+(i%3)*50),actions[name],sizing=1.5))
             i+=1
         def check_click():
             for control in self.buttons:
@@ -294,7 +299,11 @@ class buttonPad():
                 
         return surface
     
+    def set_enabled(self, enable):
+        for control in self.controls:
+            control.set_enabled(enable)
         
+            
     #passing events from the main pygame thread(currently in gameWindow) 
     def handle_event(self,event):
         for control in self.controls:
