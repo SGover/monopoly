@@ -22,7 +22,7 @@ class PopupWindow:
     def draw(self,surf):
         m=self.fnt.render(self.massage,True,BLACK)
         if self.image!=None:
-            self.background.blit(self.image,(40,400))
+            self.background.blit(self.image,(100,400))
         self.background.blit(m,(100,20))
         for button in self.buttons:
             self.background.blit(button,button.position)
@@ -228,11 +228,13 @@ class GameWindow():
             #popup
             else:
                 for event in pygame.event.get():
-                    self.popupWindow.handle_event(event)
+                    if self.popupWindow!=None:
+                        self.popupWindow.handle_event(event)
                     if event.type == QUIT or self.quit:
                         pygame.quit()
-                        os.kill(os.getpid(),0) 
-                self.popupWindow.draw(screen)
+                        os.kill(os.getpid(),0)
+                if self.popupWindow!=None:
+                    self.popupWindow.draw(screen)
                 pygame.display.flip()
         
             
@@ -246,8 +248,30 @@ class GameWindow():
         i=0
         self.buttons=[]
         for name in actions.keys():            
-            self.buttons.append(guiButton(name,(70+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))
-            i+=1
+            self.buttons.append(guiButton(name,(120+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))                
+            i+=1        
+        def check_click():
+            for control in self.buttons:
+                if control.clicked:
+                    return True
+            return False
+        popup=PopupWindow('Choose',self.buttons,image)
+        self.open_popup(popup)
+        while not check_click():
+            time.sleep(0.2)
+        self.popup=False
+        self.popupWindow=None
+        popup.close()  
+
+    def choose_from_actions(self,actionsList,image=None):
+        i=0
+        self.buttons=[]
+        for action in actionList:            
+            if action.pic==None:
+                self.buttons.append(guiButton(name,(120+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))
+            else:
+                self.buttons.append(guiButton(name,(120+i//3*100,60+(i%3)*110),actions[name],sizing=1.5,image=action.pic))
+            i+=1        
         def check_click():
             for control in self.buttons:
                 if control.clicked:
