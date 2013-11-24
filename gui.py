@@ -19,8 +19,8 @@ TOKENS = ["images\\dog.png","images\\military.png",
           "images\\and.png","images\\worm.png"]
 
 class guiButton(pygame.Surface):
-    def __init__(self, caption, position, action=0,parameter=0,sizing=1,font_size=14):
-        #initializing
+    def __init__(self, caption, position, action=0,parameter=0,sizing=1,font_size=14,image=None):
+        #initializing        
         self.clicked=False
         self.caption = caption      
         self.position = position
@@ -30,8 +30,12 @@ class guiButton(pygame.Surface):
         self.font_size = font_size
         self.events = [MOUSEBUTTONDOWN,4,MOUSEBUTTONUP]
         #loading from files
-        self.img = pygame.image.load("images\\gui\\blue.png")        
-        self.pressed = pygame.image.load("images\\gui\\pressed.png")
+        if image==None:
+            self.img = pygame.image.load("images\\gui\\blue.png")        
+            self.pressed = pygame.image.load("images\\gui\\pressed.png")
+        else:
+            self.img=image
+            self.pressed=image
         if self.sizing!=1:
             self.img=pygame.transform.scale(self.img,(int(self.img.get_width()*self.sizing),self.img.get_height()))
             self.pressed=pygame.transform.scale(self.pressed,(int(self.pressed.get_width()*self.sizing),self.pressed.get_height()))
