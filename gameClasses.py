@@ -29,17 +29,24 @@ def getPlayerFromName(name):
     return None
 
 
-#########
+###############
 #action class
 ###############
-class Action():
-    def __init__(self,name,do,pic):
+
+class GameAction():
+    def __init__(self,name,do,pic=None,value=None):
         self.name=name
         self.do=do
         self.pic=pic
+        self.value=value
+    def __str__(self):
+        return self.name+" do : "+str(self.do)+" pic:"+str(self.pic)+" value:"+str(self.value)
     def do_action(self):
-        self.do()    
-
+        if self.value==None:
+            self.do()
+        else:
+            self.do(self.value)
+        
 ##################
 # Cards Section
 ###################
