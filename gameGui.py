@@ -13,34 +13,39 @@ POPUP_SIZE=(700,500)
 
 
 class PopupWindow():
-    def __init__(self,massage,buttons,image=None,texts=None):
+    def __init__(self,massage,buttons,image=None,texts=None,measures=((POPUP_TOP,POPUP_LEFT),POPUP_SIZE)):
         #self.gameWindow=gameWindow
+        self.top=measures[0][0]
+        self.left=measures[0][1]
+        self.width=measures[1][0]
+        self.height=measures[1][1]
         self.image=image
         self.texts=texts
         self.massage=massage
         self.buttons=buttons
         for button in self.buttons:
-            button.position = (POPUP_LEFT+button.position[0],POPUP_TOP+button.position[1])
-        self.background=pygame.Surface(POPUP_SIZE)
+            button.position = (self.left+button.position[0],self.top+button.position[1])
+        self.background=pygame.Surface((self.width,self.height))
         pygame.font.init()
         self.fnt = pygame.font.Font("fonts\Kabel.ttf", 20)
 
     def draw(self,surf):
         self.background.fill((25,25,25))
-        frame = pygame.Surface((POPUP_SIZE[0]-10,POPUP_SIZE[1]-10))
+        frame = pygame.Surface((self.width-10,self.height-10))
         frame.fill((220,220,220))
         self.background.blit(frame, (5,5))
         if self.texts!=None:
             for text in self.texts:
                 t=self.fnt.render(text[0],True,BLACK)
                 self.background.blit(t, text[1])
-        surf.blit(self.background,(POPUP_LEFT,POPUP_TOP))
+        surf.blit(self.background,(self.left,self.top))
         m=self.fnt.render(self.massage,True,BLACK)
         if self.image!=None:
             surf.blit(self.image,(330,240))
-        surf.blit(m,(POPUP_LEFT+30,POPUP_TOP+30))
+        surf.blit(m,(self.left+30,self.top+30))
         for button in self.buttons:
-            surf.blit(button,button.position)
+            if button._enable:
+                surf.blit(button,button.position)
         
     def handle_event(self,event):
         for button in self.buttons:
@@ -52,40 +57,91 @@ class TradeWindow(PopupWindow):
         self.buttons=buttons
         self.trader=trader
         self.players=players
+        self.money_interval=[50,50]
+        self.money1=0
+        self.money2=0
         margin=5
-        curr_x=50
-        curr_y=50
-        
-        block_size=(100,150)
-        headers=[(players[0].name,(POPUP_SIZE[0]//4,40)),(players[1].name,(3*POPUP_SIZE[0]//4,40))]
+        curr_x=20
+        curr_y=50        
+        block_size=(50,75)
+        headers=[(players[0].name+ ' assets',(800//4-1,20)),(players[1].name+ ' assets',(3*800//4,20)),
+                 ('money :$'+str(players[0].money),(800//4-170,20)),('money :$'+str(players[1].money),(-170+3*800//4,20)),
+                 ('Trade assets',(POPUP_SIZE[0]//4-100,260)),('Trade assets',(3*POPUP_SIZE[0]//4-100,260))]
         for asset in players[0].assets_list():
-            self.buttons.append(guiButton('',(curr_x,curr_y),action=self.add1_asset,parameter=asset,image=get_asset_image(asset)))
+            self.buttons.append(guiButton('',(curr_x,curr_y),action=self.add1_asset,parameter=asset,image=get_asset_image(asset),name='add'+asset.name,sizing=0.5,y_sizing=0.5))
+            self.buttons.append(guiButton('',(curr_x,curr_y+260),action=self.rem1_asset,parameter=asset,image=get_asset_image(asset),name='rem'+asset.name,enabled=False,sizing=0.5,y_sizing=0.5))
             if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
                     curr_x=curr_x+block_size[0]
             else:
                     curr_x=50
                     curr_y+=block_size[1]
-        curr_x=50
+        curr_x=20
+        curr_y=50        
         for asset in players[1].assets_list():            
-            self.buttons.append(guiButton('',(POPUP_SIZE[0]//2+curr_x,curr_y),action=trader.add_asset_1,parameter=asset,image=get_asset_image(asset)))
+            self.buttons.append(guiButton('',(POPUP_SIZE[0]//2+curr_x,curr_y),action=self.add2_asset,parameter=asset,image=get_asset_image(asset),name='add'+asset.name,sizing=0.5,y_sizing=0.5))
+            self.buttons.append(guiButton('',(POPUP_SIZE[0]//2+curr_x,curr_y+260),action=self.rem2_asset,parameter=asset,image=get_asset_image(asset),name='rem'+asset.name,enabled=False,sizing=0.5,y_sizing=0.5))
             if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
                     curr_x=curr_x+block_size[0]
             else:
                     curr_x=100
                     curr_y+=block_size[1]
-        PopupWindow.__init__('Trader',buttons,texts=headers)
-    def remove_asset_button(self,asset):
+
+        self.buttons.append(guiButton('+',(50,500),action=self.add1_money))
+        self.buttons.append(guiButton('-',(120,500),action=self.rem1_money))
+        self.buttons.append(guiButton('+',(450,500),action=self.add2_money))
+        self.buttons.append(guiButton('-',(520,500),action=self.rem2_money))
+        PopupWindow.__init__(self,'',buttons,texts=headers,measures=((100,50),(800,600)))
+        self.top_dx=[40,40]
+        self.top_dy=[100,100]
+        self.down_dx=[40,40]
+        self.down_dy=[400,400]    
+    def add1_money(self):
+        new_v=self.trader.player1_money+self.money_interval[0]
+        if new_v<self.players[0].money:
+            self.trader.set_money1(new_v)
+            self.money1=new_v                
+    def add2_money(self):
+        new_v=self.trader.player2_money+self.money_interval[1]
+        if new_v<self.players[1].money:
+            self.trader.set_money2(new_v)
+            self.money2=new_v        
+    def rem1_money(self):
+        new_v=self.trader.player1_money-self.money_interval[0]
+        if new_v>=0:
+            self.trader.set_money1(new_v)
+            self.money1=new_v        
+    def rem2_money(self):
+        new_v=self.trader.player2_money-self.money_interval[1]
+        if new_v>=0:
+            self.trader.set_money2(new_v)
+            self.money2=new_v        
+    def enable_asset(self,name,enabled):
         for button in self.buttons:
-            if button.parameter==asset:
-                self.buttons.remove(button)
+            if button.name==name:
+                button.set_enabled(enabled)
     def add1_asset(self,asset):
-        self.trader.add_asset_1(asset)
-        self.remove_asset_button(asset)
-        self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+400),action=self.rem1_asset,parameter=asset,image=get_asset_image(asset)))        
+        self.trader.add_asset_1(asset)        
+        self.enable_asset('add'+asset.name,False)
+        self.enable_asset('rem'+asset.name,True)                        
     def rem1_asset(self,asset):
         self.trader.remove_asset_1(asset)
-        self.remove_asset_button(asset)
-        self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+50),action=self.add1_asset,parameter=asset,image=get_asset_image(asset)))        
+        self.enable_asset('add'+asset.name,True)
+        self.enable_asset('rem'+asset.name,False)
+    def add2_asset(self,asset):
+        self.trader.add_asset_2(asset)        
+        self.enable_asset('add'+asset.name,False)
+        self.enable_asset('rem'+asset.name,True)                        
+    def rem2_asset(self,asset):
+        self.trader.remove_asset_2(asset)
+        self.enable_asset('add'+asset.name,True)
+        self.enable_asset('rem'+asset.name,False)
+    def draw(self,surf):
+        PopupWindow.draw(self,surf)
+        t=self.fnt.render('Trade money $'+str(self.money2),True,BLACK)
+        surf.blit(t, (self.left-50+3*700//4,self.top+550))
+        t=self.fnt.render('Trade money $'+str(self.money1),True,BLACK)
+        surf.blit(t, (self.left+700//4-100,self.top+550))
+                
     def update(self):
         pass 
 
@@ -321,8 +377,8 @@ class GameWindow():
 
         trader=Trader(players[0],players[1])
         self.buttons=[]    
-        passb=guiButton('pass',(POPUP_SIZE[0]//2+40,POPUP_SIZE[1]-50),action=passf)
-        finishb=guiButton('finish',(POPUP_SIZE[0]//2-40,POPUP_SIZE[1]-50),action=trader.make_trade)
+        passb=guiButton('pass',(700//2+40,600-50),action=passf)
+        finishb=guiButton('finish',(700//2-40,600-50),action=trader.make_trade)
         self.buttons.append(passb)
         self.buttons.append(finishb)            
 
@@ -330,7 +386,7 @@ class GameWindow():
                 if passb.clicked or finishb.clicked:
                     return True
                 return False            
-        popup=TradeWindow('',self.buttons,trader,players)
+        popup=TradeWindow(self.buttons,trader,players)
         self.open_popup(popup)
         while not check_click():
             time.sleep(0.2)            

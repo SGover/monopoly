@@ -366,8 +366,8 @@ class Trader():
         if self.player1.money>=ammount:
             self.player1_money=ammount
     def set_money2(self,ammount):
-        if self.player1.money>=ammount:
-            self.player1_money=ammount            
+        if self.player2.money>=ammount:
+            self.player2_money=ammount            
     def make_trade(self):
         self.player2.money-=self.player2_money
         self.player2.money+=self.player1_money

@@ -282,7 +282,7 @@ class monoGame():
                     if self.doubles>=3:
                         self.console.display(self.curr_player.name+ "rolled doubles 3 time! He is now in jail!")
                         self.rolled_already = True
-                        self.player.goToJail()
+                        self.curr_player.goToJail()
                     else:
                         # movement around the board and actions on landing
                         dice_sum=dice[0]+dice[1]
