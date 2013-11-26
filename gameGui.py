@@ -1,11 +1,10 @@
 from gui import guiButton
-import time
+import time, sys, os
 from constants import *
 from random import randrange
 import pygame
 from pygame.locals import QUIT
 from threading import Thread
-import os
 
 X = 545
 POPUP_TOP=100
@@ -71,13 +70,13 @@ class StatusWindow():
             background.blit(self.img, (X,height+5))
             
             txt_name = self.fnt_name.render(p.name, True, P_COLORS[l])
-            textpos = txt_name.get_rect().move(X+15,20+height)
+            textpos = txt_name.get_rect().move(X+15,15+height)
             background.blit(txt_name, textpos)
             
             background.blit(pygame.image.load(TOKENS[p.token_index]).convert_alpha(), (X+250,15+height))
             
             txt_money = self.fnt_money.render("$"+str(p.money), True, (10, 10, 10))
-            textpos = txt_money.get_rect().move(X+320,30+height)
+            textpos = txt_money.get_rect().move(X+320,25+height)
             background.blit(txt_money, textpos)
             
             i = 0
@@ -87,7 +86,7 @@ class StatusWindow():
                 for asset in p.assets[c]:
                     text = text + asset.name + " | " 
                 txt_money = self.fnt_asset.render(text, True, color)    
-                textpos = txt_money.get_rect().move(X+10,73+height+(i*20))
+                textpos = txt_money.get_rect().move(X+10,68+height+(i*20))
                 background.blit(txt_money, textpos)
                 i += 1
             l += 1    
