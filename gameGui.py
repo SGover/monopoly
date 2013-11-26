@@ -80,11 +80,11 @@ class TradeWindow(PopupWindow):
                 self.buttons.remove(button)
     def add1_asset(self,asset):
         self.trader.add_asset_1(asset)
-        remove_asset_button(asset)
+        self.remove_asset_button(asset)
         self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+400),action=self.rem1_asset,parameter=asset,image=get_asset_image(asset)))        
     def rem1_asset(self,asset):
         self.trader.remove_asset_1(asset)
-        remove_asset_button(asset)
+        self.remove_asset_button(asset)
         self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+50),action=self.add1_asset,parameter=asset,image=get_asset_image(asset)))        
     def update(self):
         pass 
