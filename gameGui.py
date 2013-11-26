@@ -393,7 +393,7 @@ class GameWindow():
         self.popup=False
         self.popupWindow=None
         popup.close() 
-    def choose_from_actions(self,actionsList,image=None,text='Choose'):
+    def choose_from_actions(self,actionsList,image=None,text='Choose',atexts=None):
         try:
             i=0
             self.buttons=[]
@@ -417,7 +417,7 @@ class GameWindow():
                     if control.clicked:
                         return True
                 return False            
-            popup=PopupWindow(text,self.buttons,image)
+            popup=PopupWindow(text,self.buttons,image,texts=atexts)
             self.open_popup(popup)
             while not check_click():
                 time.sleep(0.2)
