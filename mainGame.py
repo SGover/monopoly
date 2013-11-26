@@ -99,7 +99,18 @@ class monoGame():
         if(len(build_list)==0):
             self.console.display("nowhere to build houses")
         else:
-            build_list.append("pass")
+            actionList=[]
+            texts=None
+            for section in build_list:                
+                for asset in self.curr_player.assets[section]:
+                    if asset.houses<4:
+                        actionList.append(GameAction(asset.name,self.curr_player.buy_house,pic=get_asset_image(asset),value=asset))
+                    else:
+                        actionList.append(GameAction(asset.name,self.curr_player.buy_hotel,pic=get_asset_image(asset),value=asset))
+            self.gameWindow.choose_from_actions(actionList,atexts=texts)
+            
+            '''
+            build_list.append("pass")            
             cmd=''
             while cmd!='pass':
                 self.console.display("select section:")
@@ -127,12 +138,22 @@ class monoGame():
                             self.console.display('no such section plz select from the options')
                 elif cmd!='pass':
                     self.console.display('no such section plz select from the options')
-                
+            '''
     def do_sell(self):
         sell_list=self.curr_player.house_asset_list()
         if(len(sell_list)==0):
             self.console.display("no houses to sell")
         else:
+            actionList=[]
+            texts=None
+            for asset in sell_list:                                
+                if not asset.hotel:
+                    actionList.append(GameAction(asset.name,self.curr_player.sell_house,pic=get_asset_image(asset),value=asset))
+                else:
+                    actionList.append(GameAction(asset.name,self.curr_player.sell_hotel,pic=get_asset_image(asset),value=asset))
+            self.gameWindow.choose_from_actions(actionList,atexts=texts)
+
+            '''
             sell_list.append("pass")
             cmd=''
             while cmd!='pass':
@@ -144,7 +165,8 @@ class monoGame():
                             cmd='pass'                            
                             self.curr_player.sell_house(asset)
                 
-                    
+
+            '''
             #cond is True for unMortage and False for mortage
     def do_mortage(self,cond):        
         mort_list=self.curr_player.mortage_list(cond)
@@ -282,7 +304,7 @@ class monoGame():
                     if self.doubles>=3:
                         self.console.display(self.curr_player.name+ "rolled doubles 3 time! He is now in jail!")
                         self.rolled_already = True
-                        self.player.goToJail()
+                        self.curr_player.goToJail()
                     else:
                         # movement around the board and actions on landing
                         dice_sum=dice[0]+dice[1]
@@ -309,6 +331,7 @@ class monoGame():
         if player.location+diceSum>=len(self.board.blocks):
             self.console.display(player.name+" went throught start, got $200")
         currBlock=self.board.blocks[targetMove]
+        self.gameWindow.move_pawn(player,targetMove)
         player.landOn(currBlock,targetMove)
         actions=currBlock.getActions()
         if(len(actions)==1):

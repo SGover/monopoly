@@ -120,6 +120,15 @@ class TradeWindow(PopupWindow):
             if button.name==name:
                 button.set_enabled(enabled)
     def add1_asset(self,asset):
+<<<<<<< HEAD
+        self.trader.add_asset_1(asset)
+        self.remove_asset_button(asset)
+        self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+400),action=self.rem1_asset,parameter=asset,image=get_asset_image(asset)))        
+    def rem1_asset(self,asset):
+        self.trader.remove_asset_1(asset)
+        self.remove_asset_button(asset)
+        self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+50),action=self.add1_asset,parameter=asset,image=get_asset_image(asset)))        
+=======
         self.trader.add_asset_1(asset)        
         self.enable_asset('add'+asset.name,False)
         self.enable_asset('rem'+asset.name,True)                        
@@ -142,6 +151,7 @@ class TradeWindow(PopupWindow):
         t=self.fnt.render('Trade money $'+str(self.money1),True,BLACK)
         surf.blit(t, (self.left+700//4-100,self.top+550))
                 
+>>>>>>> da70e5bde3da3f5c63053f28b43b8df9569d1980
     def update(self):
         pass 
 

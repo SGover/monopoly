@@ -225,7 +225,7 @@ class utilBlock(block):         #utilities and railway stations
             console.display("{} mortaged {} for ${}".format(player.name,self.name,str((self.price//2))))
     def unmortage(self,player):
         if self.mortaged and player.name==self.owner:
-            player.money-=(self.price//2)*1.1
+            player.money-=int((self.price//2)*1.1)
             self.mortaged=False
             console.display("{} unmortaged {} for ${}".format(player.name,self.name,str(round((self.price//2)*1.1,2))))
         
@@ -276,7 +276,7 @@ class assetBlock(block):
             
     def unmortage(self,player):
         if self.mortaged and player.name==self.owner:
-            player.money-=(self.price//2)*1.1
+            player.money-=int((self.price//2)*1.1)
             self.mortaged=False
             console.display("{} unmortaged {} for ${}".format(player.name,self.name,str(round((self.price//2)*1.1,2))))
     
@@ -366,8 +366,8 @@ class Trader():
         if self.player1.money>=ammount:
             self.player1_money=ammount
     def set_money2(self,ammount):
-        if self.player1.money>=ammount:
-            self.player1_money=ammount            
+        if self.player2.money>=ammount:
+            self.player2_money=ammount            
     def make_trade(self):
         self.player2.money-=self.player2_money
         self.player2.money+=self.player1_money
@@ -527,6 +527,7 @@ class player():
             return True
         return False
     def add_asset(self,asset):
+        asset.owner=self.name
         if(asset.color in self.assets):
             self.assets[asset.color].append(asset)
         else:
@@ -536,6 +537,9 @@ class player():
         console.display("{} was removed from {} properties ".format(asset.name,self.name))
         if asset.color in self.assets:
             self.assets[asset.color].remove(asset)
+            if len(self.assets[asset.color])==0:
+                self.assets.pop(asset.color, None)
+            
     def updateRoll(self,roll):
         self.latestRoll=roll
     def getLatestRoll(self):

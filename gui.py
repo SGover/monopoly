@@ -19,8 +19,9 @@ TOKENS = ["images\\dog.png","images\\military.png",
           "images\\and.png","images\\worm.png"]
 
 class guiButton(pygame.Surface):
-    def __init__(self, caption, position, action=0,parameter=0,sizing=1,font_size=14,image=None):
-        #initializing        
+    def __init__(self, caption, position, action=0,parameter=0,sizing=1,y_sizing=1,font_size=14,image=None,enabled=True,name=None):
+        #initializing
+        self.name=name
         self.clicked=False
         self.caption = caption      
         self.position = position
@@ -36,9 +37,15 @@ class guiButton(pygame.Surface):
         else:
             self.img=image
             self.pressed=image
-        if self.sizing!=1:
-            self.img=pygame.transform.scale(self.img,(int(self.img.get_width()*self.sizing),self.img.get_height()))
-            self.pressed=pygame.transform.scale(self.pressed,(int(self.pressed.get_width()*self.sizing),self.pressed.get_height()))
+        if self.sizing!=1 or y_sizing!=1:
+            self.img=pygame.transform.scale(self.img,
+                                            (int(self.img.get_width()*self.sizing),
+                                             int(self.img.get_height()*y_sizing))
+                                            )
+            self.pressed=pygame.transform.scale(self.pressed,
+                                                (int(self.pressed.get_width()*self.sizing),
+                                                 int(self.pressed.get_height()*y_sizing))
+                                                )
         self.hover = self.img.copy()
         self.hover.fill((255,255,255,0))
         self.btn = self.img.copy()
@@ -48,7 +55,7 @@ class guiButton(pygame.Surface):
         self.img = self.img.convert_alpha()
         self.font = pygame.font.Font("fonts\\Kabel.ttf", self.font_size)
         self.text_color = ENABLED_TEXT_COLOR
-        self._enable = True
+        self._enable = enabled
         #calling parent constructor
         pygame.Surface.__init__(self, size=(self._width,self._height),flags=pygame.SRCALPHA)
         #update surface
