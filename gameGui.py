@@ -91,8 +91,6 @@ class StatusWindow():
                 i += 1
             l += 1    
         return background
-    
-
 
 def get_asset_image(asset):    
     
