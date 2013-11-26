@@ -350,7 +350,10 @@ class GameWindow():
             
     def stop(self):
         self.quit = True
-
+    def move_pawn(self,player,target_move):
+        while player.location!=target_move:
+            player.location=(player.location+1)%len(self.board.blocks)
+            time.sleep(0.25)
     def prompt_commands(self, list_cmds):
         return self.buttonPad.create_selection_menu(list_cmds)
     

@@ -331,6 +331,7 @@ class monoGame():
         if player.location+diceSum>=len(self.board.blocks):
             self.console.display(player.name+" went throught start, got $200")
         currBlock=self.board.blocks[targetMove]
+        self.gameWindow.move_pawn(player,targetMove)
         player.landOn(currBlock,targetMove)
         actions=currBlock.getActions()
         if(len(actions)==1):
