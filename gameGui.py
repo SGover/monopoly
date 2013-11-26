@@ -8,29 +8,36 @@ from threading import Thread
 import os
 
 X = 545
-
+POPUP_TOP=100
+POPUP_LEFT=200
+POPUP_SIZE=(700,500)    
 class PopupWindow:
-    def __init__(self,massage,buttons,image=None):
+    def __init__(self,massage,buttons,image=None,texts=None):
         #self.gameWindow=gameWindow
         self.image=image
+        self.texts=texts
         self.massage=massage
         self.buttons=buttons
         for button in self.buttons:
-            button.position = (300+button.position[0],200+button.position[1])
-        self.background=pygame.Surface((400,200))
+            button.position = (POPUP_LEFT+button.position[0],POPUP_TOP+button.position[1])
+        self.background=pygame.Surface(POPUP_SIZE)
         pygame.font.init()
         self.fnt = pygame.font.Font("fonts\Kabel.ttf", 20)
 
     def draw(self,surf):
         self.background.fill((25,25,25))
-        frame = pygame.Surface((390,190))
+        frame = pygame.Surface((POPUP_SIZE[0]-10,POPUP_SIZE[1]-10))
         frame.fill((220,220,220))
         self.background.blit(frame, (5,5))
-        surf.blit(self.background,(300,200))
+        if self.texts!=None:
+            for text in self.texts:
+                t=self.fnt.render(text[0],True,BLACK)
+                self.background.blit(t, text[1])
+        surf.blit(self.background,(POPUP_LEFT,POPUP_TOP))
         m=self.fnt.render(self.massage,True,BLACK)
         if self.image!=None:
             surf.blit(self.image,(330,240))
-        surf.blit(m,(430,240))
+        surf.blit(m,(POPUP_LEFT+30,POPUP_TOP+30))
         for button in self.buttons:
             surf.blit(button,button.position)
         
@@ -266,29 +273,95 @@ class GameWindow():
             time.sleep(0.2)
         self.popup=False
         self.popupWindow=None
-        popup.close()  
+        popup.close()
+    def create_trade_menu(self,players,image=None):
+        from gameClasses import Trader
 
-    def choose_from_actions(self,actionsList,image=None):
-        i=0
+        trader=Trader(players[0],players[1])
         self.buttons=[]
-        for action in actionList:            
-            if action.pic==None:
-                self.buttons.append(guiButton(name,(120+i//3*100,110+(i%3)*50),actions[name],sizing=1.5))
+        margin=5
+        curr_x=50
+        curr_y=50
+        block_size=(100,150)
+        headers=[(players[0].name,(POPUP_SIZE[0]//4,40)),(players[1].name,(3*POPUP_SIZE[0]//4,40))]
+        for asset in players[0].assets_list():
+            self.buttons.append(guiButton('',(curr_x,curr_y),action=trader.add_asset_1,parameter=asset,image=get_asset_image(asset)))
+            if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
+                    curr_x=curr_x+block_size[0]
             else:
-                self.buttons.append(guiButton(name,(120+i//3*100,60+(i%3)*110),actions[name],sizing=1.5,image=action.pic))
-            i+=1        
-        def check_click():
-            for control in self.buttons:
-                if control.clicked:
+                    curr_x=50
+                    curr_y+=block_size[1]
+        curr_x=50
+        for asset in players[1].assets_list():
+            self.buttons.append(guiButton('',(POPUP_SIZE[0]//2+curr_x,curr_y),action=trader.add_asset_1,parameter=asset,image=get_asset_image(asset)))
+            if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
+                    curr_x=curr_x+block_size[0]
+            else:
+                    curr_x=100
+                    curr_y+=block_size[1]
+
+        '''
+        if action.pic==None:                    
+            self.buttons.append(guiButton(action.name,(curr_x,curr_y),action=action.do_action))                    
+        else:
+            self.buttons.append(guiButton('',(curr_x,curr_y),action=action.do_action,image=action.pic))
+            if curr_x+block_size[0]<POPUP_SIZE[0]-margin:
+                    curr_x=curr_x+block_size[0]
+            else:
+                    curr_x=100
+                    curr_y+=block_size[1]
+        '''
+        passb=guiButton('pass',(POPUP_SIZE[0]//2+40,POPUP_SIZE[1]-50),action=passf)
+        finishb=guiButton('finish',(POPUP_SIZE[0]//2-40,POPUP_SIZE[1]-50),action=trader.make_trade)
+        self.buttons.append(passb)
+        self.buttons.append(finishb)            
+
+        def check_click():            
+                if passb.clicked or finishb.clicked:
                     return True
-            return False
-        popup=PopupWindow('Choose',self.buttons,image)
+                return False            
+        popup=PopupWindow('',self.buttons,image,texts=headers)
         self.open_popup(popup)
         while not check_click():
             time.sleep(0.2)
         self.popup=False
         self.popupWindow=None
-        popup.close()  
+        popup.close() 
+    def choose_from_actions(self,actionsList,image=None,text='Choose'):
+        try:
+            i=0
+            self.buttons=[]
+            margin=5
+            curr_x=100
+            curr_y=100
+            block_size=(100,150)
+            for action in actionsList:                
+                if action.pic==None:                    
+                    self.buttons.append(guiButton(action.name,(curr_x,curr_y),action=action.do_action))                    
+                else:                    
+                    self.buttons.append(guiButton('',(curr_x,curr_y),action=action.do_action,image=action.pic))
+                if curr_x+block_size[0]<POPUP_SIZE[0]-margin:
+                        curr_x=curr_x+block_size[0]
+                else:
+                    curr_x=100
+                    curr_y+=block_size[1]
+            self.buttons.append(guiButton('pass',(POPUP_SIZE[0]//2-40,POPUP_SIZE[1]-50),action=passf))            
+            def check_click():
+                for control in self.buttons:
+                    if control.clicked:
+                        return True
+                return False            
+            popup=PopupWindow(text,self.buttons,image)
+            self.open_popup(popup)
+            while not check_click():
+                time.sleep(0.2)
+            self.popup=False
+            self.popupWindow=None
+            popup.close()
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
+            raise
+
     
 class buttonPad():
     
@@ -333,3 +406,5 @@ class buttonPad():
         for control in self.controls:
             control.handle_event(event)
             
+def passf():
+    pass

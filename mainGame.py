@@ -4,6 +4,7 @@ from random import randrange
 from gui import playerDialog
 from board import Board
 from gameGui import GameWindow
+from gameGui import get_asset_image
 import time
 
 START='start'
@@ -16,6 +17,7 @@ allComands=[ROLL,SELL,BUILD,MORTAGE,UNMORTAGE,TRADE,END] # player can sell its p
 
 BUY,AUCTION = "buy","auction"
 purchaseCmds = [BUY,AUCTION]
+
 
 class monoGame():
     
@@ -145,30 +147,42 @@ class monoGame():
                     
             #cond is True for unMortage and False for mortage
     def do_mortage(self,cond):        
-        mort_list=self.curr_player.mortage_list(cond)                
+        mort_list=self.curr_player.mortage_list(cond)
+        actionList=[]
         if(len(mort_list)==0):
             if cond:
                 self.console.display("no assets to unmortage")
             else:
                 self.console.display("no assets to mortage")
         else:
-            mort_list.append("pass")
+            
             cmd=''
             if cond:
-                self.console.display("select asset to unmortage:")
+                self.console.display("select asset to unmortage:")                
+                for asset in mort_list:
+                    actionList.append(GameAction(asset.name,asset.unmortage,pic=get_asset_image(asset),value=self.curr_player))
             else:
-                self.console.display("select asset to mortage") 
-            cmd=self.gameWindow.prompt_commands(mort_list)
-            mort_list.remove("pass")
+                
+                self.console.display("select asset to mortage")
+                for asset in mort_list:                            
+                    actionList.append(GameAction(asset.name,asset.mortage,pic=get_asset_image(asset)))
+                        
+                
+            self.gameWindow.choose_from_actions(actionList)
+            #cmd=self.gameWindow.prompt_commands(mort_list)                                      
+            #mort_list.remove(Action("pass",lambda: pass,None))
+            '''                                      
             for asset in mort_list:
                 if asset==cmd:
                     if cond:
                         asset.unmortage(self.curr_player)
                     else:
                         asset.mortage()
-                        
+            '''         
 
     def do_trade(self):
+        self.gameWindow.create_trade_menu(self.players)
+        '''
         trader=Trader(self.players[0],self.players[1])
         cmd=''
         name1=self.players[0].name
@@ -205,7 +219,7 @@ class monoGame():
                                 self.console.display("no assets to remove from trader for "+cmd)
         if cmd=='finish':
             trader.make_trade()
-                
+        '''        
     def do_all_commands(self):
         cmd = self.gameWindow.prompt_commands(self.commands)
         self.console.display(" ")            

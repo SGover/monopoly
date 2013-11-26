@@ -1,5 +1,5 @@
 import pygame
-from pygame.locals import *  
+from pygame.locals import *
 import threading
 import os
 
@@ -64,7 +64,7 @@ class guiButton(pygame.Surface):
         #filling surface with transparent color and than pasting button on it
         self.fill((0,0,0,0))
         self.blit(self.img,(0,0))
-        self.blit(self.hover,(0,0))
+        #self.blit(self.hover,(0,0))
         
     def handle_event(self, event):
         global hover

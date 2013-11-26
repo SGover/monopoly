@@ -29,17 +29,24 @@ def getPlayerFromName(name):
     return None
 
 
-#########
+###############
 #action class
 ###############
-class Action():
-    def __init__(self,name,do,pic):
+
+class GameAction():
+    def __init__(self,name,do,pic=None,value=None):
         self.name=name
         self.do=do
         self.pic=pic
+        self.value=value
+    def __str__(self):
+        return self.name+" do : "+str(self.do)+" pic:"+str(self.pic)+" value:"+str(self.value)
     def do_action(self):
-        self.do()    
-
+        if self.value==None:
+            self.do()
+        else:
+            self.do(self.value)
+        
 ##################
 # Cards Section
 ###################
@@ -372,8 +379,8 @@ class Trader():
         self.player1.money+=self.player2_money
         console.display("{} paid ${} and got ${} ".format(self.player1.name,self.player1_money,self.player2_money))
         for asset in self.player2_blocks:
-            self.player1.remove_asset(asset)
-            self.player2.add_asset(asset)
+            self.player2.remove_asset(asset)
+            self.player1.add_asset(asset)
    
     
 ##################
