@@ -35,22 +35,6 @@ class console():
                 surface.blit(txt, text_pos)                
         return surface
     
-    #replace choose from options
-#     def create_buttons_from_action_dict(self,actions):
-#         self.controls=[]
-#         i=0
-#         for name in actions.keys():            
-#             self.controls.append(guiButton(name,(600+i//3*100,550+(i%3)*50),actions[name],sizing=1.5))
-#             i+=1
-#         def check_click():
-#             for control in self.controls:
-#                 if control.clicked:
-#                     return True
-#             return False
-#         while not check_click():
-#             time.sleep(0.2)
-                
-                
     #passing events from the main pygame thread(currently in gameWindow) 
     def handle_event(self,event):
         pass
@@ -66,24 +50,8 @@ class console():
     def show_winner(self, winner):
         print(winner,"is the winner!")
         
-#     def prompt_commands(self, list_cmds):
-#         return self.buttons.create_selection_menu(list_cmds)
-#         self.massage="Select a command:"
-#         print("\nSelect a command:")
-#         return input(" {} : ".format(list_cmds))
-      
     def prompt_commands_index(self,list_cmds):
         return self.create_selection_menu(list_cmds)
-    '''
-        print ("use the number to select an option from the following options:")
-        str1=''
-        for cmd in list_cmds:
-            str1+=" "+str(list_cmds.index(cmd)+1)+". "+str(cmd)
-        index = -1
-        while index<0 or index>=len(list_cmds):
-            index= int(input(str1+'\n'))-1
-        return list_cmds[index]
-    '''         
         
     def printBoard(self,board):
         for block in board.blocks:
@@ -94,22 +62,3 @@ class console():
                 elif bType==type(gameClasses.cardBlock):
                     print ("Deck : "+block.deck.name)
                     
-
-    
-       
-        """take a name:value pair as actions"""
-        
-        '''
-        print("\nSelect a command :")
-        i=0
-        for key in actions.keys():
-            i+=1
-            print (str(i)+". "+key)
-        cmd=input(" select :")
-        while not (cmd in actions):
-            print ("wrong command try again")
-            cmd=input(" select :")
-        print(" ")
-        actions[cmd]()
-        '''
-     

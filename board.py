@@ -4,11 +4,11 @@ from gameFactory import initFromFile
 import pygame
 from pygame.locals import QUIT
 from threading import Thread
-import os
+import os 
 #from gui import guiButton, guiImageList, guiTextBox
 
 
-IFF=initFromFile("gameProperties.txt")
+IFF=initFromFile(os.path.normpath("gameProperties.txt"))
 CHANCE_DECK,CHEST_DECK=deck(IFF.chanceCards,"chance"),deck(IFF.chestCards,"chest")
 CHANCE_DECK.shuffle()
 CHEST_DECK.shuffle()

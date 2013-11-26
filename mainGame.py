@@ -96,49 +96,21 @@ class monoGame():
             self.console.display("Invalid command input!")     
     def do_build(self):
         build_list=self.curr_player.get_build_assets()
-        if(len(build_list)==0):
+        if(len(build_list)==0) or self.curr_player.money:
             self.console.display("nowhere to build houses")
         else:
             actionList=[]
-            texts=None
+            texts = None
             for section in build_list:                
                 for asset in self.curr_player.assets[section]:
                     if asset.houses<4:
                         actionList.append(GameAction(asset.name,self.curr_player.buy_house,pic=get_asset_image(asset),value=asset))
-                    else:
+                    elif not asset.hotel:
                         actionList.append(GameAction(asset.name,self.curr_player.buy_hotel,pic=get_asset_image(asset),value=asset))
+                    else:
+                        self.console.display("Hotel already built in this asset!")
             self.gameWindow.choose_from_actions(actionList,atexts=texts)
             
-            '''
-            build_list.append("pass")            
-            cmd=''
-            while cmd!='pass':
-                self.console.display("select section:")
-                cmd=self.gameWindow.prompt_commands(build_list)
-                if cmd in build_list and cmd!='pass':                    
-                    section=self.curr_player.assets[cmd]
-                    name_list=[]
-                    for s in section:
-                            name_list.append(s.name)                    
-                    name_list.append("pass")
-                    while cmd!='pass':
-                        self.console.display("select street:")                                        
-                        cmd=self.gameWindow.prompt_commands(name_list)
-                        is_street=False
-                        if cmd!='pass':
-                            for street in section:
-                                if street.name==cmd:
-                                    is_street=True
-                                    if street.houses<4:
-                                        self.curr_player.buy_house(street)
-                                    else:
-                                        self.curr_player.buy_hotel(street)
-                                    cmd='pass'
-                        elif is_street:
-                            self.console.display('no such section plz select from the options')
-                elif cmd!='pass':
-                    self.console.display('no such section plz select from the options')
-            '''
     def do_sell(self):
         sell_list=self.curr_player.house_asset_list()
         if(len(sell_list)==0):
@@ -153,20 +125,6 @@ class monoGame():
                     actionList.append(GameAction(asset.name,self.curr_player.sell_hotel,pic=get_asset_image(asset),value=asset))
             self.gameWindow.choose_from_actions(actionList,atexts=texts)
 
-            '''
-            sell_list.append("pass")
-            cmd=''
-            while cmd!='pass':
-                self.console.display("select asset to sell houses:")                                        
-                cmd=self.gameWindow.prompt_commands(sell_list)
-                for asset in sell_list:
-                    if asset!='pass':
-                        if asset.name==cmd.name:
-                            cmd='pass'                            
-                            self.curr_player.sell_house(asset)
-                
-
-            '''
             #cond is True for unMortage and False for mortage
     def do_mortage(self,cond):        
         mort_list=self.curr_player.mortage_list(cond)
@@ -191,57 +149,10 @@ class monoGame():
                         
                 
             self.gameWindow.choose_from_actions(actionList)
-            #cmd=self.gameWindow.prompt_commands(mort_list)                                      
-            #mort_list.remove(Action("pass",lambda: pass,None))
-            '''                                      
-            for asset in mort_list:
-                if asset==cmd:
-                    if cond:
-                        asset.unmortage(self.curr_player)
-                    else:
-                        asset.mortage()
-            '''         
 
     def do_trade(self):
         self.gameWindow.create_trade_menu(self.players)
-        '''
-        trader=Trader(self.players[0],self.players[1])
-        cmd=''
-        name1=self.players[0].name
-        name2=self.players[1].name
-        while cmd!='pass' and cmd!='finish':
-            cmd = self.gameWindow.prompt_commands(['pass','finish',name1,name2])
-            if cmd==name1 or cmd==name2:
-                cmd2=''
-                while cmd2!='pass' and cmd2!='finish':
-                    cmd2 = self.gameWindow.prompt_commands(['money','asset','pass','finish'])
-                    if cmd2 == 'money':
-                        ammount=int(input("enter ammount : "))
-                        if cmd==name1:
-                            trader.set_money1(ammount)
-                        else:
-                            trader.set_money2(ammount)
-                    elif cmd2=='asset':
-                        add_remove=self.gameWindow.prompt_commands(['add','remove'])
-                        if add_remove=='add':
-                            if cmd==name1:
-                                asset=self.gameWindow.prompt_commands(self.players[0].assets_list())
-                                trader.add_asset_1(asset)
-                            else:
-                                asset=self.gameWindow.prompt_commands(self.players[1].assets_list())
-                                trader.add_asset_2(asset)
-                        else:
-                            if cmd==name1 and len(trader.player1_blocks)>0:
-                                asset=self.gameWindow.prompt_commands(trader.player1_blocks)
-                                trader.remove_asset_1(asset)
-                            elif len(trader.player2_blocks)>0:
-                                asset=self.gameWindow.prompt_commands(trader.player2_blocks)
-                                trader.remove_asset_2(asset)
-                            else:
-                                self.console.display("no assets to remove from trader for "+cmd)
-        if cmd=='finish':
-            trader.make_trade()
-        '''        
+
     def do_all_commands(self):
         cmd = self.gameWindow.prompt_commands(self.commands)
         self.console.display(" ")            
@@ -312,7 +223,6 @@ class monoGame():
                         
                         self.do_move(dice_sum)
                         #self.do_move(2)
-                    
         else:
                     self.console.display("You have already rolled the dice")
     
