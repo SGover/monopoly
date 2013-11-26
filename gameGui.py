@@ -9,8 +9,10 @@ from threading import Thread
 X = 545
 POPUP_TOP=100
 POPUP_LEFT=200
-POPUP_SIZE=(700,500)    
-class PopupWindow:
+POPUP_SIZE=(700,500)
+
+
+class PopupWindow():
     def __init__(self,massage,buttons,image=None,texts=None):
         #self.gameWindow=gameWindow
         self.image=image
@@ -45,6 +47,49 @@ class PopupWindow:
             button.handle_event(event)
     def close(self):
         del[self]
+class TradeWindow(PopupWindow):
+    def __init__(self,buttons,trader,players):
+        self.buttons=buttons
+        self.trader=trader
+        self.players=players
+        margin=5
+        curr_x=50
+        curr_y=50
+        
+        block_size=(100,150)
+        headers=[(players[0].name,(POPUP_SIZE[0]//4,40)),(players[1].name,(3*POPUP_SIZE[0]//4,40))]
+        for asset in players[0].assets_list():
+            self.buttons.append(guiButton('',(curr_x,curr_y),action=self.add1_asset,parameter=asset,image=get_asset_image(asset)))
+            if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
+                    curr_x=curr_x+block_size[0]
+            else:
+                    curr_x=50
+                    curr_y+=block_size[1]
+        curr_x=50
+        for asset in players[1].assets_list():            
+            self.buttons.append(guiButton('',(POPUP_SIZE[0]//2+curr_x,curr_y),action=trader.add_asset_1,parameter=asset,image=get_asset_image(asset)))
+            if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
+                    curr_x=curr_x+block_size[0]
+            else:
+                    curr_x=100
+                    curr_y+=block_size[1]
+        PopupWindow.__init__('Trader',buttons,texts=headers)
+    def remove_asset_button(self,asset):
+        for button in self.buttons:
+            if button.parameter==asset:
+                self.buttons.remove(button)
+    def add1_asset(self,asset):
+        self.trader.add_asset_1(asset)
+        remove_asset_button(asset)
+        self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+400),action=self.rem1_asset,parameter=asset,image=get_asset_image(asset)))        
+    def rem1_asset(self,asset):
+        self.trader.remove_asset_1(asset)
+        remove_asset_button(asset)
+        self.buttons.append(guiButton('',(POPUP_LEFT+30,POPUP_TOP+50),action=self.add1_asset,parameter=asset,image=get_asset_image(asset)))        
+    def update(self):
+        pass 
+
+        
         
 class StatusWindow():
     players = []
@@ -275,39 +320,7 @@ class GameWindow():
         from gameClasses import Trader
 
         trader=Trader(players[0],players[1])
-        self.buttons=[]
-        margin=5
-        curr_x=50
-        curr_y=50
-        block_size=(100,150)
-        headers=[(players[0].name,(POPUP_SIZE[0]//4,40)),(players[1].name,(3*POPUP_SIZE[0]//4,40))]
-        for asset in players[0].assets_list():
-            self.buttons.append(guiButton('',(curr_x,curr_y),action=trader.add_asset_1,parameter=asset,image=get_asset_image(asset)))
-            if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
-                    curr_x=curr_x+block_size[0]
-            else:
-                    curr_x=50
-                    curr_y+=block_size[1]
-        curr_x=50
-        for asset in players[1].assets_list():
-            self.buttons.append(guiButton('',(POPUP_SIZE[0]//2+curr_x,curr_y),action=trader.add_asset_1,parameter=asset,image=get_asset_image(asset)))
-            if curr_x+block_size[0]<POPUP_SIZE[0]//2-margin:
-                    curr_x=curr_x+block_size[0]
-            else:
-                    curr_x=100
-                    curr_y+=block_size[1]
-
-        '''
-        if action.pic==None:                    
-            self.buttons.append(guiButton(action.name,(curr_x,curr_y),action=action.do_action))                    
-        else:
-            self.buttons.append(guiButton('',(curr_x,curr_y),action=action.do_action,image=action.pic))
-            if curr_x+block_size[0]<POPUP_SIZE[0]-margin:
-                    curr_x=curr_x+block_size[0]
-            else:
-                    curr_x=100
-                    curr_y+=block_size[1]
-        '''
+        self.buttons=[]    
         passb=guiButton('pass',(POPUP_SIZE[0]//2+40,POPUP_SIZE[1]-50),action=passf)
         finishb=guiButton('finish',(POPUP_SIZE[0]//2-40,POPUP_SIZE[1]-50),action=trader.make_trade)
         self.buttons.append(passb)
@@ -317,10 +330,10 @@ class GameWindow():
                 if passb.clicked or finishb.clicked:
                     return True
                 return False            
-        popup=PopupWindow('',self.buttons,image,texts=headers)
+        popup=TradeWindow('',self.buttons,trader,players)
         self.open_popup(popup)
         while not check_click():
-            time.sleep(0.2)
+            time.sleep(0.2)            
         self.popup=False
         self.popupWindow=None
         popup.close() 
