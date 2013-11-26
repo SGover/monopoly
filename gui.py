@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import threading
 import os
+from constants import *
 
 
 MOUSEDOWN = False
@@ -12,11 +13,6 @@ GUIQUIT = False
 hover = False
 ENABLED_TEXT_COLOR = (235,235,235)
 DISABLED_TEXT_COLOR = (200,200,200)
-TOKENS = ["images\\dog.png","images\\military.png",
-          "images\\piece.png","images\\eye.png",
-          "images\\scanner.png","images\\skull.png",
-          "images\\tank.png","images\\tron.png",
-          "images\\and.png","images\\worm.png"]
 
 class guiButton(pygame.Surface):
     def __init__(self, caption, position, action=0,parameter=0,sizing=1,y_sizing=1,font_size=14,image=None,enabled=True,name=None):

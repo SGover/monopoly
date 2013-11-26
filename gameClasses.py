@@ -27,8 +27,6 @@ def getPlayerFromName(name):
         if player.name==name:
             return player
     return None
-
-
 ###############
 #action class
 ###############
@@ -475,26 +473,29 @@ class player():
                     for street in self.assets[block.color]:
                         if street.houses<block.houses:
                             can_build=False
-                    if can_build:
-                        if block.houses<4:
-                                block.houses+=1
-                                self.pay(block.house_price)
-                                console.display(self.name+" bought an house for $"+str(block.house_price)+" on "+block.name)
-                                console.display(self.name+" have "+str(block.houses)+" houses on this property")
+                    if not self.money<block.house_price:
+                        if can_build:
+                            if block.houses<4:
+                                    block.houses+=1
+                                    self.pay(block.house_price)
+                                    console.display(self.name+" bought an house for $"+str(block.house_price)+" on "+block.name)
+                                    console.display(self.name+" have "+str(block.houses)+" houses on this property")
+                            else:
+                                    console.display("You cant build more than 4 houses on property")                                            
                         else:
-                                console.display("u cant build more than 4 houses on property")                                            
+                            console.display("You cant build on this block until u developed all the properties on this section")
                     else:
-                        console.display("u cant build on this block until u developed all the properties on this section")
+                        console.display("You don't have enough money!")
                             
                 else:
-                    console.display("u cant build until u have all properties on this block")
+                    console.display("You cant build until u have all properties on this block")
         else:
-            console.display("u cant build this block don't belong to u")
+            console.display("You cant build this block don't belong to u")
+    
     #buying hotel function                                
     def buy_hotel(self,block):
         if block.owner==self.name:
             if block.color!=UTILITY and block.color!=RW_STATION:
-                
                 if self.how_many(block.color)==getAmount(block.color):
                     can_build=True
                     for street in self.assets[block.color]:

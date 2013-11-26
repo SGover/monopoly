@@ -28,7 +28,7 @@ class initFromFile():
     def updateObject(self,line):
         if self.currObject==ASSETS:
             split=line.split(",")
-            self.assets.append(asset(split[0],split[1],int(split[2])))
+            self.assets.append(block(split[0],split[1],int(split[2])))
         elif self.currObject==CHESTMONEY or self.currObject==CHANCEM:
             split=line.split(",")
             card=changeMoneyCard(split[0],split[1],int(split[2]))
