@@ -135,19 +135,15 @@ class monoGame():
             else:
                 self.console.display("no assets to mortage")
         else:
-            
             cmd=''
             if cond:
                 self.console.display("select asset to unmortage:")                
                 for asset in mort_list:
                     actionList.append(GameAction(asset.name,asset.unmortage,pic=get_asset_image(asset),value=self.curr_player))
             else:
-                
                 self.console.display("select asset to mortage")
                 for asset in mort_list:                            
                     actionList.append(GameAction(asset.name,asset.mortage,pic=get_asset_image(asset)))
-                        
-                
             self.gameWindow.choose_from_actions(actionList)
 
     def do_trade(self):
