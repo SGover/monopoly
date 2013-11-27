@@ -10,9 +10,6 @@ class console():
         self.massege_list=['']        
         self.clicked=False
         
-    def setGameWindow(self,gameWindow):
-        self.gameWindow=gameWindow
-        
     def display(self, string):
         print(string)
         self.massege_list.append(string)
@@ -26,8 +23,14 @@ class console():
     def draw(self,surface):
         if not self.init:
             pygame.font.init()
-            self.font = pygame.font.Font("fonts\consola.ttf", 14)
-        size=len(self.massege_list)    
+            self.font = pygame.font.Font("fonts\\UbuntuMono-R.ttf", 16)
+        size=len(self.massege_list)
+        frame = pygame.Surface((1015,145))
+        frame.fill((250,250,250))
+        surface.blit(frame,(5,550))
+        line = pygame.Surface((7,170))
+        line.fill((50,50,50))
+        surface.blit(line,(599,545))    
         for i in range(1,9):
             if (size-i)>=0 and size-i<size:
                 txt = self.font.render('>> '+self.massege_list[size-i], True, (0,0,0))

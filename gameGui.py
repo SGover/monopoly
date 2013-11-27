@@ -6,7 +6,7 @@ import pygame
 from pygame.locals import QUIT
 from threading import Thread
 
-X = 545
+X = 550
 POPUP_TOP=100
 POPUP_LEFT=200
 POPUP_SIZE=(700,500)
@@ -41,8 +41,8 @@ class PopupWindow():
         surf.blit(self.background,(self.left,self.top))
         m=self.fnt.render(self.massage,True,BLACK)
         if self.image!=None:
-            surf.blit(self.image,(330,240))
-        surf.blit(m,(self.left+30,self.top+30))
+            surf.blit(self.image,(330,140))
+        surf.blit(m,(self.left+30,self.top+15))
         for button in self.buttons:
             if button._enable:
                 surf.blit(button,button.position)
@@ -52,6 +52,7 @@ class PopupWindow():
             button.handle_event(event)
     def close(self):
         del[self]
+        
 class TradeWindow(PopupWindow):
     def __init__(self,buttons,trader,players):
         self.buttons=buttons
@@ -158,7 +159,7 @@ class StatusWindow():
         pygame.font.init()
         self.fnt_name = pygame.font.Font("fonts\Kabel.ttf", 28)
         self.fnt_money = pygame.font.Font("fonts\Kabel.ttf", 24)
-        self.fnt_asset = pygame.font.Font("fonts\Kabel.ttf", 16)
+        self.fnt_asset = pygame.font.Font("fonts\Kabel.ttf", 13)
         self.img = pygame.image.load("images\\gui\\status.png")
         
             
@@ -276,13 +277,12 @@ class GameWindow():
         # Initialise screen
         pygame.init()  
         os.environ['SDL_VIDEO_WINDOW_POS'] = "{},{}".format(50,20)  # x,y position of the screen
-        screen = pygame.display.set_mode((1020, 700))       #witdth and height
+        screen = pygame.display.set_mode((1025, 700))       #witdth and height
         pygame.display.set_caption('Monopoly')
         # Fill background
         background = pygame.Surface(screen.get_size())
         background = background.convert()
         clock = pygame.time.Clock()
-        bg_img = pygame.image.load("images\\gui\\bigbg.png")
         
         #initate the tokens for players
         token_list = []
@@ -300,10 +300,9 @@ class GameWindow():
                     if event.type == QUIT or self.quit:
                         pygame.quit()
                         os.kill(os.getpid(),0)            
-                background.fill((180, 190, 180))
+                background.fill((50, 50, 50))
                 background = self.console.draw(background)   # console
                 self.buttonPad.draw(background)
-                background.blit(bg_img, (0,0))
                 background = self.statusWin.draw(background)    #status window            
                 for block in self.board.blocks:
                     if not (block.color == RW_STATION or block.color == UTILITY or block.color == -1):
@@ -368,13 +367,15 @@ class GameWindow():
                 if control.clicked:
                     return True
             return False
-        popup=PopupWindow('Choose',self.buttons,image)
+        popup=PopupWindow('Choose',self.buttons,image,measures=((POPUP_TOP,POPUP_LEFT),(400,200)))
         self.open_popup(popup)
+        
         while not check_click():
             time.sleep(0.2)
         self.popup=False
         self.popupWindow=None
         popup.close()
+        
     def create_trade_menu(self,players,image=None):
         from gameClasses import Trader
 
@@ -396,14 +397,15 @@ class GameWindow():
         self.popup=False
         self.popupWindow=None
         popup.close() 
+        
     def choose_from_actions(self,actionsList,image=None,text='Choose',atexts=None):
         try:
             i=0
             self.buttons=[]
             margin=5
-            curr_x=100
-            curr_y=100
-            block_size=(100,150)
+            curr_x=20
+            curr_y=50
+            block_size=(95,150)
             for action in actionsList:                
                 if action.pic==None:                    
                     self.buttons.append(guiButton(action.name,(curr_x,curr_y),action=action.do_action))                    
@@ -412,7 +414,7 @@ class GameWindow():
                 if curr_x+block_size[0]<POPUP_SIZE[0]-margin:
                         curr_x=curr_x+block_size[0]
                 else:
-                    curr_x=100
+                    curr_x=20
                     curr_y+=block_size[1]
             self.buttons.append(guiButton('pass',(POPUP_SIZE[0]//2-40,POPUP_SIZE[1]-50),action=passf))            
             def check_click():
@@ -445,8 +447,8 @@ class buttonPad():
         i=0
         self.controls=[]
         for option in options:
-            x=600+(i//3)*150
-            y=560+(i%3)*50
+            x=620+(i//3)*135
+            y=560+(i%3)*45
             if len(str(option))>10:
                 self.controls.append(guiButton(str(option),(x,y),set_value,option,1.75,7))
             else:

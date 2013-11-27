@@ -1,9 +1,6 @@
 from gameClasses import *
 from random import randrange
 from gameFactory import initFromFile
-import pygame
-from pygame.locals import QUIT
-from threading import Thread
 import os 
 #from gui import guiButton, guiImageList, guiTextBox
 
@@ -24,21 +21,21 @@ BLOCK_ARR = [moneyBlock("GO!", 200,(480,480)),
              assetBlock("VERMONT AVENUE", WHITE,100,(130,480),50,[6,30,90,270,400,550]),
              assetBlock("CONNECTICUT AVENUE", WHITE,120,(90,480),50,[8,40,100,300,450,600]),
              moneyBlock("JAIL", 0,(25,480)),      #if money is zero, its land action will be ignored
-             assetBlock("ST. CHARLES PLACE", PURPLE,140,(25,425),100,[10,50,150,450,625,750]),
+             assetBlock("ST.CHARLES PLACE", PURPLE,140,(25,425),100,[10,50,150,450,625,750]),
              utilBlock("ELECTERIC COMPANY", UTILITY, 150,(25,380)),
              assetBlock("STATES AVENUE", PURPLE,140,(25,340),100,[10,50,150,450,625,750]),
              assetBlock("VIRGINIA AVENUE", PURPLE,160,(26,295),100,[12,60,180,500,700,900]),
              utilBlock("PENNSYLVANIA RAILROAD", RW_STATION, 200,(25,255)),
-             assetBlock("ST. JAMES PLACE", ORANGE,180,(25,210),100,[14,70,200,550,750,950]),
+             assetBlock("ST.JAMES PLACE", ORANGE,180,(25,210),100,[14,70,200,550,750,950]),
              cardBlock("COMMUNITY CHEST", CHEST_DECK,(25,165)),
              assetBlock("TENNESSEE AVENUE", ORANGE,180,(25,125),100,[14,70,200,550,750,950]),
-             assetBlock("NEW YORK AVENUE", ORANGE,200,(25,80),100,[16,80,220,600,800,100]),
+             assetBlock("NEWYORK AVENUE", ORANGE,200,(25,80),100,[16,80,220,600,800,100]),
              moneyBlock("FREE PARKING", 0,(25,25)),        #if money is zero, its land action will be ignored
              assetBlock("KENTUCKY AVENUE", RED,220,(90,25),150,[18,90,250,700,875,1050]),
              cardBlock("CHANCE?", CHANCE_DECK,(130,25)),
              assetBlock("INDIANA AVENUE", RED,220,(170,25),150,[18,90,250,700,875,1050]),
              assetBlock("ILLINOIS AVENUE", RED,240,(215,25),150,[20,100,300,750,975,1150]),
-             utilBlock("B. & O. RAILROAD", RW_STATION, 200,(260,25)),
+             utilBlock("B.&O. RAILROAD", RW_STATION, 200,(260,25)),
              assetBlock("ATLANTIC AVENUE", YELLOW,260,(305,25),150,[22,110,330,800,975,1150]),
              assetBlock("VENTNOR AVENUE", YELLOW,260,(345,25),150,[22,110,330,800,975,1150]),
              utilBlock("WATER WORKS", UTILITY, 150,(390,25)),
