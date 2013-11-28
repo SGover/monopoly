@@ -12,7 +12,7 @@ if sys.platform == "win32":
     base = "Win32GUI"
 
 setup(  name = "monopoly",
-        version = "0.0.1",
+        version = "1.0.0",
         description = "Monopoly : Python game Project",
         options = {"build_exe": build_exe_options},
         executables = [Executable("Play.py", base=base)])
