@@ -1,8 +1,6 @@
 import gameClasses
 import pygame
 
-from unittest.test.test_result import __init__
-
 class console():
     init=False
     
@@ -12,8 +10,18 @@ class console():
         
     def display(self, string):
         print(string)
-        self.massege_list.append(string)
-        
+        str_lst = []
+        str_lst.append(string)
+        while len(str_lst[-1])>60:
+            temp1 = str_lst[-1]
+            n = temp1.rfind(" ",0,60)
+            n = n if not n==-1 else len(temp1)-1
+            str_lst[-1] = temp1[0:n]
+            temp2 = temp1[n:]
+            str_lst.append(temp2)
+        for str in str_lst:        
+            self.massege_list.append(str)
+         
     def start(self):
         string = "******************************\n    New Game of Monopoly!\n******************************" 
         print(string)
@@ -38,11 +46,6 @@ class console():
                 surface.blit(txt, text_pos)                
         return surface
     
-    #passing events from the main pygame thread(currently in gameWindow) 
-    def handle_event(self,event):
-        pass
-#         self.buttons.handle_event(event)
-        
     def get_player_name(self):
         name = input("Enter the Player name :_ ");
         while name=="":            
@@ -51,10 +54,7 @@ class console():
         return name 
     
     def show_winner(self, winner):
-        print(winner,"is the winner!")
-        
-    def prompt_commands_index(self,list_cmds):
-        return self.create_selection_menu(list_cmds)
+        print(winner.name,"is the winner!")
         
     def printBoard(self,board):
         for block in board.blocks:
