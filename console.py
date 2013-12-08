@@ -31,7 +31,7 @@ class console():
     def draw(self,surface):
         if not self.init:
             pygame.font.init()
-            self.font = pygame.font.Font("fonts\\UbuntuMono-R.ttf", 16)
+            self.font = pygame.font.Font("fonts//UbuntuMono-R.ttf", 16)
         size=len(self.massege_list)
         frame = pygame.Surface((1015,145))
         frame.fill((250,250,250))

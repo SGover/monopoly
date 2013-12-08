@@ -27,7 +27,7 @@ class PopupWindow():
             button.position = (self.left+button.position[0],self.top+button.position[1])
         self.background=pygame.Surface((self.width,self.height))
         pygame.font.init()
-        self.fnt = pygame.font.Font("fonts\Kabel.ttf", 20)
+        self.fnt = pygame.font.Font("fonts//Kabel.ttf", 20)
 
     def draw(self,surf):
         self.background.fill((25,25,25))
@@ -157,10 +157,10 @@ class StatusWindow():
         self.players = players
         # setting fonts
         pygame.font.init()
-        self.fnt_name = pygame.font.Font("fonts\Kabel.ttf", 28)
-        self.fnt_money = pygame.font.Font("fonts\Kabel.ttf", 24)
-        self.fnt_asset = pygame.font.Font("fonts\Kabel.ttf", 13)
-        self.img = pygame.image.load("images\\gui\\status.png")
+        self.fnt_name = pygame.font.Font("fonts//Kabel.ttf", 28)
+        self.fnt_money = pygame.font.Font("fonts//Kabel.ttf", 24)
+        self.fnt_asset = pygame.font.Font("fonts//Kabel.ttf", 13)
+        self.img = pygame.image.load("images//gui//status.png")
         
             
     def draw(self, background):
@@ -197,8 +197,8 @@ class StatusWindow():
 def get_asset_image(asset):    
     
     #init fonts
-    fnt_title = pygame.font.Font("fonts\Kabel.ttf", 10)
-    fnt_des = pygame.font.Font("fonts\Kabel.ttf", 9)    
+    fnt_title = pygame.font.Font("fonts//Kabel.ttf", 10)
+    fnt_des = pygame.font.Font("fonts//Kabel.ttf", 9)    
     #creating the image
     surf=pygame.Surface((90,135))
     surf.fill((255,255,255))
@@ -293,7 +293,7 @@ class GameWindow():
         while 1:
             clock.tick(60)  #FPS
             if not self.popup:
-                brd_img = pygame.image.load("images\\monopoly.png")            
+                brd_img = pygame.image.load("images//monopoly.png")            
                 brd_img = brd_img.convert()
                 for event in pygame.event.get():
                     self.buttonPad.handle_event(event)
