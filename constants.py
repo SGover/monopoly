@@ -9,15 +9,15 @@ COLORS = {"UTILTIES": (127,127,127),
           "GREEN COLOR":(10,250,10),
           "BLUE COLOR":(10,10,250),
           }
-TOKENS = ["images\\dog.png","images\\military.png",
-          "images\\piece.png","images\\eye.png",
-          "images\\scanner.png","images\\skull.png",
-          "images\\tank.png","images\\tron.png",
-          "images\\and.png","images\\worm.png"]
+TOKENS = ["images//dog.png","images//military.png",
+          "images//piece.png","images//eye.png",
+          "images//scanner.png","images//skull.png",
+          "images//tank.png","images//tron.png",
+          "images//and.png","images//worm.png"]
 
-BUILDINGS = ["images\\hotel.png","images\\h1.png",
-             "images\\h2.png","images\\h3.png",
-             "images\\h4.png"]
+BUILDINGS = ["images//hotel.png","images//h1.png",
+             "images//h2.png","images//h3.png",
+             "images//h4.png"]
 
 P_COLORS = [(255,25,255),
             (25,255,255),(255,25,25),
