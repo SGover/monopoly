@@ -2,7 +2,7 @@ import sys
 from cx_Freeze import setup, Executable
 
 # Dependencies are automatically detected, but it might need fine tuning.
-includefiles = ['README.md', 'LICENSE', 'fonts\\', 'images\\', "gameProperties.txt"]
+includefiles = ['README.md', 'LICENSE', 'fonts//', 'images//', "gameProperties.txt"]
 build_exe_options = {"packages": ["os"], "excludes": ["tkinter"], 'include_files':includefiles, "icon": "icon.ico"}
 
 # GUI applications require a different base on Windows (the default is for a
